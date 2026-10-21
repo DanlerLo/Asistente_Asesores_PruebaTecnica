@@ -1,0 +1,78 @@
+:root {
+  --tinta: #1f2a37;
+  --tinta-suave: #5b6675;
+  --fondo: #f7f6f2;
+  --papel: #ffffff;
+  --linea: #d9d5cc;
+  --acento: #1f5c4a;
+  --acento-suave: #e3efe9;
+  --alerta: #8a2d2d;
+  --alerta-suave: #f8e6e6;
+  --aviso: #8a6400;
+  --aviso-suave: #fff4d6;
+  font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  color: var(--tinta);
+  background: var(--fondo);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tinta: #e8e6e1;
+    --tinta-suave: #a9a59c;
+    --fondo: #171a1f;
+    --papel: #20242b;
+    --linea: #3a3f48;
+    --acento: #7fc9ad;
+    --acento-suave: #1e3b32;
+    --alerta: #f0a0a0;
+    --alerta-suave: #3c2222;
+    --aviso: #f0d080;
+    --aviso-suave: #3d3415;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); }
+
+.app { max-width: 46rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+.cabecera h1 { font-size: 1.6rem; margin: 0 0 0.25rem; letter-spacing: -0.01em; }
+.cabecera p { margin: 0 0 1.5rem; color: var(--tinta-suave); max-width: 38rem; }
+
+.formulario { display: grid; gap: 0.5rem; background: var(--papel); border: 1px solid var(--linea); padding: 1rem; border-radius: 6px; }
+.formulario label { font-weight: 600; }
+.formulario textarea { width: 100%; font: inherit; padding: 0.6rem; border: 1px solid var(--linea); border-radius: 4px; background: var(--fondo); color: var(--tinta); resize: vertical; }
+.formulario textarea:focus, button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.acciones { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.acciones button { font: inherit; font-weight: 600; padding: 0.55rem 1.1rem; border: 0; border-radius: 4px; background: var(--acento); color: #fff; cursor: pointer; }
+.acciones button:disabled { opacity: 0.6; cursor: wait; }
+.contador { color: var(--tinta-suave); font-size: 0.85rem; }
+.ejemplos { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; font-size: 0.85rem; color: var(--tinta-suave); }
+.ejemplo { font: inherit; font-size: 0.85rem; background: var(--acento-suave); color: var(--tinta); border: 1px solid var(--linea); border-radius: 999px; padding: 0.25rem 0.7rem; cursor: pointer; }
+
+.estado-proceso { margin: 1rem 0 0; color: var(--tinta-suave); }
+.error { margin-top: 1rem; padding: 0.8rem 1rem; border-left: 4px solid var(--alerta); background: var(--alerta-suave); color: var(--tinta); border-radius: 4px; }
+
+.respuesta { margin-top: 1.5rem; background: var(--papel); border: 1px solid var(--linea); border-radius: 6px; padding: 1rem 1.25rem; }
+.respuesta-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.respuesta h2, .fuentes h3, .historial h3 { margin: 0; font-size: 1.05rem; }
+.respuesta-texto { white-space: pre-wrap; font: inherit; line-height: 1.5; margin: 0.75rem 0 1rem; }
+.estado { display: inline-block; font-size: 0.8rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid var(--linea); white-space: nowrap; }
+.estado-exitosa { background: var(--acento-suave); color: var(--acento); }
+.estado-sin-info { background: var(--aviso-suave); color: var(--aviso); }
+.estado-bloqueada { background: var(--alerta-suave); color: var(--alerta); }
+
+.fuentes ol { padding-left: 1.25rem; margin: 0.5rem 0 0; }
+.fuentes li { margin-bottom: 0.5rem; }
+.fuente-archivo { font-weight: 600; }
+.fuente-seccion { color: var(--tinta-suave); }
+.fuentes blockquote { margin: 0.25rem 0 0; padding-left: 0.75rem; border-left: 3px solid var(--linea); color: var(--tinta-suave); font-size: 0.9rem; }
+.sin-fuentes { color: var(--tinta-suave); font-size: 0.9rem; margin: 0; }
+.meta { color: var(--tinta-suave); font-size: 0.8rem; margin: 1rem 0 0; }
+
+.historial { margin-top: 2rem; }
+.historial ul { list-style: none; padding: 0; margin: 0.5rem 0 0; display: grid; gap: 0.35rem; }
+.historial li { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+.historial li button { font: inherit; text-align: left; background: none; border: 0; padding: 0.3rem 0; color: var(--acento); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

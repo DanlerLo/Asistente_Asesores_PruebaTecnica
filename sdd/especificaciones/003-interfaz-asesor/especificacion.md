@@ -1,0 +1,80 @@
+# Especificación 003 — Interfaz web para el asesor
+
+Estado: implementada · Constitución: 1.0 · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
+
+## Contexto
+El asesor necesita una forma sencilla de hacer preguntas y ver, de un vistazo, la respuesta, su estado y las fuentes que la respaldan, para poder citarlas al cliente. La prueba no evalúa diseño visual, pero sí que la solución se ejecute completamente en local y muestre respuesta, fuentes, errores y estado de procesamiento.
+
+## Objetivo
+Una aplicación web ligera (React + TypeScript) que consuma `POST /api/consultar` y `GET /api/historial`, con retroalimentación clara en cada estado del flujo.
+
+## Alcance
+**Incluye:** formulario de pregunta con validación básica; indicador de procesamiento; respuesta con estado (badge), fuentes con extracto, metadatos (id, fecha, latencia, modo); errores de validación, del backend y de conexión; historial de últimas consultas con opción de repetir.
+
+**Excluye:** autenticación, diseño responsivo avanzado, modo oscuro completo (solo variables de color), internacionalización.
+
+## Requerimientos funcionales
+| ID | Requerimiento |
+|----|---------------|
+| RF-U1 | El asesor escribe una pregunta en un área de texto y la envía con un botón "Consultar" o con el formulario. |
+| RF-U2 | Una pregunta vacía muestra un error inmediato sin llamar al backend; una pregunta > 1000 caracteres muestra un error con el límite. |
+| RF-U3 | Mientras se procesa, se muestra "Procesando la consulta…" (`role="status"`) y el botón queda deshabilitado con el texto "Consultando…". |
+| RF-U4 | La respuesta se muestra con el texto íntegro (saltos de línea respetados), el estado como badge diferenciado por color y los metadatos. |
+| RF-U5 | Las fuentes se listan con archivo, sección y extracto; si no hay fuentes se indica explícitamente. |
+| RF-U6 | Los errores HTTP muestran el mensaje `error` del backend; los fallos de red muestran "No se pudo conectar con el servidor…". |
+| RF-U7 | Se muestran las últimas 10 consultas con su estado; al pulsar una se repite. |
+| RF-U8 | La URL del backend es configurable (`VITE_API_URL`); en desarrollo, `/api` se reenvía por proxy de Vite. |
+
+## Requerimientos no funcionales
+| ID | Requerimiento |
+|----|---------------|
+| RNF-U1 | Sin dependencias de UI externas (solo React, React DOM); build con Vite. |
+| RNF-U2 | Accesibilidad básica: `label` asociado, `role="status"`/`role="alert"`, foco visible, `prefers-reduced-motion`. |
+| RNF-U3 | Pruebas de componentes con Vitest + Testing Library, sin backend real (fetch simulado). |
+| RNF-U4 | Textos en español, en voz activa; el texto de la respuesta se renderiza como texto (React escapa HTML). |
+
+## Riesgos
+| Riesgo | Impacto | Mitigación |
+|--------|---------|------------|
+| Backend apagado | Asesor sin respuesta | Mensaje de conexión claro con la acción a tomar |
+| Respuestas largas ilegibles | Mala experiencia | `white-space: pre-wrap`, ancho máximo de 46 rem |
+| Confusión entre "sin información" y "error" | Decisiones equivocadas | Estados con badge y texto distintos; errores en `role="alert"` separado de la respuesta |
+
+## Criterios de aceptación (Gherkin)
+
+```gherkin
+Característica: Interfaz web del asesor
+
+  Escenario: Formulario inicial
+    Cuando abro la aplicación
+    Entonces veo el campo "Pregunta" y el botón "Consultar"
+
+  Escenario: Pregunta vacía
+    Cuando pulso "Consultar" sin escribir nada
+    Entonces veo el error "Escribe una pregunta antes de consultar."
+    Y no se realiza ninguna llamada a /api/consultar
+
+  Escenario: Consulta exitosa con fuentes
+    Dado que el backend responde Exitosa con una fuente
+    Cuando escribo una pregunta y pulso "Consultar"
+    Entonces veo "Procesando la consulta…" y el botón "Consultando…" deshabilitado
+    Y luego veo el texto de la respuesta, el badge "Exitosa", el archivo y la sección de la fuente
+    Y el indicador de procesamiento desaparece
+
+  Escenario: Sin información suficiente
+    Dado que el backend responde "Sin información suficiente" sin fuentes
+    Entonces veo la frase canónica, el badge correspondiente y el aviso "Sin fuentes"
+
+  Escenario: Error del backend
+    Dado que el backend responde 400 con un mensaje de error
+    Entonces veo ese mensaje en un elemento con role="alert"
+
+  Escenario: Error de conexión
+    Dado que fetch falla
+    Entonces veo "No se pudo conectar con el servidor"
+
+  Escenario: Historial
+    Dado que el historial contiene una consulta bloqueada
+    Entonces veo la pregunta con el badge "Bloqueada por seguridad"
+    Cuando la pulso, se vuelve a consultar y se muestra la respuesta
+```

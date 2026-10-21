@@ -1,0 +1,122 @@
+# Especificación 001 — Consulta documental con citación de fuentes
+
+Estado: implementada · Constitución: 1.0 · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
+
+## Contexto
+Los asesores comerciales atienden clientes en oficina y por teléfono y necesitan respuestas rápidas y confiables sobre productos de crédito, microseguros, procedimientos operativos y políticas internas. Hoy consultan documentos Markdown dispersos (`Data/`). La Política de Transparencia exige que toda respuesta esté sustentada en documentación oficial y la Política de Citas exige que los asistentes digitales indiquen la fuente utilizada.
+
+## Objetivo
+Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje natural, la responda **únicamente** con información encontrada en la base documental, cite las fuentes usadas y registre la consulta con su estado.
+
+## Alcance
+**Incluye:** carga y fragmentación de `Data/*.md`; recuperación léxica; respuesta extractiva determinista; capa LLM opcional; persistencia de consultas; endpoints auxiliares de historial, estadísticas y salud.
+
+**Excluye:** autenticación de usuarios, gestión de documentos vía API, embeddings/RAG vectorial (ver `docs/Cuestionario.md`), interfaz (característica 003), reglas de seguridad (característica 002).
+
+## Requerimientos funcionales
+| ID | Requerimiento |
+|----|---------------|
+| RF-01 | `POST /api/consultar` acepta `{"pregunta": string}` y responde `{"respuesta", "fuentes", "estado", "id", "fecha_hora", "latencia_ms", "modo"}`. |
+| RF-02 | La base documental se carga desde `DATA_DIR` al iniciar; cada documento se divide en fragmentos por encabezado, normalizando tablas (`Monto máximo: $50.000.000`), etiquetas y listas. |
+| RF-03 | La respuesta se construye solo con líneas de los fragmentos recuperados; nunca se genera un dato que no esté en el documento. |
+| RF-04 | Si la pregunta nombra un producto o sección, la respuesta proviene exclusivamente de esa entidad (no se responde con datos de otro producto). |
+| RF-05 | Sin evidencia suficiente, la respuesta es exactamente «No tengo información suficiente para responder.», con `fuentes: []` y estado *Sin información suficiente*. |
+| RF-06 | Entradas inválidas (vacía, no textual, > `MAX_LONGITUD_PREGUNTA`, caracteres de control) devuelven HTTP 400 con `{"error", "codigo"}` y no se registran como consultas. |
+| RF-07 | Documentos con contenido idéntico se indexan una sola vez; la fuente no se duplica. |
+| RF-08 | Con la base documental vacía o inexistente el servicio arranca, registra una advertencia y responde RF-05 a toda pregunta. |
+| RF-09 | Cada consulta atendida se persiste con pregunta, fecha y hora (UTC ISO 8601), respuesta, fuentes (JSON), estado, latencia y modo. |
+| RF-10 | `GET /api/historial`, `GET /api/estadisticas` y `GET /api/salud` exponen las consultas recientes, conteos por estado/latencias y el estado del corpus. |
+| RF-11 | Con `LLM_PROVIDER` configurado, el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo se degrada al motor extractivo. |
+
+## Requerimientos no funcionales
+| ID | Requerimiento |
+|----|---------------|
+| RNF-01 | Ejecución 100 % local sin servicios pagos; cero dependencias de red en el modo por defecto. |
+| RNF-02 | Latencia p95 < 100 ms en modo extractivo con el corpus de ejemplo (≈ 50 fragmentos). |
+| RNF-03 | Determinismo: misma pregunta y mismo corpus ⇒ misma respuesta (modo extractivo). |
+| RNF-04 | Suite de pruebas ejecutable sin red en < 5 s. |
+| RNF-05 | Todo mensaje visible para el asesor en español. |
+| RNF-06 | Logs estructurados JSON con `request_id`, estado, modo y latencia. |
+
+## Riesgos
+| Riesgo | Impacto | Mitigación |
+|--------|---------|------------|
+| Emparejamiento léxico falla con sinónimos o preguntas muy coloquiales | Respuestas *Sin información* innecesarias | Stemming en español, mapa de sinónimos, capa LLM opcional, FAQ en `Data/` |
+| Responder con datos de un producto distinto al preguntado | Información incorrecta al cliente | Bloqueo por entidad (RF-04) + selección de líneas por atributo + prueba `test_no_responde_con_datos_de_otro_producto` |
+| Falsos positivos por una sola palabra común ("capital") | Respuesta irrelevante | Mínimo dos términos coincidentes en preguntas de dos o más términos |
+| Documentos mal formateados | Fragmentos pobres | Normalizador tolerante (tablas, etiquetas, listas) y advertencias de ingesta en `/api/salud` |
+| LLM inventa datos | Respuesta no trazable | Prompt restringido a fragmentos, temperatura 0, filtro de salida, fallback extractivo |
+
+## Criterios de aceptación (Gherkin)
+
+```gherkin
+Característica: Consulta documental con citación de fuentes
+
+  Antecedentes:
+    Dado que la base documental contiene los archivos de Data/
+
+  Escenario: Consulta válida con respuesta exitosa
+    Cuando envío POST /api/consultar con la pregunta "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+    Entonces el código HTTP es 200
+    Y el estado es "Exitosa"
+    Y la respuesta contiene "$50.000.000"
+    Y la respuesta menciona la fuente "Productos de Crédito.md"
+    Y fuentes[0].seccion es "Crédito Productivo Impulso > Condiciones"
+
+  Escenario: Pregunta sin información en los documentos
+    Cuando envío la pregunta "¿Cuál es la capital de Francia?"
+    Entonces el estado es "Sin información suficiente"
+    Y la respuesta es exactamente "No tengo información suficiente para responder."
+    Y la lista de fuentes está vacía
+
+  Escenario: Atributo inexistente para el producto nombrado
+    Cuando envío la pregunta "¿Cuál es el periodo de gracia del Crédito Productivo Impulso?"
+    Entonces el estado es "Sin información suficiente"
+    Y la respuesta no contiene datos del Crédito Agro Crece
+
+  Escenario: Comparación entre dos productos
+    Cuando envío la pregunta "¿Cuál es la diferencia de plazo entre el Crédito Agro Crece y el Crédito Mujer Emprende?"
+    Entonces la respuesta contiene "84 meses" y "48 meses"
+    Y hay dos fuentes, una por producto
+
+  Escenario: Pregunta vacía
+    Cuando envío la pregunta "   "
+    Entonces el código HTTP es 400
+    Y el cuerpo es {"error": "La pregunta no puede estar vacía.", "codigo": "PREGUNTA_VACIA"}
+    Y la consulta no se registra
+
+  Escenario: Pregunta demasiado larga
+    Cuando envío una pregunta de 1001 caracteres
+    Entonces el código HTTP es 400 y el código de error es "PREGUNTA_DEMASIADO_LARGA"
+
+  Escenario: Consulta extensa dentro del límite
+    Cuando envío una pregunta de más de 700 caracteres con varias subpreguntas sobre el Crédito Agro Crece
+    Entonces el estado es "Exitosa" y la respuesta contiene "84 meses" y "$80.000.000"
+
+  Escenario: Caracteres especiales
+    Cuando envío la pregunta "¿Cuál es la edad máxima de Vida Protegida? 🚀 <b>&</b> \"'"
+    Entonces el estado es "Exitosa" y la respuesta contiene "70 años"
+    Cuando envío una pregunta con un carácter de control (\x00)
+    Entonces el código HTTP es 400 y el código de error es "CARACTERES_NO_PERMITIDOS"
+
+  Escenario: Base documental vacía
+    Dado que DATA_DIR apunta a un directorio vacío
+    Cuando envío cualquier pregunta
+    Entonces el estado es "Sin información suficiente"
+    Y GET /api/salud reporta 0 documentos
+
+  Escenario: Documentos duplicados
+    Dado que dos archivos tienen contenido idéntico
+    Cuando envío una pregunta respondida por ese contenido
+    Entonces la respuesta tiene exactamente una fuente
+
+  Escenario: Persistencia de la consulta
+    Cuando envío cualquier pregunta válida
+    Entonces existe un registro con pregunta, fecha_hora UTC, respuesta, fuentes, estado y latencia_ms
+    Y GET /api/historial lo devuelve primero
+
+  Escenario: LLM opcional degrada al modo extractivo
+    Dado que el proveedor LLM configurado falla
+    Cuando envío una pregunta válida
+    Entonces el estado es "Exitosa" y el modo es "extractivo"
+```

@@ -1,0 +1,143 @@
+"""Guardrails: validación de entrada, bloqueo por seguridad y filtro de salida.
+
+Tres capas independientes (defensa en profundidad):
+
+1. ``validar_pregunta``: forma de la entrada (tipo, vacía, longitud, caracteres
+   de control). Un fallo aquí es un error de solicitud (HTTP 400), no una
+   consulta.
+2. ``evaluar_entrada``: intención de la pregunta. Bloquea solicitudes de
+   credenciales, configuraciones internas, información restringida, datos de
+   otros clientes e intentos de inyección de prompt. Estado "Bloqueada por
+   seguridad".
+3. ``filtrar_salida``: última línea de defensa sobre la respuesta generada
+   (especialmente relevante con LLM): si contiene un valor sensible conocido o
+   algo con forma de credencial, la respuesta se reemplaza por el bloqueo.
+"""
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+
+from .texto import normalizar
+
+
+class ErrorValidacion(ValueError):
+    def __init__(self, codigo: str, mensaje: str) -> None:
+        super().__init__(mensaje)
+        self.codigo = codigo
+        self.mensaje = mensaje
+
+
+_RE_CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+
+
+def validar_pregunta(valor: object, max_longitud: int) -> str:
+    """Devuelve la pregunta saneada o lanza ``ErrorValidacion``."""
+    if not isinstance(valor, str):
+        raise ErrorValidacion("TIPO_INVALIDO", "El campo 'pregunta' debe ser un texto.")
+    pregunta = valor.strip()
+    if not pregunta:
+        raise ErrorValidacion("PREGUNTA_VACIA", "La pregunta no puede estar vacía.")
+    if len(pregunta) > max_longitud:
+        raise ErrorValidacion(
+            "PREGUNTA_DEMASIADO_LARGA",
+            f"La pregunta supera el máximo de {max_longitud} caracteres (tiene {len(pregunta)}).",
+        )
+    if _RE_CONTROL.search(pregunta):
+        raise ErrorValidacion(
+            "CARACTERES_NO_PERMITIDOS", "La pregunta contiene caracteres de control no permitidos."
+        )
+    return " ".join(pregunta.split())
+
+
+# Reglas evaluadas sobre el texto normalizado (minúsculas, sin tildes).
+REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
+    (categoria, re.compile(patron))
+    for categoria, patron in (
+        (
+            "credenciales",
+            r"\b(tokens?|claves?|contrasenas?|passwords?|credencial(es)?|api ?keys?|secretos?|"
+            r"llaves? (de acceso|privadas?))\b",
+        ),
+        (
+            "acceso_administrativo",
+            r"\b(usuarios?|cuentas?|accesos?|credenciales?|claves?) (de )?(administrador(es)?|admin)\b|\badmin\b",
+        ),
+        (
+            "configuracion_interna",
+            r"\b(sistemas?|configuracion(es)?|infraestructura|servidor(es)?|bases? de datos|arquitectura|"
+            r"codigo|prompts?|variables?|parametros?) (de )?(internos?|internas?|administrativos?|"
+            r"administrativas?|del sistema|reservados?|reservadas?|del asistente)\b|"
+            r"\bprompt (administrativo|del sistema|de sistema)\b|\bsystem prompt\b|"
+            r"\binstrucciones (internas|del sistema|del asistente)\b",
+        ),
+        (
+            "informacion_restringida",
+            r"\binformacion (restringida|confidencial|reservada|interna|secreta)\b|"
+            r"\b(documentos?|archivos?|datos?) (restringid[ao]s?|confidencial(es)?|reservad[ao]s?)\b|"
+            r"\brestringid[ao]s?\b|\bconfidencial(es)?\b",
+        ),
+        (
+            "inyeccion_de_prompt",
+            r"\b(ignora(r)?|ignore|disregard|forget|olvida(r)?) (all |todas? )?"
+            r"(previous |prior |your |the |las? |tus? |sus? |estas? )?"
+            r"(instrucciones|instructions|reglas|rules|politicas|restricciones|guidelines)\b|"
+            r"\b(actua|actue|comportate) como\b|"
+            r"\beres (ahora )?(un|una|el|la) (administrador|desarrollador|sistema|ia sin)\b|"
+            r"\bmodo (desarrollador|administrador|admin|dios|sin restricciones)\b|"
+            r"\b(revela|muestra|imprime|repite|entrega)(me)? (tu|el|las|tus|toda la) (prompt|instrucciones|configuracion|informacion restringida)\b|"
+            r"\bjailbreak\b|\bsin restricciones\b|\bno tienes (reglas|restricciones)\b",
+        ),
+        (
+            "datos_de_terceros",
+            r"\b(datos|informacion|saldo|cedula|telefono|direccion|historial|deuda|cuenta|cuentas) "
+            r"(personal(es)? )?(de|del) (otro|otra|un|una|el|la|los|las|otros|otras) "
+            r"(cliente|clientes|persona|personas|usuario|usuarios)\b|\botros clientes\b|"
+            r"\b(base|lista|listado) de clientes\b",
+        ),
+    )
+)
+
+
+@dataclass(frozen=True)
+class EvaluacionEntrada:
+    permitido: bool
+    categoria: str = ""
+    coincidencia: str = ""
+
+
+def evaluar_entrada(pregunta: str) -> EvaluacionEntrada:
+    texto = normalizar(pregunta)
+    for categoria, patron in REGLAS_ENTRADA:
+        encontrado = patron.search(texto)
+        if encontrado:
+            return EvaluacionEntrada(False, categoria, encontrado.group(0))
+    return EvaluacionEntrada(True)
+
+
+# Patrones con forma de credencial/identificador técnico en la salida.
+# (patrón, requiere_digito): los códigos tipo "ABC-123" deben tener un dígito para no
+# confundirse con siglas; las claves de API y los usuarios admin se bloquean siempre.
+PATRONES_SALIDA: tuple[tuple[re.Pattern[str], bool], ...] = (
+    (re.compile(r"\b[A-Z]{2,6}(?:-[A-Z0-9]+){1,4}\b"), True),  # p. ej. ABC-1234-XYZ-99, TMP-123456
+    (re.compile(r"\badmin_[A-Za-z0-9_]+\b|\b[A-Za-z0-9_]+_admin\b"), False),
+    (re.compile(r"\b(sk|key|tok|tkn|api)[-_][A-Za-z0-9]{10,}\b", re.IGNORECASE), False),
+)
+
+
+@dataclass(frozen=True)
+class EvaluacionSalida:
+    permitido: bool
+    motivo: str = ""
+
+
+def filtrar_salida(texto: str, secretos: frozenset[str] | set[str] = frozenset()) -> EvaluacionSalida:
+    texto_min = texto.lower()
+    for secreto in secretos:
+        if secreto.lower() in texto_min:
+            return EvaluacionSalida(False, "valor sensible de documento restringido")
+    for patron, requiere_digito in PATRONES_SALIDA:
+        for encontrado in patron.finditer(texto):
+            if not requiere_digito or any(c.isdigit() for c in encontrado.group(0)):
+                return EvaluacionSalida(False, "patrón con forma de credencial")
+    return EvaluacionSalida(True)
