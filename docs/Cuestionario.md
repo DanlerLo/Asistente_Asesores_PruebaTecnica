@@ -14,14 +14,14 @@
 - Redacción inicial de la constitución, especificaciones (requerimientos, riesgos, escenarios Gherkin), planes y listas de tareas, a partir de las decisiones tomadas por la persona.
 - Implementación del backend (fragmentación de Markdown, BM25, motor extractivo, guardrails, persistencia, API) y del frontend, siguiendo un ciclo rojo → verde: escribir pruebas, ejecutarlas, corregir.
 - Ampliación de los datos de ejemplo con registros ficticios coherentes (productos, microseguros, procedimientos, preguntas frecuentes).
-- Depuración iterativa del motor con un banco de ~30 preguntas de control: la IA proponía reglas y las validaba contra las pruebas.
+- Depuración iterativa del motor con un banco de preguntas de control, que empezó con ~30 preguntas y hoy está versionado con 293 (`tests/backend/banco_preguntas.txt`, ejecutado por `tests/backend/test_banco.py` contra una foto de respuestas esperadas): la IA proponía reglas y las validaba contra las pruebas y el banco antes y después de cada cambio.
 - Redacción de README, AGENTS.md y borrador de este cuestionario.
 
 ### Qué actividades se realizaron manualmente ✎
 - Lectura del enunciado y de los archivos de datos; identificación de la trampa de seguridad en `Información restringida.md` y de las reglas de negocio implícitas en las políticas (citación obligatoria, frase canónica, escalamiento).
-- Decisiones de alcance y de arquitectura: stack (Python/FastAPI + React/TypeScript), ejecución 100 % local con LLM opcional, SQLite, recuperación léxica extractiva en lugar de embeddings, estructura de carpetas (`sdd/`), tres características en lugar de dos.
+- Decisiones de alcance y de arquitectura: stack (Python/FastAPI + React/TypeScript), ejecución 100 % local con LLM opcional, SQLite, recuperación léxica extractiva en lugar de embeddings, estructura de carpetas (`sdd/`), seis características (001–006) en lugar de las dos del ejemplo.
 - Revisión del código y de las pruebas generadas; verificación manual del servidor real con `curl` y de la interfaz; revisión de que ningún valor del archivo restringido aparece en código, pruebas o respuestas.
-- Decisión de qué sugerencias aceptar o rechazar (siguiente sección) y de cuándo detener la iteración del motor (26/28 → 31/32 → 32/32 en el banco de control).
+- Decisión de qué sugerencias aceptar o rechazar (siguiente sección) y de cuándo detener la iteración del motor (26/28 → 31/32 → 32/32 en la primera versión del banco de control; después, comparación antes/después sobre el banco versionado, que reveló y evitó regresiones como la primera versión de la regla RF-12).
 - ✎ Completar con la configuración del repositorio en GitHub, commits y cualquier ajuste posterior.
 
 ### Qué sugerencias de la IA se rechazaron ✎
@@ -31,10 +31,10 @@
 - ✎ Añadir otras sugerencias rechazadas durante la revisión.
 
 ### Cómo se validaron las respuestas de la IA
-1. **Pruebas automatizadas como oráculo:** 94 pruebas de backend y 11 de frontend, escritas antes o junto con el código; ningún cambio se aceptó con la suite en rojo.
+1. **Pruebas automatizadas como oráculo:** la suite de backend (pytest) y la de frontend (Vitest), escritas antes o junto con el código; ningún cambio se aceptó con la suite en rojo.
 2. **Banco de preguntas de control** (32 preguntas reales de asesor con la respuesta esperada) ejecutado contra el servicio tras cada ajuste del motor, para detectar regresiones que las pruebas unitarias no cubren.
 3. **Pruebas negativas de seguridad:** verificación de que los valores del documento restringido no aparecen en el índice, en el contexto enviado a un LLM, ni en ninguna respuesta; se leen del archivo en tiempo de prueba para no copiarlos al código.
-4. **Revisión de código** módulo por módulo, con especial atención a `guardrails.py`, `corpus.py` y `motor.py`.
+4. **Revisión de código** módulo por módulo, con especial atención a `seguridad/guardrails.py`, `herramientas/corpus.py` y `generacion/extractivo.py`.
 5. **Ejecución real:** servidor levantado con `uvicorn`, consultas con `curl`, build del frontend y verificación de tipos.
 
 ## 2. Decisiones técnicas para paso a productivo
@@ -45,10 +45,12 @@ Un esquema de **dos niveles**, manteniendo siempre el motor extractivo determini
 1. **Modelo pequeño y rápido para el 90 % de las consultas** (la clase más económica de la familia Claude, hoy la gama Haiku; verificar el nombre y precio vigentes en https://docs.claude.com/en/docs/about-claude/models). Las preguntas de los asesores son cortas, el contexto son 3–8 fragmentos y la tarea es redactar con fidelidad, no razonar: un modelo pequeño con temperatura 0 es suficiente, barato y de baja latencia.
 2. **Modelo de gama media (clase Sonnet) solo para casos escalados:** comparaciones entre varios productos, preguntas largas o con baja confianza del primer nivel (se detecta por cobertura léxica baja o respuesta canónica del modelo pequeño).
 
+**Implementado en esta prueba (gratuito):** proveedor `groq` (GroqCloud, API compatible con OpenAI) con `openai/gpt-oss-20b` por defecto. Se eligió porque el enunciado no admite herramientas pagas y GroqCloud tiene un plan gratuito sin tarjeta; `gpt-oss-20b` es un modelo de producción vigente (los Llama 3.x del plan gratuito se retiraron el 16/08/2026, según la página de *deprecations* de Groq) y su tamaño aprovecha mejor los límites por minuto del plan gratuito. Se desactiva el razonamiento en la respuesta (`include_reasoning: false`) y se usa `reasoning_effort: low`. Es opcional (`LLM_PROVIDER=groq` + `GROQ_API_KEY`): si la clave falta, el backend no arranca y lo indica con un mensaje claro; ante error, cuota agotada (429) o respuesta incompleta de Groq responde el motor extractivo; con `LLM_PROVIDER=none` (por defecto) siempre responde el motor extractivo. A Groq se envían el prompt del sistema, los fragmentos recuperados y la pregunta del asesor; nunca el documento restringido.
+
 Alternativa si hay restricción de residencia de datos: un modelo abierto servido en la infraestructura propia (vía vLLM), aceptando mayor costo operativo y menor calidad. En todos los casos el modelo **solo redacta a partir de fragmentos recuperados** y su salida pasa por el filtro de secretos; nunca responde "de memoria".
 
 ### ¿Cómo optimizaría costos?
-- **No llamar al LLM cuando no aporta:** preguntas bloqueadas, sin candidatos recuperados o con respuesta exacta de tabla (`Monto máximo: …`) se responden en modo extractivo (costo cero). En el corpus actual eso cubre la mayoría de las consultas.
+- **No llamar al LLM cuando no aporta:** hoy no se llama en preguntas bloqueadas ni fuera de dominio (sin fragmentos candidatos). Como mejora para producción, responder también en modo extractivo (costo cero) las preguntas con respuesta exacta de tabla (`Monto máximo: …`), que en el corpus actual serían la mayoría, y llamar al LLM solo cuando el extractivo no encuentra respuesta.
 - **Caché de respuestas** por pregunta normalizada (raíces ordenadas) y por versión del corpus, con TTL y invalidación al recargar documentos.
 - **Contexto mínimo:** solo los fragmentos relevantes (no documentos completos), `max_tokens` acotado, prompt del sistema estable para aprovechar caché de prompt del proveedor cuando exista.
 - **Modelo pequeño por defecto y escalamiento selectivo** (sección anterior); presupuesto mensual con alertas.
@@ -121,7 +123,8 @@ Decidir qué información es confidencial o a quién se le puede mostrar; aproba
 
 ### ¿Cómo mantendría separadas estas responsabilidades?
 - **Arquitectura:** el LLM es un componente opcional detrás de una interfaz (`ProveedorLLM`) que solo recibe fragmentos y devuelve texto; la validación, el filtrado, la persistencia y la autorización son código tradicional que rodea al modelo (patrón *sandwich*: código → modelo → código).
-- **Contratos verificables:** la salida del modelo debe pasar el filtro de secretos y la verificación de citas; si no, se descarta y responde el motor extractivo.
+- **Orquestador determinista:** el orquestador (`orquestador/`) aplica los guardrails y elige por reglas qué agente responde (crédito, microseguros, operativo o fuera de dominio). Ningún LLM decide la ruta ni qué herramienta usar, y la seguridad nunca se delega a un agente; las capas solo dependen hacia abajo y una prueba de arquitectura lo verifica (especificación 004).
+- **Contratos verificables:** la salida del modelo pasa siempre por el filtro de secretos (si lo infringe, la consulta queda *Bloqueada por seguridad*); las fuentes que se muestran son solo las secciones recuperadas que el texto cita; y si el proveedor falla, se queda sin cuota o entrega una respuesta incompleta, responde el motor extractivo.
 - **Sin capacidades de acción:** el modelo no tiene herramientas ni credenciales.
 - **Pruebas como frontera:** cada responsabilidad "tradicional" tiene pruebas deterministas que no dependen del modelo; la suite corre sin LLM.
 - **Gobierno:** `AGENTS.md` y la constitución fijan qué decide la IA y qué decide una persona, tanto en operación como en desarrollo.
@@ -129,10 +132,10 @@ Decidir qué información es confidencial o a quién se le puede mostrar; aproba
 ## 5. Optimización y operación (100.000 consultas diarias)
 
 ### ¿Qué componente tendría mayor riesgo de latencia?
-La **llamada al LLM** (cientos de milisegundos a segundos, con variabilidad de red y del proveedor). En segundo lugar, la **persistencia**: SQLite serializa escrituras en un solo archivo y no escala a ~70 escrituras/minuto sostenidas con picos y varias réplicas. La recuperación BM25 es despreciable (microsegundos en memoria) mientras el corpus sea pequeño; con decenas de miles de fragmentos pasaría a un índice dedicado.
+La **llamada al LLM** (cientos de milisegundos a segundos, con variabilidad de red y del proveedor). En segundo lugar, la **persistencia** al escalar horizontalmente: 100.000 consultas diarias son ~1,2 escrituras por segundo en promedio, algo que SQLite soporta holgadamente en una sola instancia (medido: 0,22 ms por escritura con 10.000 registros), pero un archivo SQLite no se comparte entre varias réplicas del backend ni ofrece alta disponibilidad. La recuperación BM25 es despreciable (microsegundos en memoria) mientras el corpus sea pequeño; con decenas de miles de fragmentos pasaría a un índice dedicado.
 
 ### ¿Qué estrategia utilizaría para reducir tiempos de respuesta?
-- Responder en **modo extractivo** todo lo que no necesite redacción (hoy la mayoría) y llamar al LLM solo en los casos que lo justifican.
+- Responder en **modo extractivo** todo lo que no necesite redacción (en el corpus actual, la mayoría) y llamar al LLM solo en los casos que lo justifican (mejora propuesta; hoy, con LLM activo, se llama siempre que hay fragmentos candidatos).
 - **Caché** (siguiente punto) delante del LLM.
 - **Streaming** de la respuesta del modelo hacia la interfaz y timeouts estrictos con fallback extractivo.
 - Modelo pequeño por defecto; prompt corto y estable; contexto mínimo.
@@ -149,7 +152,7 @@ La **llamada al LLM** (cientos de milisegundos a segundos, con variabilidad de r
 Invalidación por versión del corpus y por cambio de reglas de seguridad.
 
 ### ¿Qué monitorearía?
-Latencia p50/p95/p99 por etapa (validación, recuperación, LLM, persistencia); tasa de errores 4xx/5xx; distribución de estados; tasa de acierto de caché; tasa de fallback y timeouts del LLM; costo por consulta y por día; tasa de bloqueos por categoría (con alerta ante picos); salud del corpus (documentos, fragmentos, advertencias); saturación de la base de datos; y las métricas de calidad de la sección 2.
+Latencia p50/p95/p99 por etapa (validación, recuperación, LLM, persistencia); tasa de errores 4xx/5xx; distribución de estados; tasa de acierto de caché; tasa de fallback y timeouts del LLM; cuota restante del proveedor (cabeceras `x-ratelimit-*`, ya expuesta en `GET /api/llm` y en el panel de la interfaz, con alerta por debajo del 10 %); costo por consulta y por día; tasa de bloqueos por categoría (con alerta ante picos); salud del corpus (documentos, fragmentos, advertencias); saturación de la base de datos; y las métricas de calidad de la sección 2.
 
 ### ¿Cómo optimizaría costos de operación?
 Modelo pequeño y escalamiento selectivo; caché; modo extractivo como primera opción; `max_tokens` acotado; procesamiento por lotes para evaluaciones; autoescalado del backend según carga; retención de registros con archivado de los antiguos; y presupuesto con alertas por consumo del proveedor de LLM.
@@ -163,7 +166,11 @@ Modelo pequeño y escalamiento selectivo; caché; modo extractivo como primera o
 Cumple el requisito (pregunta, fecha y hora, respuesta, fuentes, estado) sin instalar ni configurar nada, funciona 100 % en local, es transaccional y confiable, y el repositorio aísla el cambio de motor. Para el volumen de la prueba y de un piloto interno es más que suficiente.
 
 ### Qué ventajas tiene para este escenario
-Cero dependencias externas; un solo archivo fácil de inspeccionar, respaldar y borrar; arranque inmediato para quien evalúa; pruebas con base en memoria (`:memory:`) rápidas y aisladas; consultas SQL para estadísticas; y el esquema es portable a PostgreSQL sin cambios conceptuales.
+Cero dependencias externas (es una librería embebida en Python: no hay servidor que ejecutar); un solo archivo fácil de inspeccionar, respaldar y borrar; recuperación por ID con la llave primaria (`GET /api/consultas/{id}`); arranque inmediato para quien evalúa; pruebas con base en memoria (`:memory:`) rápidas y aisladas; consultas SQL para estadísticas; y el esquema es portable a PostgreSQL sin cambios conceptuales.
+
+**Alternativa evaluada y descartada: un archivo JSON.** Medido en la máquina de desarrollo con 10.000 consultas: SQLite guarda en 0,22 ms y lee por ID en 0,05 ms (constante al crecer); un JSON reescrito en cada consulta tarda 61,8 ms en guardar y 12,8 ms en leer por ID (crece con el archivo, ~7 MB), no tiene índices y se corrompe si el proceso cae a mitad de escritura o hay escrituras concurrentes.
+
+**Memoria de conversación:** no se persiste en el servidor. El navegador envía las últimas 3 preguntas como `contexto` opcional y el servidor sigue sin estado; así el esquema de `consultas` (pregunta, fecha y hora, respuesta, fuentes, estado) no cambia. Persistir conversaciones con un identificador es una mejora que cambiaría el esquema.
 
 ## 7. Escenario de producción
 
