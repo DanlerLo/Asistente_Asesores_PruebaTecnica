@@ -18,6 +18,11 @@ storage/
 .env
 .env.local
 
+# Material de referencia local (enunciado y copia del documento restringido) y
+# configuración personal del agente de desarrollo: no se publican.
+contexto/
+.claude/settings.local.json
+
 # Sistema
 .DS_Store
 Thumbs.db
