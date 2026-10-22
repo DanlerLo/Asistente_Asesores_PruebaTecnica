@@ -68,7 +68,6 @@ textarea:focus-visible, button:focus-visible { outline: 2px solid var(--foco); o
 .chat { display: flex; flex-direction: column; background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; box-shadow: var(--sombra); min-height: 70vh; }
 .chat-cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--linea); }
 .chat-marca { display: flex; align-items: center; gap: 0.85rem; }
-.logo { display: block; height: 2.6rem; width: auto; border-radius: 6px; }
 .chat-titulo h1 { font-size: 1.1rem; margin: 0; color: var(--acento); }
 .chat-titulo h1::after { content: ''; display: block; width: 2.5rem; height: 3px; margin-top: 0.3rem; border-radius: 2px; background: var(--marca-secundaria); }
 .chat-titulo p { margin: 0.35rem 0 0; color: var(--tinta-suave); font-size: 0.8rem; }
@@ -150,9 +149,7 @@ textarea:focus-visible, button:focus-visible { outline: 2px solid var(--foco); o
 .historial li { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
 .historial li button { text-align: left; background: none; border: 0; padding: 0.3rem 0; color: var(--acento); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
-@media (prefers-color-scheme: dark) { .logo { background: #ffffff; padding: 0.15rem 0.4rem; } }
 @media (max-width: 560px) {
-  .logo { height: 2.1rem; }
   .mensaje { max-width: 95%; }
   .chat-acciones, .modo { justify-items: start; }
   .cuota { text-align: left; }

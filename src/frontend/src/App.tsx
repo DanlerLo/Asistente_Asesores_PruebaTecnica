@@ -9,7 +9,6 @@ import {
   type EstadoLlm,
   type RegistroHistorial,
 } from './api';
-import logoBancoW from './assets/banco-w.png';
 import { Compositor } from './components/Compositor';
 import { Conversacion, type Turno } from './components/Conversacion';
 import { Historial } from './components/Historial';
@@ -116,7 +115,6 @@ export default function App() {
       <section className="chat" aria-label="Asistente">
         <header className="chat-cabecera">
           <div className="chat-marca">
-            <img className="logo" src={logoBancoW} alt="Banco W" />
             <div className="chat-titulo">
               <h1>Asistente para asesores comerciales</h1>
               <p>Productos de crédito, microseguros, procedimientos y políticas · documentación oficial</p>

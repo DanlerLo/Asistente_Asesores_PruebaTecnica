@@ -23,10 +23,10 @@ describe('App', () => {
   beforeEach(() => vi.restoreAllMocks());
   afterEach(() => vi.unstubAllGlobals());
 
-  it('muestra el formulario de consulta y el logo del banco', () => {
+  it('muestra el formulario de consulta, sin logo de marca', () => {
     simularFetch(async () => HISTORIAL_VACIO);
     render(<App />);
-    expect(screen.getByRole('img', { name: 'Banco W' })).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: 'Banco W' })).not.toBeInTheDocument();
     expect(screen.getByLabelText('Pregunta')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Consultar' })).toBeInTheDocument();
   });
