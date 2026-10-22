@@ -62,15 +62,53 @@ async function solicitar<T>(ruta: string, init?: RequestInit): Promise<T> {
   return datos as T;
 }
 
-export function consultar(pregunta: string): Promise<RespuestaConsulta> {
+/** `contexto`: preguntas anteriores de la conversación (opcional); sin él se envía solo `{ pregunta }`. */
+export function consultar(pregunta: string, contexto: string[] = []): Promise<RespuestaConsulta> {
   return solicitar<RespuestaConsulta>('/api/consultar', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pregunta }),
+    body: JSON.stringify(contexto.length ? { pregunta, contexto } : { pregunta }),
   });
 }
 
 export async function obtenerHistorial(limite = 10): Promise<RegistroHistorial[]> {
   const datos = await solicitar<{ consultas: RegistroHistorial[] }>(`/api/historial?limite=${limite}`);
   return datos.consultas;
+}
+
+/** Cuota informada por el proveedor en su última respuesta (`null` = desconocido). */
+export interface CuotaLlm {
+  solicitudes_limite: number | null;
+  solicitudes_restantes: number | null;
+  solicitudes_reinicio_s: number | null;
+  tokens_limite: number | null;
+  tokens_restantes: number | null;
+  tokens_reinicio_s: number | null;
+  actualizado: string;
+}
+
+export interface EstadoLlm {
+  proveedor: string | null;
+  modelo: string | null;
+  activo: boolean;
+  modo: string;
+  llamadas: number;
+  cuota: CuotaLlm | null;
+}
+
+export function esEstadoLlm(datos: unknown): datos is EstadoLlm {
+  const estado = datos as Partial<EstadoLlm> | null;
+  return !!estado && typeof estado.activo === 'boolean' && 'proveedor' in estado;
+}
+
+export function obtenerEstadoLlm(): Promise<EstadoLlm> {
+  return solicitar<EstadoLlm>('/api/llm');
+}
+
+export function cambiarModoLlm(activo: boolean): Promise<EstadoLlm> {
+  return solicitar<EstadoLlm>('/api/llm', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activo }),
+  });
 }
