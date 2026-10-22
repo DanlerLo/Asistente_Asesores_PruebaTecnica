@@ -89,3 +89,38 @@ def test_log_incluye_agente_y_motivo(orquestador: Orquestador, caplog: pytest.Lo
 
 def test_salud_lista_agentes(cliente):
     assert set(cliente.get("/api/salud").json()["agentes"]) == AGENTES
+
+
+# --------------------------------------------------------------------------- RF-O9: catálogo por agente
+
+
+def test_agente_de_credito_lista_el_atributo_por_producto(orquestador: Orquestador):
+    resultado = orquestador.consultar("¿Cuál crédito tiene la tasa más baja?")
+    assert resultado.agente == "credito" and resultado.estado == ESTADO_EXITOSA
+    for tasa in ("24,5 %", "18,9 %", "21,2 %", "15,6 %"):
+        assert tasa in resultado.respuesta
+    assert len(resultado.fuentes) == 4
+
+
+def test_agente_de_microseguros_prefiere_maximos_con_mas_alta(orquestador: Orquestador):
+    resultado = orquestador.consultar("¿Qué microseguro tiene la cobertura más alta?")
+    assert resultado.agente == "microseguros"
+    assert resultado.respuesta.count("Cobertura máxima") == 4 and "$25.000.000" in resultado.respuesta
+
+
+def test_con_producto_nombrado_no_lista(orquestador: Orquestador):
+    resultado = orquestador.consultar("¿Cuál es la tasa del Crédito Agro Crece?")
+    assert "18,9 %" in resultado.respuesta and "24,5 %" not in resultado.respuesta
+
+
+def test_los_agentes_no_son_intercambiables(cfg, corpus):
+    from asistente.infraestructura.persistencia import RepositorioConsultas
+    from asistente.orquestador import Enrutador
+
+    pregunta = "¿Cuál crédito tiene la tasa más baja?"
+    con_especialistas = Orquestador(cfg, corpus, RepositorioConsultas(":memory:")).consultar(pregunta)
+    solo_operativo = Orquestador(
+        cfg, corpus, RepositorioConsultas(":memory:"), enrutador=Enrutador(especialistas=())
+    ).consultar(pregunta)
+    assert solo_operativo.agente == "operativo"
+    assert solo_operativo.respuesta != con_especialistas.respuesta

@@ -24,7 +24,7 @@ def test_raiz_unifica_plurales_y_genero():
 
 def test_tokenizar_elimina_stopwords_y_aplica_sinonimos():
     assert tokenizar("¿Cuál es el monto máximo del crédito?") == ["mont", "maxim", "credit"]
-    assert tokenizar("¿Qué cubre el seguro?") == ["cobertur", "segur"]
+    assert tokenizar("¿Qué cubre el seguro?") == ["cobertur", "microsegur"]  # seguro ≈ microseguro en este corpus
     assert tokenizar("¿?") == []
 
 

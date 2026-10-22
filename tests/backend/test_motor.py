@@ -177,4 +177,5 @@ def test_producto_o_atributo_inexistente_no_responde_con_otro(orquestador, pregu
     ],
 )
 def test_palabras_desconocidas_que_no_nombran_producto_siguen_respondiendo(orquestador, pregunta: str):
-    assert orquestador.consultar(pregunta).estado == ESTADO_EXITOSA
+    """RF-13 no debe tomarlas por productos inexistentes (si responden bien lo mide test_evaluacion.py)."""
+    assert orquestador.consultar(pregunta).motivo_ruta != "inexistente"

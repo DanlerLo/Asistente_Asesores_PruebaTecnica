@@ -16,7 +16,7 @@ from asistente.infraestructura.persistencia import RepositorioConsultas
 from asistente.orquestador import Orquestador
 
 EVALUACION = Path(__file__).with_name("evaluacion.json")
-PRECISION_MINIMA = 0.48  # línea base medida: 47/97 (48,5 %); solo sube
+PRECISION_MINIMA = 0.83  # línea base 47/97 (48,5 %); tras las mejoras del motor 81/97 (83,5 %); solo sube
 
 
 def _acierta(caso: dict, estado: str, respuesta: str) -> bool:
