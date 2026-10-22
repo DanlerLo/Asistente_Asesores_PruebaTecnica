@@ -38,4 +38,6 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 ## Fase extra — Hallazgo de auditoría (RF-S8)
 - [x] T-122 Prueba: un documento público con un valor de la lista de denegación y un LLM que cita su sección sin repetir el valor; la respuesta salía «Exitosa» con el valor en `fuentes[].extracto`.
 - [x] T-123 El orquestador aplica el filtro de salida al texto y a cada fuente (documento, sección, extracto); si alguna falla, bloquea toda la respuesta.
+- [x] T-124 Prueba (RF-S9): evasiones con espacio de ancho cero, guion suave, homoglifos cirílicos, «t0ken»/«c1ave» y «usuario del administrador»; pasaban como «Sin información».
+- [x] T-125 `textos_para_reglas`: NFKC + sin caracteres invisibles + homoglifos + lecturas sin dígitos-letra; `validar_pregunta` quita los invisibles. El banco de 293 preguntas no cambia.
 

@@ -56,3 +56,4 @@ Criterio de salida: ningún archivo versionado fuera de `Data/` contiene literal
 | RF-S6 | `test_historial_y_estadisticas` (bloqueo persistido) |
 | RF-S7 | `test_error_interno_no_expone_detalles` |
 | RF-S8 | `test_orquestador.py::test_secreto_en_el_extracto_de_una_fuente_se_bloquea` |
+| RF-S9 | `test_guardrails.py::test_evasion_tipografica_se_bloquea`, `test_la_normalizacion_no_bloquea_preguntas_legitimas`, `test_la_pregunta_validada_no_conserva_caracteres_invisibles` |

@@ -50,6 +50,7 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 - [ ] T-038 Enmascarar datos personales de la pregunta antes de enviarla a un proveedor externo (decisión humana).
 - [x] T-039 RF-13 (hallazgo de la auditoría contra el PDF): pruebas con productos inexistentes («hipotecario», «Exequial Plus», «mascotas», «vivienda») y atributo inexistente («salario»), más pruebas de no regresión («¿qué crédito financia…?»).
 - [x] T-040 Implementar `IndiceBM25.nombra_algo_inexistente` y ruta `inexistente` en el enrutador; banco de 340 preguntas: solo cambian las 6 incorrectas.
+- [x] T-041 El banco de regresión compara también el texto de la respuesta (antes solo estado y fuentes: 108 de 293 respuestas podían cambiar sin que fallara nada). Hallazgo B3 de la auditoría.
 
 ## Fase G — Datos y documentación
 - [x] T-024 Ampliar `Data/` con registros ficticios adicionales y `Preguntas Frecuentes.md` (sin tocar el archivo restringido).
@@ -58,4 +59,4 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 ## Pendientes / mejoras futuras (fuera de alcance)
 - [ ] T-026 Caché en memoria de respuestas por pregunta normalizada (clave: raíces ordenadas).
 - [ ] T-027 Recarga del corpus sin reiniciar (`POST /api/recargar` protegido).
-- [ ] T-028 Evaluación automática con un conjunto de preguntas/respuestas esperadas (`tests/backend/evaluacion.yaml`).
+- [x] T-028 Evaluación automática con preguntas y respuesta esperada: `tests/backend/evaluacion.json` (97 casos) + `test_evaluacion.py` con precisión mínima como trinquete (línea base 48,5 %).

@@ -69,4 +69,5 @@ Ejecución: `python -m pytest` desde la raíz (sin red, < 1 s). Ciclo TDD: escri
 | RF-10 | `test_api.py::test_historial_y_estadisticas`, `test_salud` |
 | RF-11 | `test_orquestador.py::test_llm_*`, `test_prompts.py`, `test_proveedores_llm.py` |
 | RF-12 | `test_motor.py::test_parafrasis_no_responde_con_datos_de_otro_tema`, `test_rf12_no_descarta_respuestas_generales` |
+| RF-03, RF-05 (corrección medida) | `test_evaluacion.py` (97 casos con respuesta esperada, precisión mínima), `test_banco.py` (293 preguntas: estado, fuentes y texto) |
 | RF-13 | `test_motor.py::test_producto_o_atributo_inexistente_no_responde_con_otro`, `test_palabras_desconocidas_que_no_nombran_producto_siguen_respondiendo` |

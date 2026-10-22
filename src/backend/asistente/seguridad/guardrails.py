@@ -16,6 +16,7 @@ Tres capas independientes (defensa en profundidad):
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 
 from ..herramientas.texto import normalizar
@@ -35,7 +36,9 @@ def validar_pregunta(valor: object, max_longitud: int) -> str:
     """Devuelve la pregunta saneada o lanza ``ErrorValidacion``."""
     if not isinstance(valor, str):
         raise ErrorValidacion("TIPO_INVALIDO", "El campo 'pregunta' debe ser un texto.")
-    pregunta = valor.strip()
+    # RF-S9: sin caracteres invisibles de formato (espacio de ancho cero, guion suave…), que solo sirven
+    # para partir palabras y evadir las reglas; tampoco se guardan ni viajan al LLM.
+    pregunta = _sin_invisibles(valor).strip()
     if not pregunta:
         raise ErrorValidacion("PREGUNTA_VACIA", "La pregunta no puede estar vacía.")
     if len(pregunta) > max_longitud:
@@ -68,6 +71,35 @@ def validar_contexto(valor: object, max_longitud: int) -> list[str]:
     return contexto
 
 
+def _sin_invisibles(texto: str) -> str:
+    return "".join(c for c in texto if unicodedata.category(c) != "Cf")
+
+
+# RF-S9: letras cirílicas y griegas que se ven idénticas a las latinas («tоken» con «о» cirílica).
+_HOMOGLIFOS = str.maketrans(
+    {"а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x", "і": "i", "ј": "j", "ѕ": "s",
+     "к": "k", "м": "m", "т": "t", "в": "b", "н": "h", "ο": "o", "α": "a", "ε": "e", "ι": "i", "κ": "k",
+     "ν": "v", "ρ": "p", "τ": "t", "υ": "u", "χ": "x"}
+)
+# Dígitos usados como letras, solo dentro de palabras que mezclan letras y dígitos («t0ken», «c1ave»):
+# los montos («$50.000.000») y cantidades («10 meses») no se tocan.
+# El «1» se lee como «i» («adm1n») o como «l» («c1ave»): se prueban ambas lecturas.
+_LEET = (str.maketrans("013457", "oieast"), str.maketrans("013457", "oleast"))
+_RE_PALABRA_MIXTA = re.compile(r"\b(?=[a-z0-9]*[a-z])(?=[a-z0-9]*[0-9])[a-z0-9]+\b")
+
+
+def textos_para_reglas(pregunta: str) -> list[str]:
+    """Variantes normalizadas sobre las que se evalúan las reglas de entrada (RF-S9)."""
+    base = unicodedata.normalize("NFKC", _sin_invisibles(pregunta)).lower().translate(_HOMOGLIFOS)
+    texto = normalizar(base)
+    variantes = [texto]
+    for tabla in _LEET:
+        sin_leet = _RE_PALABRA_MIXTA.sub(lambda m: m.group(0).translate(tabla), texto)
+        if sin_leet not in variantes:
+            variantes.append(sin_leet)
+    return variantes
+
+
 # Reglas evaluadas sobre el texto normalizado (minúsculas, sin tildes).
 REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
     (categoria, re.compile(patron))
@@ -79,7 +111,7 @@ REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
         ),
         (
             "acceso_administrativo",
-            r"\b(usuarios?|cuentas?|accesos?|credenciales?|claves?) (de )?(administrador(es)?|admin)\b|\badmin\b",
+            r"\b(usuarios?|cuentas?|accesos?|credenciales?|claves?) (del? )?(administrador(es)?|admin)\b|\badmin\b",
         ),
         (
             "configuracion_interna",
@@ -126,11 +158,11 @@ class EvaluacionEntrada:
 
 
 def evaluar_entrada(pregunta: str) -> EvaluacionEntrada:
-    texto = normalizar(pregunta)
-    for categoria, patron in REGLAS_ENTRADA:
-        encontrado = patron.search(texto)
-        if encontrado:
-            return EvaluacionEntrada(False, categoria, encontrado.group(0))
+    for texto in textos_para_reglas(pregunta):
+        for categoria, patron in REGLAS_ENTRADA:
+            encontrado = patron.search(texto)
+            if encontrado:
+                return EvaluacionEntrada(False, categoria, encontrado.group(0))
     return EvaluacionEntrada(True)
 
 

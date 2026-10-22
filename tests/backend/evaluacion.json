@@ -1,0 +1,733 @@
+{
+ "descripcion": "Conjunto de evaluación del motor: preguntas con el dato exacto que la respuesta debe contener según Data/ (o que debe responder la frase canónica). La mayoría no está en banco_preguntas.txt; algunas (superlativos, secciones transversales) sí, porque el banco solo vigila cambios y aquí se exige corrección. Lo ejecuta tests/backend/test_evaluacion.py.",
+ "preguntas": [
+  {
+   "id": "A1",
+   "pregunta": "¿Hasta cuánta plata prestan en el Agro Crece?",
+   "contiene": [
+    "$80.000.000"
+   ]
+  },
+  {
+   "id": "A2",
+   "pregunta": "¿Cuánto es lo mínimo que se puede pedir en el Educativo Avanza?",
+   "contiene": [
+    "$1.000.000"
+   ]
+  },
+  {
+   "id": "A3",
+   "pregunta": "¿A cuántos meses se puede diferir el Crédito Mujer Emprende?",
+   "contiene": [
+    "48 meses"
+   ]
+  },
+  {
+   "id": "A4",
+   "pregunta": "¿Qué interés cobra el Crédito Productivo Impulso?",
+   "contiene": [
+    "24,5 %"
+   ]
+  },
+  {
+   "id": "A5",
+   "pregunta": "¿Cuánto hay que pagar al mes por Vida Protegida?",
+   "contiene": [
+    "$9.900"
+   ]
+  },
+  {
+   "id": "A6",
+   "pregunta": "¿Cuál es la mensualidad de Negocio Seguro?",
+   "contiene": [
+    "$12.000"
+   ]
+  },
+  {
+   "id": "A7",
+   "pregunta": "¿Qué papeles le piden a una mujer emprendedora para el crédito?",
+   "contiene": [
+    "Carta de intención"
+   ]
+  },
+  {
+   "id": "A8",
+   "pregunta": "¿Con cuántos años puede uno meterse a Salud Básica Familiar?",
+   "contiene": [
+    "0 años",
+    "65 años"
+   ]
+  },
+  {
+   "id": "A9",
+   "pregunta": "¿Qué tan alto es el tope de Accidente Personal Esencial?",
+   "contiene": [
+    "$25.000.000"
+   ]
+  },
+  {
+   "id": "A10",
+   "pregunta": "¿Qué cubre la póliza Vida Protegida?",
+   "contiene": [
+    "Muerte por cualquier causa"
+   ]
+  },
+  {
+   "id": "A11",
+   "pregunta": "¿Negocio Seguro ampara daños por incendio?",
+   "contiene": [
+    "Incendio"
+   ]
+  },
+  {
+   "id": "A12",
+   "pregunta": "¿Cuánto cuesta Vida Protegida?",
+   "contiene": [
+    "$9.900"
+   ]
+  },
+  {
+   "id": "A13",
+   "pregunta": "¿Cuánto cuesta al mes Salud Básica Familiar?",
+   "contiene": [
+    "$15.000"
+   ]
+  },
+  {
+   "id": "A14",
+   "pregunta": "¿Cuánto tiempo tengo para pagar el Crédito Productivo Impulso?",
+   "contiene": [
+    "60 meses"
+   ]
+  },
+  {
+   "id": "A15",
+   "pregunta": "¿Qué respaldo piden para el Crédito Productivo Impulso?",
+   "contiene": [
+    "firma personal"
+   ]
+  },
+  {
+   "id": "A16",
+   "pregunta": "¿Cuál es el límite del Crédito Mujer Emprende?",
+   "contiene": [
+    "$30.000.000"
+   ]
+  },
+  {
+   "id": "A17",
+   "pregunta": "¿Hay carencia en el Crédito Agro Crece?",
+   "contiene": [
+    "Hasta 6 meses"
+   ]
+  },
+  {
+   "id": "A18",
+   "pregunta": "¿Cuándo me entregan el dinero del crédito?",
+   "contiene": [
+    "2 días hábiles"
+   ]
+  },
+  {
+   "id": "A19",
+   "pregunta": "¿Cómo se tramita una queja?",
+   "contiene": [
+    "sitio web"
+   ]
+  },
+  {
+   "id": "A20",
+   "pregunta": "¿Vida Protegida cubre muerte natural?",
+   "contiene": [
+    "Muerte por cualquier causa"
+   ]
+  },
+  {
+   "id": "A21",
+   "pregunta": "¿Cuál es el valor asegurado en Vida Protegida?",
+   "contiene": [
+    "$20.000.000"
+   ]
+  },
+  {
+   "id": "A22",
+   "pregunta": "¿Qué documentación exige el Agro Crece?",
+   "contiene": [
+    "Plan de inversión"
+   ]
+  },
+  {
+   "id": "B1",
+   "pregunta": "¿Cuál es el plazo mínimo del Crédito Educativo Avanza?",
+   "contiene": [
+    "Plazo mínimo: 12 meses"
+   ]
+  },
+  {
+   "id": "B2",
+   "pregunta": "¿Cuál es el monto máximo del Crédito Educativo Avanza?",
+   "contiene": [
+    "$25.000.000"
+   ]
+  },
+  {
+   "id": "B3",
+   "pregunta": "¿Cuál es la tasa de interés del Crédito Productivo Impulso?",
+   "contiene": [
+    "24,5 %"
+   ]
+  },
+  {
+   "id": "B4",
+   "pregunta": "¿Cuál es la cobertura máxima de Accidente Personal Esencial?",
+   "contiene": [
+    "$25.000.000"
+   ]
+  },
+  {
+   "id": "B5",
+   "pregunta": "¿Qué edad máxima tiene Negocio Seguro?",
+   "sin_informacion": true
+  },
+  {
+   "id": "B6",
+   "pregunta": "¿Cuánto es la prima mensual de Salud Básica Familiar?",
+   "contiene": [
+    "$15.000"
+   ]
+  },
+  {
+   "id": "B7",
+   "pregunta": "¿Cuál es la periodicidad de pago del Crédito Mujer Emprende?",
+   "sin_informacion": true
+  },
+  {
+   "id": "B8",
+   "pregunta": "¿A quién está dirigido el Crédito Educativo Avanza?",
+   "contiene": [
+    "estudiantes"
+   ]
+  },
+  {
+   "id": "B9",
+   "pregunta": "¿Para quién es el Crédito Productivo Impulso?",
+   "contiene": [
+    "pequeños comerciantes"
+   ]
+  },
+  {
+   "id": "B10",
+   "pregunta": "¿Qué incluye Salud Básica Familiar?",
+   "contiene": [
+    "Hospitalización"
+   ]
+  },
+  {
+   "id": "B11",
+   "pregunta": "¿Cuál es el plazo máximo del Crédito Educativo Avanza?",
+   "contiene": [
+    "72 meses"
+   ]
+  },
+  {
+   "id": "B12",
+   "pregunta": "¿Cuál es el monto mínimo del Crédito Agro Crece?",
+   "contiene": [
+    "$3.000.000"
+   ]
+  },
+  {
+   "id": "B13",
+   "pregunta": "¿Hasta cuánto cubre Salud Básica Familiar?",
+   "contiene": [
+    "$10.000.000"
+   ]
+  },
+  {
+   "id": "B14",
+   "pregunta": "¿Cuál es la edad mínima para tomar Vida Protegida?",
+   "contiene": [
+    "18 años"
+   ]
+  },
+  {
+   "id": "C1",
+   "pregunta": "¿Cuál es la diferencia de monto máximo entre el Crédito Educativo Avanza y el Crédito Mujer Emprende?",
+   "contiene": [
+    "$25.000.000",
+    "$30.000.000"
+   ]
+  },
+  {
+   "id": "C2",
+   "pregunta": "¿Qué tasa es más baja, la del Agro Crece o la del Productivo Impulso?",
+   "contiene": [
+    "18,9 %",
+    "24,5 %"
+   ]
+  },
+  {
+   "id": "C3",
+   "pregunta": "Compara la cobertura máxima de Negocio Seguro y Accidente Personal Esencial",
+   "contiene": [
+    "$15.000.000",
+    "$25.000.000"
+   ]
+  },
+  {
+   "id": "C4",
+   "pregunta": "¿Cuál microseguro tiene la cobertura más alta?",
+   "contiene": [
+    "$25.000.000"
+   ]
+  },
+  {
+   "id": "C5",
+   "pregunta": "¿Qué crédito tiene el plazo más largo?",
+   "contiene": [
+    "84 meses"
+   ]
+  },
+  {
+   "id": "C6",
+   "pregunta": "¿Cuál es el monto máximo del Crédito Productivo Impulso y del Agro Crece?",
+   "contiene": [
+    "$50.000.000",
+    "$80.000.000"
+   ]
+  },
+  {
+   "id": "C7",
+   "pregunta": "¿Cuál seguro es más barato, Vida Protegida o Accidente Personal Esencial?",
+   "contiene": [
+    "$9.900",
+    "$7.500"
+   ]
+  },
+  {
+   "id": "C8",
+   "pregunta": "¿Cuál crédito tiene la tasa más baja?",
+   "contiene": [
+    "15,6 %"
+   ]
+  },
+  {
+   "id": "C9",
+   "pregunta": "¿Cuál microseguro tiene la prima más baja?",
+   "contiene": [
+    "$7.500"
+   ]
+  },
+  {
+   "id": "C10",
+   "pregunta": "Compara la prima de Vida Protegida y Salud Básica Familiar",
+   "contiene": [
+    "$9.900",
+    "$15.000"
+   ]
+  },
+  {
+   "id": "D1",
+   "pregunta": "¿Qué tipo de información debe utilizar el asesor al responder?",
+   "contiene": [
+    "información oficial"
+   ]
+  },
+  {
+   "id": "D2",
+   "pregunta": "¿Quién puede ver los datos de los clientes?",
+   "contiene": [
+    "personal autorizado"
+   ]
+  },
+  {
+   "id": "D3",
+   "pregunta": "¿Se puede radicar una PQR por la página web?",
+   "contiene": [
+    "sitio web"
+   ]
+  },
+  {
+   "id": "D4",
+   "pregunta": "¿Cuánto tiempo tiene la entidad para contestar una queja?",
+   "contiene": [
+    "5 días hábiles"
+   ]
+  },
+  {
+   "id": "D5",
+   "pregunta": "¿Sirve la declaración de renta para actualizar los datos?",
+   "contiene": [
+    "Declaración de renta"
+   ]
+  },
+  {
+   "id": "D6",
+   "pregunta": "¿Hasta qué hora atienden las oficinas entre semana?",
+   "contiene": [
+    "5:00 p.m."
+   ]
+  },
+  {
+   "id": "D7",
+   "pregunta": "¿A qué hora cierran las oficinas los sábados?",
+   "contiene": [
+    "12:00 m."
+   ]
+  },
+  {
+   "id": "D8",
+   "pregunta": "¿Los domingos atiende la línea telefónica?",
+   "contiene": [
+    "Lunes a sábado"
+   ]
+  },
+  {
+   "id": "D9",
+   "pregunta": "¿Qué debo registrar cuando escalo un caso?",
+   "contiene": [
+    "Registrar evento"
+   ]
+  },
+  {
+   "id": "D10",
+   "pregunta": "¿Es obligatorio citar la fuente en las respuestas del asistente?",
+   "contiene": [
+    "indicar la fuente"
+   ]
+  },
+  {
+   "id": "D11",
+   "pregunta": "¿Qué pasa si un cliente no actualiza sus datos y pide un nuevo crédito?",
+   "contiene": [
+    "no es posible tramitar"
+   ]
+  },
+  {
+   "id": "D12",
+   "pregunta": "¿Cuántos días hábiles tarda el desembolso después de la aprobación?",
+   "contiene": [
+    "2 días hábiles"
+   ]
+  },
+  {
+   "id": "D13",
+   "pregunta": "¿Qué pasos sigue el banco para aprobar un crédito?",
+   "contiene": [
+    "Validación de identidad"
+   ]
+  },
+  {
+   "id": "D16",
+   "pregunta": "¿Cómo se pagan las primas?",
+   "contiene": [
+    "Corresponsales bancarios"
+   ]
+  },
+  {
+   "id": "D17",
+   "pregunta": "¿Qué tiempo de respuesta tiene una petición?",
+   "contiene": [
+    "5 días hábiles"
+   ],
+   "no_contiene": [
+    "10 a 15"
+   ]
+  },
+  {
+   "id": "D18",
+   "pregunta": "Un cliente quiere saber cuándo le desembolsan el crédito que le aprobaron ayer",
+   "contiene": [
+    "2 días hábiles"
+   ]
+  },
+  {
+   "id": "D19",
+   "pregunta": "¿Qué exclusiones tiene Vida Protegida?",
+   "contiene": [
+    "Enfermedades preexistentes"
+   ]
+  },
+  {
+   "id": "D20",
+   "pregunta": "¿Cuánto tarda una reclamación de Vida Protegida?",
+   "contiene": [
+    "10 a 15 días hábiles"
+   ]
+  },
+  {
+   "id": "E1",
+   "pregunta": "¿Cuál es la tasa de interez del Crédito Agro Crece?",
+   "contiene": [
+    "18,9 %"
+   ]
+  },
+  {
+   "id": "E2",
+   "pregunta": "¿Qué requicitos tiene el Crédito Mujer Emprende?",
+   "contiene": [
+    "Carta de intención"
+   ]
+  },
+  {
+   "id": "E3",
+   "pregunta": "¿Cuánto cuesta el microseguro Salud Basica Familar?",
+   "contiene": [
+    "$15.000"
+   ]
+  },
+  {
+   "id": "E4",
+   "pregunta": "¿Cuál es la covertura máxima de Negocio Seguro?",
+   "contiene": [
+    "$15.000.000"
+   ]
+  },
+  {
+   "id": "E5",
+   "pregunta": "¿Cuánto tarda el desenbolso?",
+   "contiene": [
+    "2 días hábiles"
+   ]
+  },
+  {
+   "id": "E6",
+   "pregunta": "¿Qué garantias pide el Crédito Productivo Inpulso?",
+   "contiene": [
+    "firma personal"
+   ]
+  },
+  {
+   "id": "E7",
+   "pregunta": "¿Cual es el horario de atencion de las oficinas los sabados?",
+   "contiene": [
+    "12:00 m."
+   ]
+  },
+  {
+   "id": "F1",
+   "pregunta": "¿Y la cobertura máxima?",
+   "contexto": [
+    "¿Cuál es la prima mensual de Vida Protegida?"
+   ],
+   "contiene": [
+    "$20.000.000"
+   ]
+  },
+  {
+   "id": "F2",
+   "pregunta": "¿Y cuánto cuesta?",
+   "contexto": [
+    "¿Qué cubre Negocio Seguro?"
+   ],
+   "contiene": [
+    "$12.000"
+   ]
+  },
+  {
+   "id": "F3",
+   "pregunta": "¿Y cuál es la tasa?",
+   "contexto": [
+    "¿Qué requisitos tiene el Crédito Educativo Avanza?"
+   ],
+   "contiene": [
+    "15,6 %"
+   ]
+  },
+  {
+   "id": "F4",
+   "pregunta": "¿Ese crédito tiene periodo de gracia?",
+   "contexto": [
+    "¿Cuál es el monto máximo del Crédito Agro Crece?"
+   ],
+   "contiene": [
+    "Hasta 6 meses"
+   ]
+  },
+  {
+   "id": "F5",
+   "pregunta": "¿Y la línea telefónica?",
+   "contexto": [
+    "¿Cuál es el horario de atención de las oficinas?"
+   ],
+   "contiene": [
+    "7:00 p.m."
+   ]
+  },
+  {
+   "id": "F6",
+   "pregunta": "¿Y qué soportes hay que presentar?",
+   "contexto": [
+    "¿Cuánto tarda una reclamación?"
+   ],
+   "contiene": [
+    "Presentar soportes"
+   ]
+  },
+  {
+   "id": "F8",
+   "pregunta": "¿Y hasta qué edad?",
+   "contexto": [
+    "¿Qué cubre Vida Protegida?"
+   ],
+   "contiene": [
+    "70 años"
+   ]
+  },
+  {
+   "id": "F9",
+   "pregunta": "¿También tiene periodo de gracia?",
+   "contexto": [
+    "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+   ],
+   "sin_informacion": true,
+   "no_contiene": [
+    "Hasta 6 meses",
+    "Hasta 12 meses"
+   ]
+  },
+  {
+   "id": "F10",
+   "pregunta": "¿Cuál es su tasa?",
+   "contexto": [
+    "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+   ],
+   "contiene": [
+    "24,5 %"
+   ]
+  },
+  {
+   "id": "F11",
+   "pregunta": "¿Y el monto máximo?",
+   "contexto": [
+    "¿Cuál es la tasa del Crédito Agro Crece?",
+    "¿Y el periodo de gracia?"
+   ],
+   "contiene": [
+    "$80.000.000"
+   ]
+  },
+  {
+   "id": "G1",
+   "pregunta": "Tengo un cliente que quiere el Crédito Educativo Avanza: ¿cuál es el monto máximo y cuánto tiempo de gracia tiene después de terminar los estudios?",
+   "contiene": [
+    "$25.000.000",
+    "Hasta 12 meses"
+   ]
+  },
+  {
+   "id": "G2",
+   "pregunta": "Un cliente quiere saber qué cubre Salud Básica Familiar y cuánto paga de prima al mes",
+   "contiene": [
+    "Hospitalización",
+    "$15.000"
+   ]
+  },
+  {
+   "id": "G3",
+   "pregunta": "¿Cuánto tarda la aprobación de un crédito y por qué canales se desembolsa?",
+   "contiene": [
+    "3 días hábiles",
+    "Abono a cuenta"
+   ]
+  },
+  {
+   "id": "G4",
+   "pregunta": "Mi cliente tiene un negocio de comidas y quiere asegurarlo contra incendio: ¿qué microseguro le sirve y cuánto cuesta al mes?",
+   "contiene": [
+    "$12.000"
+   ]
+  },
+  {
+   "id": "G5",
+   "pregunta": "¿Qué documentos necesita un cliente para actualizar sus datos y cada cuánto debe hacerlo?",
+   "contiene": [
+    "Declaración de renta",
+    "12 meses"
+   ]
+  },
+  {
+   "id": "G6",
+   "pregunta": "Una clienta de 66 años quiere Salud Básica Familiar, ¿puede tomarlo y cuál es la cobertura?",
+   "contiene": [
+    "65 años",
+    "$10.000.000"
+   ]
+  },
+  {
+   "id": "G7",
+   "pregunta": "¿Qué requisitos tiene el Crédito Agro Crece y cuál es su periodo de gracia?",
+   "contiene": [
+    "Plan de inversión",
+    "Hasta 6 meses"
+   ]
+  },
+  {
+   "id": "G8",
+   "pregunta": "Buenas tardes, un cliente comerciante necesita 40 millones, ¿el Crédito Productivo Impulso le alcanza y qué garantía le pedirían?",
+   "contiene": [
+    "$50.000.000",
+    "codeudor"
+   ]
+  },
+  {
+   "id": "H1",
+   "pregunta": "¿Qué seguros ofrecen?",
+   "contiene": [
+    "Vida Protegida",
+    "Negocio Seguro"
+   ]
+  },
+  {
+   "id": "H2",
+   "pregunta": "¿Cuáles son los créditos disponibles?",
+   "contiene": [
+    "Agro Crece",
+    "Educativo Avanza"
+   ]
+  },
+  {
+   "id": "H3",
+   "pregunta": "¿Qué tipos de microseguros existen?",
+   "contiene": [
+    "Vida Protegida",
+    "Negocio Seguro"
+   ]
+  },
+  {
+   "id": "H5",
+   "pregunta": "¿Qué microseguro le sirve a un negocio?",
+   "contiene": [
+    "Negocio Seguro"
+   ]
+  },
+  {
+   "id": "H6",
+   "pregunta": "¿Hay algún seguro para accidentes?",
+   "contiene": [
+    "Accidente Personal Esencial"
+   ]
+  },
+  {
+   "id": "H7",
+   "pregunta": "¿Qué crédito le sirve a un estudiante de un programa técnico?",
+   "contiene": [
+    "Educativo Avanza"
+   ]
+  },
+  {
+   "id": "I1",
+   "pregunta": "¿Puedo pedir 100 millones en el Agro Crece?",
+   "contiene": [
+    "$80.000.000"
+   ]
+  },
+  {
+   "id": "I2",
+   "pregunta": "¿Un crédito de 10 millones en el Impulso necesita codeudor?",
+   "contiene": [
+    "firma personal"
+   ]
+  }
+ ]
+}
