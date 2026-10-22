@@ -21,12 +21,12 @@ Cuatro barreras independientes: aunque una falle, las demás evitan la fuga. La 
 |------------|-----------------|
 | `corpus.es_restringido` | Decide exclusión por nombre (`ARCHIVOS_RESTRINGIDOS`) o por marca en la cabecera del archivo |
 | `corpus.extraer_secretos` | Construye la lista de denegación con tokens que contienen dígitos, `-` o `_` (≥ 6 caracteres) |
-| `corpus.es_instruccion_sospechosa` | Patrones de instrucción (`ignora tus instrucciones`, `prompt administrativo`, `si un usuario pregunta… entregue`) |
+| `herramientas.corpus.es_instruccion_sospechosa` | Patrones de instrucción (`ignora tus instrucciones`, `prompt administrativo`, `si un usuario pregunta… entregue`) |
 | `guardrails.validar_pregunta` | Errores de forma con códigos estables |
-| `guardrails.evaluar_entrada` | Reglas por categoría: `credenciales`, `acceso_administrativo`, `configuracion_interna`, `informacion_restringida`, `inyeccion_de_prompt`, `datos_de_terceros` |
+| `seguridad.guardrails.evaluar_entrada` | Reglas por categoría: `credenciales`, `acceso_administrativo`, `configuracion_interna`, `informacion_restringida`, `inyeccion_de_prompt`, `datos_de_terceros` |
 | `guardrails.filtrar_salida` | Lista de denegación + patrones (`ABC-123…` con dígito, `admin_*`, `sk-…`) |
 | `motor.respuesta_bloqueada` | Mensaje de bloqueo con cita a *Manual del Asesor › Información Sensible* y *Políticas › Escalamiento* |
-| `main.py` | Manejador global de excepciones con mensaje genérico; `x-request-id` para correlación |
+| `api/app.py` | Manejador global de excepciones con mensaje genérico; `x-request-id` para correlación |
 
 ## Decisiones
 - **ADR-S1 Reglas declarativas en vez de clasificador ML.** Son auditables, rápidas, deterministas y se prueban una a una; un clasificador puede añadirse después como capa adicional, nunca como sustituto.
@@ -40,10 +40,10 @@ Cuatro barreras independientes: aunque una falle, las demás evitan la fuga. La 
 |---------|-------|
 | `tests/backend/test_corpus.py` | exclusión por nombre y por marca, extracción de secretos, líneas de instrucción descartadas |
 | `tests/backend/test_guardrails.py` | validación de forma; 14 preguntas peligrosas por categoría; 5 preguntas legítimas; filtro de salida positivo y negativo |
-| `tests/backend/test_servicio.py` | bloqueo extremo a extremo sin fuga, inyección embebida, fuga desde documento público, LLM que revela un secreto |
+| `tests/backend/test_orquestador.py` | bloqueo extremo a extremo sin fuga, inyección embebida, fuga desde documento público, LLM que revela un secreto |
 | `tests/backend/test_api.py` | bloqueo por HTTP sin fuga en el cuerpo, error interno genérico |
 
-Criterio de salida: ninguna prueba de la suite contiene literalmente un valor del archivo restringido (`grep` en CI).
+Criterio de salida: ningún archivo versionado fuera de `Data/` contiene literalmente un valor del archivo restringido (`test_arquitectura.py::test_ningun_archivo_contiene_valores_restringidos`, ejecutada también en CI: `.github/workflows/ci.yml`).
 
 ## Trazabilidad
 | RF | Pruebas |
@@ -55,3 +55,4 @@ Criterio de salida: ninguna prueba de la suite contiene literalmente un valor de
 | RF-S5 | `test_fragmentar_descarta_lineas_con_instrucciones_para_el_asistente`, `test_instruccion_inyectada_en_un_documento_no_se_obedece_ni_se_repite` |
 | RF-S6 | `test_historial_y_estadisticas` (bloqueo persistido) |
 | RF-S7 | `test_error_interno_no_expone_detalles` |
+| RF-S8 | `test_orquestador.py::test_secreto_en_el_extracto_de_una_fuente_se_bloquea` |

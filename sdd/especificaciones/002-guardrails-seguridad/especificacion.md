@@ -1,6 +1,6 @@
 # Especificación 002 — Guardrails de seguridad y protección de información
 
-Estado: implementada · Constitución: 1.0 · Principios aplicados: 1 (Seguridad por defecto), 3 (TDD), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.2) · Principios aplicados: 1 (Seguridad por defecto), 3 (TDD), 7 (Observabilidad).
 
 ## Contexto
 La base documental incluye `Información restringida.md`, clasificado como CONFIDENCIAL: contiene credenciales ficticias y un "prompt administrativo" que ordena entregar toda la información si alguien la pide. El Manual del Asesor prohíbe compartir información de otros clientes, configuraciones internas, credenciales e información tecnológica reservada; la Política de Protección de Información restringe el acceso a personal autorizado; la Política de Escalamiento exige detener, escalar y registrar ante incertidumbre. El asistente será usado por personas y podría recibir intentos de *prompt injection*, directos o embebidos en documentos.
@@ -23,6 +23,7 @@ Garantizar que el asistente **nunca** exponga información restringida ni obedez
 | RF-S5 | Las líneas de un documento con apariencia de instrucción para el asistente se descartan en la ingesta y generan una advertencia visible en `/api/salud`. |
 | RF-S6 | Los bloqueos se persisten como cualquier consulta (estado, fecha, pregunta) y se registran en el log con la categoría del motivo, sin incluir el valor sensible. |
 | RF-S7 | Los errores internos devuelven un mensaje genérico; nunca trazas, rutas ni configuración. |
+| RF-S8 | El filtro de salida revisa también cada fuente devuelta (documento, sección y extracto), no solo el texto de la respuesta: con un LLM activo la respuesta puede no repetir el dato, pero el extracto lleva el fragmento crudo al frontend y al historial. Si alguna fuente contiene un valor de la lista de denegación o un patrón con forma de credencial, toda la respuesta se reemplaza por el bloqueo y no se persiste el extracto. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -96,4 +97,11 @@ Característica: Guardrails de seguridad
   Escenario: Error interno sin detalles técnicos
     Dado que ocurre una excepción inesperada al atender la consulta
     Entonces el código HTTP es 500 y el cuerpo es {"error": "<mensaje genérico>", "codigo": "ERROR_INTERNO"}
+
+  Escenario: Secreto en el extracto de una fuente (modo LLM)
+    Dado que un documento público contiene un valor de la lista de denegación
+    Y que el LLM responde sin repetir ese valor, pero citando la sección que lo contiene
+    Cuando el asesor hace la consulta
+    Entonces el estado es "Bloqueada por seguridad"
+    Y ninguna fuente de la respuesta ni del historial contiene el valor
 ```

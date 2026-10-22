@@ -8,12 +8,13 @@ src/frontend/
 ├── vite.config.ts        (proxy /api → backend; Vitest con jsdom; pruebas en tests/frontend)
 └── src/
     ├── main.tsx          (montaje)
-    ├── App.tsx           (estado: procesando, resultado, error, historial)
-    ├── api.ts            (consultar, obtenerHistorial, ErrorApi)
-    ├── styles.css        (tokens de color claro/oscuro, sin framework)
+    ├── App.tsx           (estado: turnos de la conversación, texto, error, historial, modo del LLM)
+    ├── api.ts            (consultar, obtenerHistorial, obtenerEstadoLlm, cambiarModoLlm, ErrorApi)
+    ├── styles.css        (tokens de color claro/oscuro con la paleta del Banco W, sin framework)
     └── components/
-        ├── FormularioConsulta.tsx
-        ├── Respuesta.tsx  ─► EstadoBadge.tsx + Fuentes.tsx
+        ├── Conversacion.tsx  ─► BurbujaAsistente.tsx ─► EstadoBadge + Fuentes + Especialidades
+        ├── Compositor.tsx    (caja de texto del chat)
+        ├── SelectorModo.tsx  (Modo conexión / Modo sin conexión, cuota y pop-up)
         └── Historial.tsx
 ```
 
@@ -23,9 +24,11 @@ src/frontend/
 | Componente | Responsabilidad |
 |------------|-----------------|
 | `api.ts` | Contrato tipado (`RespuestaConsulta`, `Fuente`, `Estado`), base URL configurable, errores uniformes |
-| `App.tsx` | Validación previa (vacía, longitud), orquestación de la consulta, recarga del historial |
-| `FormularioConsulta` | Área de texto, contador, ejemplos, botón con estado de carga |
-| `Respuesta` | Texto íntegro, badge, fuentes, metadatos |
+| `App.tsx` | Validación previa (vacía, longitud), turnos de la conversación y su contexto, recarga del historial y del modo |
+| `Conversacion` | Chat (`role="log"`): mensajes del asesor a la derecha, del asistente a la izquierda; burbuja «Procesando la consulta…»; guía inicial con ejemplos |
+| `BurbujaAsistente` | Texto íntegro, badge, fuentes, especialidades (sin información), metadatos y hora |
+| `Compositor` | Caja de texto con contador; Enter envía, Shift+Enter salto de línea; botón «Consultar» con estado de carga |
+| `SelectorModo` | «Modo conexión (Groq)» / «Modo sin conexión» (`aria-pressed`), cuota en pequeño y pop-up del modo sin conexión |
 | `EstadoBadge` | Mapeo estado → clase de color |
 | `Fuentes` | Lista ordenada con archivo › sección y extracto; aviso de "Sin fuentes" |
 | `Historial` | Últimas consultas; repetir con un clic |

@@ -1,6 +1,6 @@
 # Especificación 001 — Consulta documental con citación de fuentes
 
-Estado: implementada · Constitución: 1.0 · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
+Estado: implementada · Constitución: 1.0 (vigente: 1.2) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
 
 ## Contexto
 Los asesores comerciales atienden clientes en oficina y por teléfono y necesitan respuestas rápidas y confiables sobre productos de crédito, microseguros, procedimientos operativos y políticas internas. Hoy consultan documentos Markdown dispersos (`Data/`). La Política de Transparencia exige que toda respuesta esté sustentada en documentación oficial y la Política de Citas exige que los asistentes digitales indiquen la fuente utilizada.
@@ -26,7 +26,9 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-08 | Con la base documental vacía o inexistente el servicio arranca, registra una advertencia y responde RF-05 a toda pregunta. |
 | RF-09 | Cada consulta atendida se persiste con pregunta, fecha y hora (UTC ISO 8601), respuesta, fuentes (JSON), estado, latencia y modo. |
 | RF-10 | `GET /api/historial`, `GET /api/estadisticas` y `GET /api/salud` exponen las consultas recientes, conteos por estado/latencias y el estado del corpus. |
-| RF-11 | Con `LLM_PROVIDER` configurado, el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo se degrada al motor extractivo. |
+| RF-11 | Con `LLM_PROVIDER=groq` (único proveedor; otro valor se rechaza con un mensaje claro), el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo (red, cuota, respuesta vacía) se degrada al motor extractivo. El modo por defecto sigue siendo `none` (sin red). |
+| RF-12 | Si el fragmento mejor puntuado trata lo que nombra la pregunta (p. ej. «Gestión de PQR») pero no responde el atributo pedido, el motor extractivo no recurre a otro fragmento que no mencione ninguno de los términos de esa sección (los títulos con forma de pregunta y las palabras de categoría no cuentan). La regla nunca descarta el fragmento principal. Ante la duda responde RF-05. |
+| RF-13 | Si la pregunta nombra un producto que no existe en la base («crédito hipotecario», «Seguro Exequial Plus», «microseguro de mascotas») o pide un atributo inexistente de un documento («salario del asesor»), responde RF-05 en lugar de contestar con datos de otro producto. Se detecta con el vocabulario indexado: una palabra desconocida justo después de «crédito/seguro/microseguro/póliza/préstamo» (salvo tras «qué/cuál», donde sigue un verbo), o preguntas cuyas únicas palabras conocidas son el nombre de un documento. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -46,6 +48,8 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | Falsos positivos por una sola palabra común ("capital") | Respuesta irrelevante | Mínimo dos términos coincidentes en preguntas de dos o más términos |
 | Documentos mal formateados | Fragmentos pobres | Normalizador tolerante (tablas, etiquetas, listas) y advertencias de ingesta en `/api/salud` |
 | LLM inventa datos | Respuesta no trazable | Prompt restringido a fragmentos, temperatura 0, filtro de salida, fallback extractivo |
+| Coincidencia léxica con otro tema («válido» ≈ «Validación documental») | Dato de otro producto o procedimiento | RF-12: término distintivo obligatorio + prueba con la paráfrasis real |
+| Proveedor externo (Groq) recibe datos | Exposición de información | Se envían fragmentos de documentos públicos (el restringido nunca entra al índice) **y la pregunta del asesor tal cual**: el asesor no debe escribir datos personales del cliente; desactivado por defecto; la clave vive en `.env` (en `.gitignore`). Enmascarar datos personales antes de enviar es una mejora pendiente que requiere decisión humana |
 
 ## Criterios de aceptación (Gherkin)
 
@@ -119,4 +123,28 @@ Característica: Consulta documental con citación de fuentes
     Dado que el proveedor LLM configurado falla
     Cuando envío una pregunta válida
     Entonces el estado es "Exitosa" y el modo es "extractivo"
+
+  Escenario: Proveedor Groq (gratuito, compatible con OpenAI)
+    Dado LLM_PROVIDER=groq y GROQ_API_KEY configurada
+    Cuando el asistente redacta una respuesta
+    Entonces envía a https://api.groq.com/openai/v1/chat/completions el prompt del sistema, los fragmentos recuperados y la pregunta
+    Y usa el modelo LLM_MODEL o "openai/gpt-oss-20b" por defecto, sin incluir el razonamiento del modelo en la respuesta
+    Y si Groq responde vacío, incompleto (finish_reason distinto de "stop") o con error (p. ej. 429 por cuota) se responde en modo extractivo
+    Y las fuentes son solo las secciones que el texto cita
+
+  Escenario: Proveedor Groq sin clave
+    Dado LLM_PROVIDER=groq y GROQ_API_KEY vacía
+    Cuando arranca el backend
+    Entonces falla con un mensaje que pide configurar GROQ_API_KEY
+
+  Escenario: Paráfrasis no responde con datos de otro tema
+    Cuando envío la pregunta "¿Cuánto tiempo es válido para una PQR?"
+    Entonces la respuesta no cita "Portafolio de Microseguros.md"
+    Y el estado es "Exitosa" con fuente "Procedimientos Operativos.md" o es "Sin información suficiente"
+
+  Escenario: Producto inexistente
+    Cuando envío la pregunta "¿Cuál es la tasa del crédito hipotecario?"
+    Entonces el estado es "Sin información suficiente"
+    Y la respuesta es exactamente "No tengo información suficiente para responder."
+    Y no se responde con la tasa de otro crédito
 ```

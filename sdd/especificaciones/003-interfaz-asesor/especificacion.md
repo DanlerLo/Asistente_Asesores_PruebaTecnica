@@ -1,6 +1,6 @@
 # Especificación 003 — Interfaz web para el asesor
 
-Estado: implementada · Constitución: 1.0 · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.2) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
 
 ## Contexto
 El asesor necesita una forma sencilla de hacer preguntas y ver, de un vistazo, la respuesta, su estado y las fuentes que la respaldan, para poder citarlas al cliente. La prueba no evalúa diseño visual, pero sí que la solución se ejecute completamente en local y muestre respuesta, fuentes, errores y estado de procesamiento.
@@ -24,6 +24,9 @@ Una aplicación web ligera (React + TypeScript) que consuma `POST /api/consultar
 | RF-U6 | Los errores HTTP muestran el mensaje `error` del backend; los fallos de red muestran "No se pudo conectar con el servidor…". |
 | RF-U7 | Se muestran las últimas 10 consultas con su estado; al pulsar una se repite. |
 | RF-U8 | La URL del backend es configurable (`VITE_API_URL`); en desarrollo, `/api` se reenvía por proxy de Vite. |
+| RF-U9 | Con estado *Sin información suficiente*, debajo de la frase canónica (que se muestra intacta, como exige el enunciado) aparece una línea breve y directa: «Puedo ayudarte con créditos, microseguros, procedimientos operativos y políticas internas. Prueba con:» seguida de preguntas de ejemplo que, al pulsarlas, quedan en la caja de texto. No aparece en otros estados. |
+| RF-U10 | Selector de modo «Modo conexión (Groq)» / «Modo sin conexión» en la cabecera (especificación 005, RF-L6). |
+| RF-U11 | La interfaz es una conversación tipo chat: las preguntas del asesor aparecen a la derecha y las respuestas del asistente a la izquierda, cada una con su hora; cada respuesta conserva estado, fuentes y metadatos (RF-U4, RF-U5). El estado de procesamiento es una burbuja del asistente «Procesando la consulta…» (RF-U3). La caja de texto queda abajo, con contador, envío con Enter (Shift+Enter = salto de línea) y botón «Consultar». Con la conversación vacía se muestran las especialidades y preguntas de ejemplo (no es un mensaje del asistente). Los errores se muestran en un aviso sobre la caja de texto (RF-U6). |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -77,4 +80,18 @@ Característica: Interfaz web del asesor
     Dado que el historial contiene una consulta bloqueada
     Entonces veo la pregunta con el badge "Bloqueada por seguridad"
     Cuando la pulso, se vuelve a consultar y se muestra la respuesta
+
+  Escenario: Mensaje amigable sin información
+    Cuando la respuesta tiene estado "Sin información suficiente"
+    Entonces veo la frase "No tengo información suficiente para responder." sin cambios
+    Y debajo la línea "Puedo ayudarte con créditos, microseguros, procedimientos operativos y políticas internas"
+    Y preguntas de ejemplo que al pulsarlas quedan en la caja de texto
+    Y ese mensaje no aparece cuando la respuesta es "Exitosa"
+
+  Escenario: Conversación tipo chat
+    Cuando envío "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+    Entonces veo mi pregunta como mensaje del asesor
+    Y mientras se procesa veo la burbuja "Procesando la consulta…"
+    Y después veo la respuesta como mensaje del asistente con su estado y sus fuentes
+    Y la caja de texto queda vacía para la siguiente pregunta
 ```

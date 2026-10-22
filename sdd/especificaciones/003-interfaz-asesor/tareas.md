@@ -18,3 +18,11 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [ ] T-212 Copiar respuesta/cita al portapapeles con un clic.
 - [ ] T-213 Filtro del historial por estado y búsqueda.
 - [ ] T-214 Pruebas end-to-end (Playwright) contra el backend real.
+
+## Fase extra — Orientación y modo del LLM (RF-U9, RF-U10)
+- [x] T-215 Prueba + componente `Especialidades`: mensaje amigable solo con estado *Sin información suficiente*; la frase canónica no cambia.
+- [x] T-216 Selector de modo integrado en `App` (ver especificación 005).
+- [x] T-217 Pruebas de la interfaz tipo chat (RF-U11): mensajes del asesor y del asistente, Enter envía y Shift+Enter no, guía inicial; pruebas existentes adaptadas sin perder aserciones.
+- [x] T-218 Implementar `Conversacion`, `BurbujaAsistente`, `Compositor` y estilos de chat; recorrido real en el navegador (claro y oscuro).
+- [x] T-219 Identidad Banco W: logo en la cabecera (`src/assets/banco-w.png`, placa blanca en modo oscuro), naranja como color principal y turquesa como secundario; contraste WCAG AA verificado en texto, botones y foco; los estados conservan colores semánticos.
+

@@ -36,6 +36,20 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 ## Fase F — LLM opcional (RF-11)
 - [x] T-022 Pruebas con proveedor falso: contexto solo con fragmentos, fallback ante excepción, frase canónica.
 - [x] T-023 Implementar `llm.py` (cliente `httpx`), `construir_proveedor`, `responder_con_llm`.
+- [x] T-029 Prueba `test_prompts.py`: plantillas en `prompts/`, frase canónica, formato de fragmentos, variable faltante.
+- [x] T-030 Mover los prompts a `src/backend/asistente/prompts/*.j2` (Jinja2) con el cargador `plantillas.py` (ADR-6).
+
+## Fase F2 — Groq y precisión (RF-11, RF-12)
+- [x] T-031 Pruebas de `ProveedorGroq` sin red (`httpx.post` simulado): URL, cabecera, cuerpo compatible con OpenAI, `include_reasoning: false`, respuesta vacía, clave obligatoria, modelo por defecto y configuración desde el entorno.
+- [x] T-032 Implementar `ProveedorGroq`, `GROQ_API_KEY`, `LLM_PROVIDER=groq` (`.env.example`, README).
+- [x] T-033 Prueba con la paráfrasis real «¿Cuánto tiempo es válido para una PQR?» (respondía con datos de microseguros).
+- [x] T-034 Implementar RF-12 (término distintivo). La revisión adversarial mostró que la primera versión rompía 17 respuestas correctas; se rediseñó (solo el encabezado del fragmento principal y solo para el respaldo) y se evaluó con 316 preguntas: solo cambian las 2 incorrectas. Pruebas de regresión con 6 de esas preguntas.
+- [x] T-035 Groq: descartar respuestas incompletas (`finish_reason` distinto de `stop`); parámetros de razonamiento solo para `gpt-oss`.
+- [x] T-036 Fuentes del LLM = secciones citadas en el texto («archivo › sección»), no todas las del archivo.
+- [x] T-037 Filtro `dato`: quita caracteres invisibles de formato y neutraliza todo `<` (incluidas variantes Unicode).
+- [ ] T-038 Enmascarar datos personales de la pregunta antes de enviarla a un proveedor externo (decisión humana).
+- [x] T-039 RF-13 (hallazgo de la auditoría contra el PDF): pruebas con productos inexistentes («hipotecario», «Exequial Plus», «mascotas», «vivienda») y atributo inexistente («salario»), más pruebas de no regresión («¿qué crédito financia…?»).
+- [x] T-040 Implementar `IndiceBM25.nombra_algo_inexistente` y ruta `inexistente` en el enrutador; banco de 340 preguntas: solo cambian las 6 incorrectas.
 
 ## Fase G — Datos y documentación
 - [x] T-024 Ampliar `Data/` con registros ficticios adicionales y `Preguntas Frecuentes.md` (sin tocar el archivo restringido).

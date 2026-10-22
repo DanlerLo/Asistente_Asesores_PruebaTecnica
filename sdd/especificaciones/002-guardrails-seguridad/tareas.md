@@ -34,3 +34,8 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [ ] T-119 Clasificador de intención (LLM pequeño) como capa adicional para reformulaciones no cubiertas por reglas.
 - [ ] T-120 Autenticación y autorización por rol; auditoría de accesos.
 - [ ] T-121 Pruebas adversariales automatizadas (banco de ataques de prompt injection) en CI.
+
+## Fase extra — Hallazgo de auditoría (RF-S8)
+- [x] T-122 Prueba: un documento público con un valor de la lista de denegación y un LLM que cita su sección sin repetir el valor; la respuesta salía «Exitosa» con el valor en `fuentes[].extracto`.
+- [x] T-123 El orquestador aplica el filtro de salida al texto y a cada fuente (documento, sección, extracto); si alguna falla, bloquea toda la respuesta.
+
