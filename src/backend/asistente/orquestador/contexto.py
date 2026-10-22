@@ -85,7 +85,7 @@ def es_seguimiento(pregunta: str) -> bool:
         return True
     return any(
         actual in _DEMOSTRATIVOS_CERCANOS and normalizar(siguiente) in _SUSTANTIVOS
-        for actual, siguiente in zip(palabras, palabras[1:])
+        for actual, siguiente in zip(palabras, palabras[1:], strict=False)
     )
 
 

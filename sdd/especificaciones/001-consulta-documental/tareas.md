@@ -49,9 +49,13 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 - [x] T-037 Filtro `dato`: quita caracteres invisibles de formato y neutraliza todo `<` (incluidas variantes Unicode).
 - [ ] T-038 Enmascarar datos personales de la pregunta antes de enviarla a un proveedor externo (decisión humana).
 - [x] T-039 RF-13 (hallazgo de la auditoría contra el PDF): pruebas con productos inexistentes («hipotecario», «Exequial Plus», «mascotas», «vivienda») y atributo inexistente («salario»), más pruebas de no regresión («¿qué crédito financia…?»).
-- [x] T-040 Implementar `IndiceBM25.nombra_algo_inexistente` y ruta `inexistente` en el enrutador; banco de 340 preguntas: solo cambian las 6 incorrectas.
+- [x] T-040 Implementar `IndiceBM25.nombra_algo_inexistente` y ruta `inexistente` en el enrutador; banco de trabajo de 340 preguntas (el versionado tiene 293): solo cambian las 6 incorrectas.
 - [x] T-041 El banco de regresión compara también el texto de la respuesta (antes solo estado y fuentes: 108 de 293 respuestas podían cambiar sin que fallara nada). Hallazgo B3 de la auditoría.
 - [x] T-042 Motor (hallazgos B1, B2, B4–B9, B11 de la auditoría): vocabulario y corrección ortográfica (RF-14), secciones generales y comparaciones (RF-15), sin adivinar producto (RF-16), catálogo por agente (RF-O9). Evaluación 48,5 % → 83,5 %; 87 respuestas del banco revisadas una a una antes de regenerar la foto.
+
+## Fase H — Robustez del servicio (RF-17, RF-18, RF-19; hallazgos C7, D2 y D3 de la auditoría)
+- [x] T-043 Pruebas `test_robustez_api.py`: `x-request-id` validado y presente en logs y en el 500; ids con dígitos no ASCII → 400; `limite` inválido con mensaje propio; configuración fuera de rango rechazada nombrando la variable.
+- [x] T-044 Implementar: `ContextVar` + fábrica de registros en `observabilidad.py`, validación en el middleware y en `GET /api/consultas/{id}`, `Configuracion.__post_init__` y lectura numérica con mensaje.
 
 ## Fase G — Datos y documentación
 - [x] T-024 Ampliar `Data/` con registros ficticios adicionales y `Preguntas Frecuentes.md` (sin tocar el archivo restringido).

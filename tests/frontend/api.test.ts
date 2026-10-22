@@ -31,3 +31,36 @@ describe('api', () => {
     expect(await obtenerHistorial(5)).toEqual([{ id: 1 }]);
   });
 });
+
+describe('api: robustez (RF-U12)', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it('agota el tiempo de espera y devuelve TIEMPO_AGOTADO', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((_url: string, init?: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => reject(new DOMException('abortado', 'AbortError')));
+        }),
+      ),
+    );
+    const promesa = consultar('¿Monto máximo?');
+    const verificacion = expect(promesa).rejects.toMatchObject({ codigo: 'TIEMPO_AGOTADO' });
+    await vi.advanceTimersByTimeAsync(45_001);
+    await verificacion;
+  });
+
+  it('un 200 que no es JSON es RESPUESTA_INVALIDA', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, status: 200, json: async () => { throw new SyntaxError('no JSON'); } })));
+    await expect(consultar('x')).rejects.toMatchObject({ codigo: 'RESPUESTA_INVALIDA' });
+  });
+
+  it('un 200 sin la forma de una respuesta es RESPUESTA_INVALIDA', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ respuesta: 'r', fuentes: null }) })));
+    await expect(consultar('x')).rejects.toMatchObject({ codigo: 'RESPUESTA_INVALIDA' });
+  });
+});

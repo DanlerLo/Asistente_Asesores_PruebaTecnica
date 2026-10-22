@@ -78,9 +78,9 @@ def seleccionar_lineas(
     umbral = 2 if maximo >= 2 else 1
     elegidas = [linea for c, linea in puntuadas if len(c) >= umbral]
     # Cada atributo pedido que quedó sin cubrir aporta sus líneas («qué cubre y cuánto paga al mes»).
-    cubiertos = set().union(*(c for c, linea in puntuadas if linea in elegidas))
+    cubiertos_aqui = set().union(*(c for c, linea in puntuadas if linea in elegidas))
     for c, linea in puntuadas:
-        if linea not in elegidas and c - cubiertos:
+        if linea not in elegidas and c - cubiertos_aqui:
             elegidas.append(linea)
     orden = {linea: i for i, linea in enumerate(fragmento.lineas)}
     return sorted(elegidas, key=orden.__getitem__)[:MAX_LINEAS_POR_FRAGMENTO]

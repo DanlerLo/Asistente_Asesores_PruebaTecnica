@@ -18,6 +18,7 @@ from __future__ import annotations
 import re
 import unicodedata
 from dataclasses import dataclass
+from functools import partial
 
 from ..herramientas.texto import normalizar
 
@@ -88,13 +89,17 @@ _LEET = (str.maketrans("013457", "oieast"), str.maketrans("013457", "oleast"))
 _RE_PALABRA_MIXTA = re.compile(r"\b(?=[a-z0-9]*[a-z])(?=[a-z0-9]*[0-9])[a-z0-9]+\b")
 
 
+def _traducir(coincidencia: re.Match[str], tabla: dict[int, int]) -> str:
+    return coincidencia.group(0).translate(tabla)
+
+
 def textos_para_reglas(pregunta: str) -> list[str]:
     """Variantes normalizadas sobre las que se evalúan las reglas de entrada (RF-S9)."""
     base = unicodedata.normalize("NFKC", _sin_invisibles(pregunta)).lower().translate(_HOMOGLIFOS)
     texto = normalizar(base)
     variantes = [texto]
     for tabla in _LEET:
-        sin_leet = _RE_PALABRA_MIXTA.sub(lambda m: m.group(0).translate(tabla), texto)
+        sin_leet = _RE_PALABRA_MIXTA.sub(partial(_traducir, tabla=tabla), texto)
         if sin_leet not in variantes:
             variantes.append(sin_leet)
     return variantes

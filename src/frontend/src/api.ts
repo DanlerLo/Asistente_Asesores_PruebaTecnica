@@ -42,37 +42,83 @@ export class ErrorApi extends Error {
 }
 
 const BASE = (import.meta.env?.VITE_API_URL as string | undefined) ?? '';
+/** Tiempo máximo de una petición (RF-U12): con LLM una respuesta tarda pocos segundos; 45 s es un fallo. */
+export const TIEMPO_MAXIMO_MS = 45_000;
+const MENSAJE_INVALIDA = 'La respuesta del servidor no es válida. Intenta de nuevo.';
 
-async function solicitar<T>(ruta: string, init?: RequestInit): Promise<T> {
+async function solicitar<T>(ruta: string, init?: RequestInit, esValida?: (datos: unknown) => boolean): Promise<T> {
+  const controlador = new AbortController();
+  const temporizador = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS);
   let respuesta: Response;
   try {
-    respuesta = await fetch(`${BASE}${ruta}`, init);
+    respuesta = await fetch(`${BASE}${ruta}`, { ...init, signal: controlador.signal });
   } catch {
+    if (controlador.signal.aborted) {
+      throw new ErrorApi(
+        'El servidor tardó demasiado en responder. Intenta de nuevo en unos segundos.',
+        'TIEMPO_AGOTADO',
+        0,
+      );
+    }
     throw new ErrorApi(
       'No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.',
       'SIN_CONEXION',
       0,
     );
+  } finally {
+    clearTimeout(temporizador);
   }
-  const datos = await respuesta.json().catch(() => null);
+  let datos: unknown = null;
+  let esJson = true;
+  try {
+    datos = await respuesta.json();
+  } catch {
+    esJson = false;
+  }
   if (!respuesta.ok) {
-    const mensaje = (datos?.error as string | undefined) ?? `El servidor respondió con error ${respuesta.status}.`;
-    throw new ErrorApi(mensaje, (datos?.codigo as string | undefined) ?? 'ERROR', respuesta.status);
+    const cuerpo = datos as { error?: unknown; codigo?: unknown } | null;
+    const mensaje =
+      typeof cuerpo?.error === 'string' ? cuerpo.error : `El servidor respondió con error ${respuesta.status}.`;
+    throw new ErrorApi(mensaje, typeof cuerpo?.codigo === 'string' ? cuerpo.codigo : 'ERROR', respuesta.status);
+  }
+  if (!esJson || (esValida && !esValida(datos))) {
+    throw new ErrorApi(MENSAJE_INVALIDA, 'RESPUESTA_INVALIDA', respuesta.status);
   }
   return datos as T;
 }
 
+const esObjeto = (datos: unknown): datos is Record<string, unknown> => typeof datos === 'object' && datos !== null;
+
+/** Forma mínima que la interfaz necesita para pintar una respuesta sin romperse. */
+export function esRespuestaConsulta(datos: unknown): datos is RespuestaConsulta {
+  return (
+    esObjeto(datos) &&
+    typeof datos.respuesta === 'string' &&
+    typeof datos.estado === 'string' &&
+    Array.isArray(datos.fuentes) &&
+    datos.fuentes.every((f) => esObjeto(f) && typeof f.documento === 'string' && typeof f.seccion === 'string')
+  );
+}
+
 /** `contexto`: preguntas anteriores de la conversación (opcional); sin él se envía solo `{ pregunta }`. */
 export function consultar(pregunta: string, contexto: string[] = []): Promise<RespuestaConsulta> {
-  return solicitar<RespuestaConsulta>('/api/consultar', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(contexto.length ? { pregunta, contexto } : { pregunta }),
-  });
+  return solicitar<RespuestaConsulta>(
+    '/api/consultar',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(contexto.length ? { pregunta, contexto } : { pregunta }),
+    },
+    esRespuestaConsulta,
+  );
 }
 
 export async function obtenerHistorial(limite = 10): Promise<RegistroHistorial[]> {
-  const datos = await solicitar<{ consultas: RegistroHistorial[] }>(`/api/historial?limite=${limite}`);
+  const datos = await solicitar<{ consultas: RegistroHistorial[] }>(
+    `/api/historial?limite=${limite}`,
+    undefined,
+    (d) => esObjeto(d) && Array.isArray(d.consultas),
+  );
   return datos.consultas;
 }
 

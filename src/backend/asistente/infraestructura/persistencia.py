@@ -10,7 +10,7 @@ import json
 import sqlite3
 import threading
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from ..dominio import ESTADOS
@@ -43,7 +43,7 @@ class RegistroConsulta:
 
 
 def ahora_iso() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
+    return datetime.now(UTC).isoformat(timespec="milliseconds")
 
 
 class RepositorioConsultas:

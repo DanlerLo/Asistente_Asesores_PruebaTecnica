@@ -198,7 +198,7 @@ def fragmentar(texto: str, archivo: str) -> tuple[list[Fragmento], list[str]]:
     """
     documento = Path(archivo).stem
     lineas = texto.splitlines()
-    tipos = [_clasificar(l) for l in lineas]
+    tipos = [_clasificar(linea) for linea in lineas]
     advertencias: list[str] = []
     fragmentos: list[Fragmento] = []
     pila: list[tuple[int, str]] = []  # (nivel, título)

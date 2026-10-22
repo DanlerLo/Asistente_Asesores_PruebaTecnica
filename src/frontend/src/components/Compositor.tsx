@@ -1,4 +1,4 @@
-import type { FormEvent, KeyboardEvent } from 'react';
+import { useEffect, useRef, type FormEvent, type KeyboardEvent } from 'react';
 
 interface Props {
   texto: string;
@@ -10,6 +10,15 @@ interface Props {
 
 /** Caja de texto del chat: Enter envía, Shift+Enter agrega un salto de línea (RF-U1, RF-U11). */
 export function Compositor({ texto, procesando, maximo, onCambiar, onEnviar }: Props) {
+  const caja = useRef<HTMLTextAreaElement>(null);
+  const estabaProcesando = useRef(procesando);
+
+  // Al terminar una consulta el foco vuelve a la caja de texto (RF-U12): la caja estuvo deshabilitada.
+  useEffect(() => {
+    if (estabaProcesando.current && !procesando) caja.current?.focus();
+    estabaProcesando.current = procesando;
+  }, [procesando]);
+
   function enviar(evento: FormEvent) {
     evento.preventDefault();
     onEnviar();
@@ -29,6 +38,7 @@ export function Compositor({ texto, procesando, maximo, onCambiar, onEnviar }: P
       </label>
       <textarea
         id="pregunta"
+        ref={caja}
         value={texto}
         onChange={(e) => onCambiar(e.target.value)}
         onKeyDown={teclas}

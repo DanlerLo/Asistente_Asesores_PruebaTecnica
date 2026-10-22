@@ -26,3 +26,7 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [x] T-218 Implementar `Conversacion`, `BurbujaAsistente`, `Compositor` y estilos de chat; recorrido real en el navegador (claro y oscuro).
 - [x] T-219 Identidad Banco W: logo en la cabecera (`src/assets/banco-w.png`, placa blanca en modo oscuro), naranja como color principal y turquesa como secundario; contraste WCAG AA verificado en texto, botones y foco; los estados conservan colores semánticos.
 
+
+## Fase extra — Robustez (RF-U12, hallazgos E1–E4 y E6 de la auditoría)
+- [x] T-220 Pruebas (`api.test.ts`, `Robustez.test.tsx`): tiempo agotado → `TIEMPO_AGOTADO`; 200 sin JSON o sin forma válida → `RESPUESTA_INVALIDA`; error de pintado con aviso; historial deshabilitado mientras se procesa sin pisar el borrador; foco de vuelta a la caja de texto.
+- [x] T-221 Implementar: `AbortController` de 45 s y validación de forma en `api.ts`, componente `LimiteErrores` (en `main.tsx` y alrededor de la conversación), `Historial` con `deshabilitado` y foco en `Compositor`.

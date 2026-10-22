@@ -40,7 +40,7 @@
 |-------|---------|-------|
 | Unitarias | `tests/backend/test_contexto.py` | `es_seguimiento`, `entidades_nombradas`, `resolver_pregunta`, comparativos |
 | Orquestador y API | `tests/backend/test_contexto.py` | escenarios Gherkin, contexto inválido/malicioso, persistencia de la pregunta original, LLM recibe la pregunta efectiva, `GET /api/consultas/{id}` |
-| Regresión | banco de 316 preguntas | sin contexto, solo cambian preguntas de seguimiento (RF-C5) |
+| Regresión | banco de trabajo de 316 preguntas (hoy versionado con 293, ver nota) | sin contexto, solo cambian preguntas de seguimiento (RF-C5) |
 | Frontend | `tests/frontend/Conversacion.test.tsx` | envío del contexto, «Nueva conversación» |
 
 ## Trazabilidad
@@ -49,8 +49,10 @@
 | RF-C1, RF-C3, RF-C4 | `test_contexto.py::test_seguimiento_*`, `test_pregunta_completa_ignora_el_contexto` |
 | RF-C2 | `test_contexto.py::test_es_seguimiento` |
 | RF-C5 | `test_contexto.py::test_seguimiento_sin_referente_no_adivina` |
-| RF-C6 | `test_contexto.py::test_contexto_invalido_400`, `test_contexto_malicioso_se_ignora` |
+| RF-C6 | `test_contexto.py::test_contexto_invalido`, `test_api_contexto_invalido_400`, `test_contexto_malicioso_se_ignora` |
 | RF-C7 | `test_contexto.py::test_se_persiste_la_pregunta_original` |
 | RF-C8 | `test_contexto.py::test_comparativos` |
 | RF-C9 | `test_contexto.py::test_get_consulta_por_id*` |
 | RF-C10 | `Conversacion.test.tsx` |
+
+> **Nota sobre el banco.** Las cifras 316 y 340 de estos planes son bancos de trabajo usados durante el desarrollo, con preguntas repetidas y variantes de una misma pregunta. El banco versionado (`tests/backend/banco_preguntas.txt`) quedó en **293** preguntas únicas tras depurarlas; es el que corre `test_banco.py`.

@@ -27,6 +27,7 @@ Una aplicación web ligera (React + TypeScript) que consuma `POST /api/consultar
 | RF-U9 | Con estado *Sin información suficiente*, debajo de la frase canónica (que se muestra intacta, como exige el enunciado) aparece una línea breve y directa: «Puedo ayudarte con créditos, microseguros, procedimientos operativos y políticas internas. Prueba con:» seguida de preguntas de ejemplo que, al pulsarlas, quedan en la caja de texto. No aparece en otros estados. |
 | RF-U10 | Selector de modo «Modo conexión (Groq)» / «Modo sin conexión» en la cabecera (especificación 005, RF-L6). |
 | RF-U11 | La interfaz es una conversación tipo chat: las preguntas del asesor aparecen a la derecha y las respuestas del asistente a la izquierda, cada una con su hora; cada respuesta conserva estado, fuentes y metadatos (RF-U4, RF-U5). El estado de procesamiento es una burbuja del asistente «Procesando la consulta…» (RF-U3). La caja de texto queda abajo, con contador, envío con Enter (Shift+Enter = salto de línea) y botón «Consultar». Con la conversación vacía se muestran las especialidades y preguntas de ejemplo (no es un mensaje del asistente). Los errores se muestran en un aviso sobre la caja de texto (RF-U6). |
+| RF-U12 | Robustez: (a) toda petición tiene un tiempo máximo (45 s); si se agota, se muestra «El servidor tardó demasiado en responder…» y la caja de texto vuelve a estar disponible con la pregunta; (b) una respuesta 200 que no es JSON o no tiene la forma esperada se trata como error («La respuesta del servidor no es válida…»), nunca deja «Procesando…» colgado; (c) un error de pintado no deja la página en blanco: se muestra «Algo salió mal al mostrar la respuesta» y se puede seguir; (d) mientras se procesa una consulta, el historial no lanza otra y no se pisa el borrador de la caja de texto; (e) al terminar una consulta el foco vuelve a la caja de texto. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -94,4 +95,15 @@ Característica: Interfaz web del asesor
     Y mientras se procesa veo la burbuja "Procesando la consulta…"
     Y después veo la respuesta como mensaje del asistente con su estado y sus fuentes
     Y la caja de texto queda vacía para la siguiente pregunta
+
+  Escenario: El servidor no responde
+    Dado que el backend no responde en 45 segundos
+    Cuando envío una pregunta
+    Entonces veo el error «El servidor tardó demasiado en responder»
+    Y la pregunta vuelve a la caja de texto
+
+  Escenario: Respuesta inválida del servidor
+    Dado que el servidor responde 200 con un cuerpo que no es una respuesta válida
+    Cuando envío una pregunta
+    Entonces veo un error y no queda «Procesando la consulta…»
 ```

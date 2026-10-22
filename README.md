@@ -166,7 +166,24 @@ Otros endpoints: `GET /api/consultas/{id}` (una consulta guardada; 404 `CONSULTA
 
 La interfaz es un **chat**: tus preguntas a la derecha y las respuestas del asistente a la izquierda, cada una con estado, fuentes y hora; mientras se procesa aparece «Procesando la consulta…». Enter envía y Shift+Enter agrega una línea. En la cabecera, el selector **«Modo conexión (Groq)» / «Modo sin conexión»** cambia el modo sin reiniciar (al pasar a sin conexión un pop-up explica qué implica) y muestra en pequeño **«Quedan X de Y llamadas hoy»** (Groq informa la cuota en cada respuesta, así que se conoce después de la primera consulta). El modo elegido vive en memoria: al reiniciar manda `LLM_PROVIDER` de `.env`. **«Nueva conversación»** borra el chat y su contexto. Cuando no hay información suficiente, debajo de la frase canónica se muestran las especialidades del asistente.
 
-Errores de entrada (HTTP 400): `{"error": "La pregunta no puede estar vacía.", "codigo": "PREGUNTA_VACIA"}`. Códigos: `PREGUNTA_VACIA`, `TIPO_INVALIDO`, `PREGUNTA_DEMASIADO_LARGA`, `CARACTERES_NO_PERMITIDOS`, `SOLICITUD_INVALIDA`.
+**Sobre el contrato.** El enunciado pide `{"pregunta"}` → `{"respuesta", "fuentes", "estado"}`; eso se cumple tal cual: `contexto` es opcional (sin él la petición es la del enunciado) y los campos extra de la respuesta (`id`, `fecha_hora`, `latencia_ms`, `modo`) solo agregan información, no cambian ni quitan ninguno de los pedidos.
+
+Todos los errores tienen la forma `{"error": "<mensaje legible>", "codigo": "<CÓDIGO>"}` y cada respuesta lleva la cabecera `x-request-id` (también aparece en los logs de esa solicitud):
+
+| HTTP | Código | Cuándo |
+|------|--------|--------|
+| 400 | `PREGUNTA_VACIA` | La pregunta está vacía o solo tiene espacios |
+| 400 | `TIPO_INVALIDO` | `pregunta` no es un texto (número, lista, `null`…) |
+| 400 | `PREGUNTA_DEMASIADO_LARGA` | Supera `MAX_LONGITUD_PREGUNTA` (1000 por defecto) |
+| 400 | `CARACTERES_NO_PERMITIDOS` | Caracteres de control en la pregunta |
+| 400 | `CONTEXTO_INVALIDO` | `contexto` no es una lista de textos válidos |
+| 400 | `SOLICITUD_INVALIDA` | Cuerpo que no es JSON; `activo` no booleano en `PUT /api/llm`; `limite` fuera de 1..200 |
+| 400 | `ID_INVALIDO` | `GET /api/consultas/{id}` con un id que no es un entero positivo |
+| 400 | `LLM_NO_CONFIGURADO` | `PUT /api/llm` con `{"activo": true}` sin proveedor en `.env` |
+| 404 | `CONSULTA_NO_ENCONTRADA` | No existe una consulta con ese id |
+| 500 | `ERROR_INTERNO` | Error inesperado; mensaje genérico, sin detalles internos |
+
+Una pregunta bloqueada por seguridad **no** es un error: responde 200 con estado `Bloqueada por seguridad`.
 
 
 ### Activar un LLM (opcional)
@@ -198,6 +215,8 @@ Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo in
 - **Idioma:** español únicamente.
 - **Carga en el arranque:** cambios en `Data/` requieren reiniciar el backend.
 - **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol.
+- **Un solo proceso:** el modo LLM elegido, el contador de llamadas y la cuota viven en memoria del proceso; con varios workers de uvicorn cada uno tendría los suyos. Se ejecuta con un worker (suficiente para uso interno); para escalar habría que llevar ese estado a un almacén compartido.
+- **SQLite con una conexión y un candado:** las escrituras se serializan. `POST /api/consultar` corre en un hilo aparte, pero `GET /api/historial` y `/api/estadisticas` son `async` y leen en el bucle de eventos: si una escritura tiene el candado esperan unos milisegundos. Con este volumen no se nota; en producción, PostgreSQL con un pool.
 
 ## Mejoras futuras
 

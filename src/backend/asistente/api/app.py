@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import uuid
 from contextlib import asynccontextmanager
 from typing import Any
@@ -30,7 +31,7 @@ from pydantic import BaseModel, Field
 from ..config import Configuracion
 from ..generacion.llm import construir_proveedor
 from ..herramientas.corpus import Corpus, cargar_corpus
-from ..infraestructura.observabilidad import configurar_logging
+from ..infraestructura.observabilidad import configurar_logging, id_solicitud
 from ..infraestructura.persistencia import RepositorioConsultas
 from ..orquestador import Orquestador
 from ..seguridad.guardrails import ErrorValidacion
@@ -66,6 +67,11 @@ class ConsultaResponse(BaseModel):
 
 
 MENSAJE_MODO_INVALIDO = "El cuerpo debe ser JSON con el campo booleano 'activo'."
+MENSAJE_LIMITE_INVALIDO = "El parámetro 'limite' debe ser un entero entre 1 y 200."
+# RF-17: un x-request-id ajeno solo se respeta si es corto y sin caracteres raros (no ensucia ni falsea logs).
+_RE_ID_SOLICITUD = re.compile(r"[A-Za-z0-9._-]{1,64}")
+# RF-18: solo dígitos ASCII; «²» o «٣» pasan ``str.isdigit`` y rompían ``int``.
+_RE_ID_CONSULTA = re.compile(r"[1-9][0-9]{0,17}")
 
 
 def _error(status: int, codigo: str, mensaje: str) -> JSONResponse:
@@ -104,8 +110,13 @@ def crear_app(
 
     @app.middleware("http")
     async def id_de_solicitud(request: Request, call_next):
-        request.state.id = request.headers.get("x-request-id") or uuid.uuid4().hex[:12]
-        respuesta = await call_next(request)
+        recibido = request.headers.get("x-request-id", "")
+        request.state.id = recibido if _RE_ID_SOLICITUD.fullmatch(recibido) else uuid.uuid4().hex[:12]
+        marca = id_solicitud.set(request.state.id)
+        try:
+            respuesta = await call_next(request)
+        finally:
+            id_solicitud.reset(marca)
         respuesta.headers["x-request-id"] = request.state.id
         return respuesta
 
@@ -117,12 +128,18 @@ def crear_app(
     async def manejar_solicitud_invalida(request: Request, exc: RequestValidationError):
         if request.url.path == "/api/llm":
             return _error(400, "SOLICITUD_INVALIDA", MENSAJE_MODO_INVALIDO)
+        if request.url.path == "/api/historial":
+            return _error(400, "SOLICITUD_INVALIDA", MENSAJE_LIMITE_INVALIDO)
         return _error(400, "SOLICITUD_INVALIDA", "El cuerpo de la solicitud debe ser JSON con el campo 'pregunta'.")
 
     @app.exception_handler(Exception)
     async def manejar_error_interno(request: Request, exc: Exception):
-        log.exception("error interno", extra={"request_id": getattr(request.state, "id", "")})
-        return _error(500, "ERROR_INTERNO", "Ocurrió un error interno. Intenta de nuevo o escala el caso.")
+        ident = getattr(request.state, "id", "")
+        log.exception("error interno", extra={"request_id": ident})
+        respuesta = _error(500, "ERROR_INTERNO", "Ocurrió un error interno. Intenta de nuevo o escala el caso.")
+        if ident:  # el 500 no pasa por el middleware: se agrega aquí para poder rastrearlo
+            respuesta.headers["x-request-id"] = ident
+        return respuesta
 
     @app.post("/api/consultar", response_model=ConsultaResponse, responses={400: {"description": "Entrada inválida"}})
     def consultar(solicitud: ConsultaRequest, request: Request):
@@ -140,7 +157,7 @@ def crear_app(
         responses={400: {"description": "Id inválido"}, 404: {"description": "No existe"}},
     )
     def obtener_consulta(id_consulta: str, request: Request):
-        if not (id_consulta.isdigit() and len(id_consulta) <= 18 and int(id_consulta) > 0):
+        if not _RE_ID_CONSULTA.fullmatch(id_consulta):
             return _error(400, "ID_INVALIDO", "El id de la consulta debe ser un entero positivo.")
         registro = request.app.state.orquestador.repositorio.obtener(int(id_consulta))
         if registro is None:

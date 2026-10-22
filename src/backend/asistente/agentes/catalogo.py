@@ -71,14 +71,14 @@ def listar_por_producto(
 
     elegidas: list[tuple[Fragmento, str]] = []
     for lineas in candidatas.values():
-        con_calificador = [(f, l) for f, l in lineas if calificadores & raices_unicas(l)]
+        con_calificador = [(f, linea) for f, linea in lineas if calificadores & raices_unicas(linea)]
         elegidas.extend((con_calificador or lineas)[:_MAX_LINEAS_POR_PRODUCTO])
 
     documento = elegidas[0][0].documento
     partes = [f"Según «{documento}», por producto:"]
     partes += [f"- {fragmento.entidad}: {linea.lstrip('- ')}" for fragmento, linea in elegidas]
-    secciones = list(dict.fromkeys((f.archivo, f.ruta_seccion) for f, _ in elegidas))
-    citas = "; ".join(f"{archivo} › {seccion}" for archivo, seccion in secciones)
+    citadas = list(dict.fromkeys((f.archivo, f.ruta_seccion) for f, _ in elegidas))
+    citas = "; ".join(f"{archivo} › {seccion}" for archivo, seccion in citadas)
     partes += ["", f"Fuentes: {citas}"]
     fuentes = [
         Fuente(
@@ -86,8 +86,10 @@ def listar_por_producto(
             archivo=archivo,
             seccion=seccion,
             puntaje=1.0,
-            extracto=" ".join(l for f, l in elegidas if (f.archivo, f.ruta_seccion) == (archivo, seccion))[:500],
+            extracto=" ".join(
+                linea for f, linea in elegidas if (f.archivo, f.ruta_seccion) == (archivo, seccion)
+            )[:500],
         )
-        for archivo, seccion in secciones
+        for archivo, seccion in citadas
     ]
     return RespuestaGenerada(texto="\n".join(partes), estado=ESTADO_EXITOSA, fuentes=fuentes)

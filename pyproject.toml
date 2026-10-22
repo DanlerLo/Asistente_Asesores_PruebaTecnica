@@ -1,3 +1,9 @@
+[project]
+name = "asistente-asesores"
+version = "1.0.0"
+description = "Asistente interno para asesores comerciales (prueba técnica)"
+requires-python = ">=3.12"
+
 [tool.pytest.ini_options]
 testpaths = ["tests/backend"]
 pythonpath = ["src/backend"]
@@ -5,3 +11,26 @@ addopts = "-q"
 
 [tool.coverage.run]
 source = ["src/backend/asistente"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src/backend", "tests/backend"]
+
+[tool.ruff.lint]
+# Errores, imports, bugs probables (flake8-bugbear) y sintaxis moderna.
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["asistente"]
+known-local-folder = ["conftest"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src/backend/asistente"]
+ignore_missing_imports = true
+warn_unused_ignores = true

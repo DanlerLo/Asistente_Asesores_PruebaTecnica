@@ -56,3 +56,7 @@ Ejecución: `npm test` en la raíz (Vitest + jsdom, sin backend). Verificación 
 | RF-U6 | `muestra el error devuelto por el backend`, `muestra un error de conexión…`, `api.test.ts` |
 | RF-U7 | `muestra el historial y permite repetir una consulta` |
 | RF-U8 | `vite.config.ts` (proxy) y `api.ts` (`VITE_API_URL`) |
+| RF-U9 | `App.test.tsx`: `muestra el estado "Sin información suficiente"…` (frase canónica intacta + especialidades), `no muestra las especialidades cuando la respuesta es exitosa` |
+| RF-U10 | `SelectorModo.test.tsx` (9 pruebas: modo activo y cuota, aviso < 10 %, pop-up sin conexión, sin proveedor, fallo de `/api/llm`, respuestas viejas) |
+| RF-U11 | `App.test.tsx`: `muestra el intercambio como chat…`, `Shift+Enter agrega un salto de línea sin enviar`; `Conversacion.test.tsx` (memoria de conversación, especificación 006) |
+| RF-U12 | `api.test.ts` (`api: robustez`), `Robustez.test.tsx` (respuesta inválida, límite de errores, historial deshabilitado, foco) |

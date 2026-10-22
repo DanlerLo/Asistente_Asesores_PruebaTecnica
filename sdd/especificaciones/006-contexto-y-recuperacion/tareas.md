@@ -8,7 +8,7 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [x] T-403 Ejecutar y confirmar el fallo.
 - [x] T-404 Implementar `orquestador/contexto.py`, comparativos en `texto.py`, `validar_contexto`.
 - [x] T-405 Integrar en el orquestador y la API; endpoint por ID.
-- [x] T-406 Banco de 316 preguntas sin contexto: solo cambian las de seguimiento.
+- [x] T-406 Banco de trabajo de 316 preguntas (el versionado tiene 293) sin contexto: solo cambian las de seguimiento.
 
 ## Fase B — Frontend
 - [x] T-407 Pruebas (Vitest): el contexto se envía con las preguntas anteriores; «Nueva conversación» lo borra; la primera consulta envía solo `{"pregunta"}`.

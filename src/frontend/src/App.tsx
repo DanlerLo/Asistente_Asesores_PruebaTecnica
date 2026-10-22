@@ -13,6 +13,7 @@ import logoBancoW from './assets/banco-w.png';
 import { Compositor } from './components/Compositor';
 import { Conversacion, type Turno } from './components/Conversacion';
 import { Historial } from './components/Historial';
+import { LimiteErrores } from './components/LimiteErrores';
 import { SelectorModo } from './components/SelectorModo';
 
 export const MAX_LONGITUD_PREGUNTA = 1000;
@@ -73,7 +74,9 @@ export default function App() {
     }
   }
 
-  async function enviar(pregunta: string = texto) {
+  /** `desdeHistorial`: la pregunta viene del historial; el borrador de la caja de texto no se toca. */
+  async function enviar(pregunta: string = texto, desdeHistorial = false) {
+    if (procesando) return;
     const limpia = pregunta.trim();
     if (!limpia) {
       setError('Escribe una pregunta antes de consultar.');
@@ -87,7 +90,7 @@ export default function App() {
     const contexto = turnos.filter((t) => t.resultado).map((t) => t.pregunta).slice(-MAX_CONTEXTO);
     const id = siguienteId.current++;
     setTurnos((previos) => [...previos, { id, pregunta: limpia, enviada: new Date() }]);
-    setTexto('');
+    if (!desdeHistorial) setTexto('');
     setError(null);
     try {
       const resultado = await consultar(limpia, contexto);
@@ -96,7 +99,7 @@ export default function App() {
     } catch (e) {
       // La pregunta fallida sale de la conversación y vuelve a la caja de texto para corregirla.
       setTurnos((previos) => previos.filter((t) => t.id !== id));
-      setTexto(pregunta);
+      if (!desdeHistorial) setTexto(pregunta);
       setError(e instanceof ErrorApi ? e.message : 'Ocurrió un error inesperado. Intenta de nuevo.');
     } finally {
       void cargarEstadoLlm(); // la cuota cambia con cada llamada al LLM
@@ -143,7 +146,9 @@ export default function App() {
           </div>
         </header>
 
-        <Conversacion turnos={turnos} onEjemplo={setTexto} />
+        <LimiteErrores reiniciar={turnos.length}>
+          <Conversacion turnos={turnos} onEjemplo={setTexto} />
+        </LimiteErrores>
 
         {error && (
           <div className="error" role="alert">
@@ -160,7 +165,11 @@ export default function App() {
         />
       </section>
 
-      <Historial registros={historial} onSeleccionar={(pregunta) => void enviar(pregunta)} />
+      <Historial
+        registros={historial}
+        deshabilitado={procesando}
+        onSeleccionar={(pregunta) => void enviar(pregunta, true)}
+      />
     </main>
   );
 }

@@ -18,7 +18,7 @@ import re
 import threading
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Protocol
 
 import httpx
@@ -142,7 +142,7 @@ class ProveedorGroq:
             timeout=self.timeout,
         )
         # Antes de raise_for_status: un 429 también informa la cuota (restantes = 0).
-        ahora = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
+        ahora = datetime.now(UTC).isoformat(timespec="milliseconds")
         self._registrar_cuota(leer_cuota(respuesta.headers, actualizado=ahora))
         respuesta.raise_for_status()
         opcion = (respuesta.json().get("choices") or [{}])[0]
