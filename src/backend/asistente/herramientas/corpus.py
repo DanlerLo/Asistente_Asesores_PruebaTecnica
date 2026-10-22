@@ -19,7 +19,7 @@ import hashlib
 import logging
 import re
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from .texto import normalizar, raices_unicas
@@ -64,6 +64,7 @@ class Fragmento:
     entidad: str  # encabezado de nivel 2 bajo el que vive (p. ej. nombre del producto)
     lineas: tuple[str, ...]
     entidad_raices: frozenset[str] = frozenset()
+    producto: bool = False  # su entidad es un producto con ficha (ver ``_marcar_productos``)
 
     @property
     def contenido(self) -> str:
@@ -160,6 +161,30 @@ def _formatear_lista(linea: str) -> str:
 
 def _celdas(linea: str) -> list[str]:
     return [_limpiar(c) for c in linea.strip().strip("|").split("|")]
+
+
+_MINIMO_ETIQUETAS_COMUNES = 2
+
+
+def _etiquetas(fragmentos: list[Fragmento]) -> set[str]:
+    """Etiquetas de atributo de una entidad («Monto máximo», «Prima mensual»): el texto antes de «:»."""
+    return {linea.split(":", 1)[0].strip().lower() for f in fragmentos for linea in f.lineas if ":" in linea}
+
+
+def _marcar_productos(fragmentos: list[Fragmento]) -> list[Fragmento]:
+    """Una entidad es un producto si su ficha comparte 2+ etiquetas de atributo con otra entidad del mismo
+    documento (los créditos comparten «Monto máximo»/«Plazo máximo»; los microseguros «Cobertura máxima»/
+    «Prima mensual»). Las secciones del Manual, las políticas o los procedimientos no forman fichas."""
+    por_entidad: dict[str, list[Fragmento]] = {}
+    for f in fragmentos:
+        if f.entidad and not f.entidad.strip().endswith("?"):
+            por_entidad.setdefault(f.entidad, []).append(f)
+    etiquetas = {e: _etiquetas(fs) for e, fs in por_entidad.items()}
+    productos = {
+        e for e in etiquetas
+        if any(len(etiquetas[e] & etiquetas[o]) >= _MINIMO_ETIQUETAS_COMUNES for o in etiquetas if o != e)
+    }
+    return [replace(f, producto=f.entidad in productos) for f in fragmentos]
 
 
 def fragmentar(texto: str, archivo: str) -> tuple[list[Fragmento], list[str]]:
@@ -288,7 +313,7 @@ def fragmentar(texto: str, archivo: str) -> tuple[list[Fragmento], list[str]]:
                 entidad_raices=frozenset(),
             )
         )
-    return fragmentos, advertencias
+    return _marcar_productos(fragmentos), advertencias
 
 
 # ----------------------------------------------------------------------------

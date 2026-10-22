@@ -23,6 +23,7 @@ STOPWORDS: frozenset[str] = frozenset(
     necesito saber sabes favor hola gracias respecto acerca detalle detalles podria
     podrias puedes seria existe existen cuales dan da dar tarda tardan demora demoran
     dice dicen habla hablan contiene contienen trata tratan ofrece ofrecen debe deben debo deberia
+    valor tipo tipos clase clases algun buen buena buenas buenos tardes dias noches saludo saludos cordial
     """.split()
 )
 
@@ -30,10 +31,10 @@ STOPWORDS: frozenset[str] = frozenset(
 SINONIMOS: dict[str, str] = {
     "cubr": "cobertur",
     "cubren": "cobertur",
-    "cuest": "cost",
-    "preci": "cost",
-    "vale": "cost",
-    "valen": "cost",
+    "cuest": "prim",
+    "preci": "prim",
+    "vale": "prim",
+    "valen": "prim",
     "requier": "requisit",
     "necesit": "requisit",
     "pid": "requisit",
@@ -42,7 +43,42 @@ SINONIMOS: dict[str, str] = {
     "exig": "requisit",
     "exigen": "requisit",
     "tiemp": "tiemp",
+    # Vocabulario del asesor -> término de los documentos (hallazgo B6 de la auditoría).
+    "incluy": "cobertur",  # los microseguros listan sus coberturas como «Incluye:»
+    "ampar": "cobertur",
+    "carenci": "graci",
+    "respald": "garanti",
+    "limit": "maxim",
+    "tope": "maxim",
+    "cost": "prim",  # en microseguros el precio es la «Prima mensual»
+    "quej": "pqr",
+    "peti": "pqr",
+    "hora": "horari",
+    "atiend": "aten",
+    "pagan": "pago",
+    "pagar": "pago",
+    "paga": "pago",
+    "pagu": "pago",
+    "difer": "plaz",
+    "entreg": "desembols",
+    "tramit": "radic",
+    "segur": "microsegur",
+    "asegurad": "cobertur",  # «valor asegurado» = cobertura máxima
+    "mes": "mensual",  # «cuánto cuesta al mes» ≈ «Prima mensual»; «60 meses» queda como plazo mensual
+    "mensualidad": "prim",
+    "millon": "mont",  # «¿puedo pedir 100 millones?» pregunta por el monto
+    "papel": "requisit",  # «¿qué papeles necesito?»
 }
+
+# Palabras de categoría que no distinguen un atributo («¿qué cubre el seguro X?»): no cuentan como atributo
+# pedido ni como palabra desconocida, y no se corrigen ortográficamente («compara» no es «compra»).
+RAICES_GENERICAS = frozenset(
+    {
+        "segur", "microsegur", "credit", "product", "servici", "poliz",  # categorías
+        "paso", "proces", "procedimient", "etap", "fase",  # meta-palabras de procedimientos
+        "diferenci", "compar", "versus", "vs", "diferent",  # meta-palabras de comparación
+    }
+)
 
 _RE_TOKEN = re.compile(r"[a-z0-9]+")
 # Comparativos de las preguntas («¿y el más bajo?») -> el atributo que usan los documentos («mínimo»).
@@ -50,6 +86,10 @@ _RE_TOKEN = re.compile(r"[a-z0-9]+")
 _COMPARATIVOS: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"\bmas\s+(bajo|baja|bajos|bajas|pequeno|pequena)\b|\bmenor(es)?\b"), "minimo"),
     (re.compile(r"\bmas\s+(alto|alta|altos|altas|grande|grandes)\b|\bmayor(es)?\b"), "maximo"),
+    (re.compile(r"\bmas\s+(largo|larga|largos|largas|extenso|extensa)\b"), "maximo"),
+    (re.compile(r"\bmas\s+(corto|corta|cortos|cortas)\b"), "minimo"),
+    (re.compile(r"\bmas\s+barat[oa]s?\b"), "prima minima"),
+    (re.compile(r"\bmas\s+car[oa]s?\b"), "prima maxima"),
 )
 _VOCALES = "aeiou"
 

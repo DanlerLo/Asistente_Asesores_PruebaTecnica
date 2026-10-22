@@ -10,9 +10,10 @@
  "Compara la prima de Vida Protegida y Salud Básica Familiar": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Salud Básica Familiar"
+   "Portafolio de Microseguros.md › Salud Básica Familiar",
+   "Portafolio de Microseguros.md › Vida Protegida"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Prima mensual: $15.000\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Prima mensual: $15.000\n\nSegún «Portafolio de Microseguros» (sección: Vida Protegida):\n- Prima mensual: $9.900\n\nFuentes: Portafolio de Microseguros.md › Salud Básica Familiar; Portafolio de Microseguros.md › Vida Protegida"
  },
  "Compara la tasa del Crédito Mujer Emprende con la del Educativo Avanza": {
   "estado": "Exitosa",
@@ -52,18 +53,16 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "Un cliente quiere saber cuándo le desembolsan el crédito que le aprobaron ayer": {
-  "estado": "Exitosa",
-  "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
-  ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "Un cliente radicó una PQR hace 3 días, ¿cuánto tiempo más debe esperar?": {
   "estado": "Exitosa",
   "fuentes": [
    "Procedimientos Operativos.md › Gestión de PQR"
   ],
-  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Tiempo objetivo: 5 días hábiles.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Tiempo objetivo: 5 días hábiles.\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
  },
  "¿A quién va dirigido el Crédito Mujer Emprende?": {
   "estado": "Exitosa",
@@ -75,9 +74,9 @@
  "¿A qué hora abre la línea telefónica?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Procedimientos Operativos.md › Gestión de PQR"
+   "Procedimientos Operativos.md › Horarios de atención"
   ],
-  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Horarios de atención):\n- Línea telefónica: Lunes a sábado de 7:00 a.m. a 7:00 p.m.\n\nFuente: Procedimientos Operativos.md › Horarios de atención"
  },
  "¿Accidente Personal Esencial cubre incapacidad permanente?": {
   "estado": "Exitosa",
@@ -110,14 +109,17 @@
  "¿Cada cuánto se deben actualizar los datos del cliente?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?",
+   "Procedimientos Operativos.md › Actualización de Datos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nSegún «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n- Documentos válidos: Documento de identidad; Certificado laboral; Declaración de renta.\n\nFuentes: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?; Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Cada cuánto se paga la prima?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nFuente: Portafolio de Microseguros.md › Pago de primas"
  },
  "¿Con qué periodicidad se pagan las primas de los microseguros?": {
   "estado": "Exitosa",
@@ -129,9 +131,12 @@
  "¿Cuál crédito tiene la tasa más baja?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones",
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones",
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso > Condiciones):\n- Monto mínimo: $2.000.000\n- Plazo mínimo: 6 meses\n- Tasa de interés: 24,5 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuente: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  "respuesta": "Según «Productos de Crédito», por producto:\n- Crédito Productivo Impulso: Tasa de interés: 24,5 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Agro Crece: Tasa de interés: 18,9 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Mujer Emprende: Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Educativo Avanza: Tasa de interés: 15,6 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones; Productos de Crédito.md › Crédito Agro Crece > Condiciones; Productos de Crédito.md › Crédito Mujer Emprende > Condiciones; Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
  },
  "¿Cuál es el horario de atención de la línea telefónica los sábados?": {
   "estado": "Exitosa",
@@ -148,9 +153,12 @@
   "respuesta": "Según «Procedimientos Operativos» (sección: Horarios de atención):\n- Oficinas: Lunes a viernes de 8:00 a.m. a 5:00 p.m. y sábados de 8:00 a.m. a 12:00 m.\n\nFuente: Procedimientos Operativos.md › Horarios de atención"
  },
  "¿Cuál es el horario de atención para desembolsos en oficina?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención",
+   "Procedimientos Operativos.md › Desembolso"
+  ],
+  "respuesta": "Según «Procedimientos Operativos» (sección: Horarios de atención):\n- Oficinas: Lunes a viernes de 8:00 a.m. a 5:00 p.m. y sábados de 8:00 a.m. a 12:00 m.\n\nSegún «Procedimientos Operativos» (sección: Desembolso):\n- Canales: Abono a cuenta bancaria; Giro en oficina.\n\nFuentes: Procedimientos Operativos.md › Horarios de atención; Procedimientos Operativos.md › Desembolso"
  },
  "¿Cuál es el horario de atención telefónica y presencial?": {
   "estado": "Exitosa",
@@ -174,9 +182,12 @@
  "¿Cuál es el monto máximo de los créditos?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones",
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones",
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Mujer Emprende > Condiciones):\n- Monto máximo: $30.000.000\n\nFuente: Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  "respuesta": "Según «Productos de Crédito», por producto:\n- Crédito Productivo Impulso: Monto máximo: $50.000.000\n- Crédito Agro Crece: Monto máximo: $80.000.000\n- Crédito Mujer Emprende: Monto máximo: $30.000.000\n- Crédito Educativo Avanza: Monto máximo: $25.000.000\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones; Productos de Crédito.md › Crédito Agro Crece > Condiciones; Productos de Crédito.md › Crédito Mujer Emprende > Condiciones; Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
  },
  "¿Cuál es el monto máximo del Crédito Productivo Impulso?": {
   "estado": "Exitosa",
@@ -247,9 +258,10 @@
  "¿Cuál es el procedimiento de reclamación de un microseguro?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
+   "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nFuente: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuál es el salario de un asesor comercial?": {
   "estado": "Sin información suficiente",
@@ -264,9 +276,11 @@
   "respuesta": "Según «Procedimientos Operativos» (sección: Solicitud de Crédito):\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuente: Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿Cuál es el tiempo estimado de una reclamación de microseguro?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Reclamaciones"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuál es el tiempo objetivo de respuesta de una PQR?": {
   "estado": "Exitosa",
@@ -280,14 +294,14 @@
   "fuentes": [
    "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Cuál es la cobertura máxima de Negocio Seguro y su prima?": {
   "estado": "Exitosa",
   "fuentes": [
    "Portafolio de Microseguros.md › Negocio Seguro"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Cobertura máxima: $15.000.000\n\nFuente: Portafolio de Microseguros.md › Negocio Seguro"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Cobertura máxima: $15.000.000\n- Prima mensual: $12.000\n\nFuente: Portafolio de Microseguros.md › Negocio Seguro"
  },
  "¿Cuál es la cobertura máxima de Vida Protegida?": {
   "estado": "Exitosa",
@@ -299,16 +313,18 @@
  "¿Cuál es la diferencia entre Negocio Seguro y Salud Básica Familiar?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Salud Básica Familiar"
+   "Portafolio de Microseguros.md › Salud Básica Familiar",
+   "Portafolio de Microseguros.md › Negocio Seguro"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Edad mínima: 0 años.\n- Edad máxima: 65 años.\n- Prima mensual: $15.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Edad mínima: 0 años.\n- Edad máxima: 65 años.\n- Prima mensual: $15.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nSegún «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Cobertura máxima: $15.000.000\n- Prima mensual: $12.000\n- Coberturas: Incendio; Inundación; Daños accidentales.\n\nFuentes: Portafolio de Microseguros.md › Salud Básica Familiar; Portafolio de Microseguros.md › Negocio Seguro"
  },
  "¿Cuál es la diferencia entre Vida Protegida y Accidente Personal Esencial?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+   "Portafolio de Microseguros.md › Accidente Personal Esencial",
+   "Portafolio de Microseguros.md › Vida Protegida"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Cobertura máxima: $25.000.000\n- Prima mensual: $7.500\n- Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Cobertura máxima: $25.000.000\n- Prima mensual: $7.500\n- Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nSegún «Portafolio de Microseguros» (sección: Vida Protegida):\n- Cobertura máxima: $20.000.000\n- Edad mínima: 18 años.\n- Edad máxima: 70 años.\n- Prima mensual: $9.900\n- Incluye: Muerte por cualquier causa; Auxilio funerario.\n\nFuentes: Portafolio de Microseguros.md › Accidente Personal Esencial; Portafolio de Microseguros.md › Vida Protegida"
  },
  "¿Cuál es la edad máxima para Salud Básica Familiar?": {
   "estado": "Exitosa",
@@ -334,9 +350,9 @@
  "¿Cuál es la política de pago anticipado?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n- La aprobación está sujeta a la política de riesgo vigente.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Cuál es la política de protección de información?": {
   "estado": "Exitosa",
@@ -358,16 +374,20 @@
  "¿Cuál es la prima de Vida Protegida y cómo se paga?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Vida Protegida"
+   "Portafolio de Microseguros.md › Vida Protegida",
+   "Portafolio de Microseguros.md › Pago de primas"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Vida Protegida):\n- Prima mensual: $9.900\n\nFuente: Portafolio de Microseguros.md › Vida Protegida"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Vida Protegida):\n- Prima mensual: $9.900\n\nSegún «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nFuentes: Portafolio de Microseguros.md › Vida Protegida; Portafolio de Microseguros.md › Pago de primas"
  },
  "¿Cuál es la prima de los microseguros?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Pago de primas"
+   "Portafolio de Microseguros.md › Vida Protegida",
+   "Portafolio de Microseguros.md › Accidente Personal Esencial",
+   "Portafolio de Microseguros.md › Negocio Seguro",
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nFuente: Portafolio de Microseguros.md › Pago de primas"
+  "respuesta": "Según «Portafolio de Microseguros», por producto:\n- Vida Protegida: Prima mensual: $9.900\n- Accidente Personal Esencial: Prima mensual: $7.500\n- Negocio Seguro: Prima mensual: $12.000\n- Salud Básica Familiar: Prima mensual: $15.000\n\nFuentes: Portafolio de Microseguros.md › Vida Protegida; Portafolio de Microseguros.md › Accidente Personal Esencial; Portafolio de Microseguros.md › Negocio Seguro; Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Cuál es la prima mensual de Vida Protegida?": {
   "estado": "Exitosa",
@@ -384,9 +404,12 @@
  "¿Cuál es la tasa de interés de los créditos?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones",
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones",
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Mujer Emprende > Condiciones):\n- Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuente: Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  "respuesta": "Según «Productos de Crédito», por producto:\n- Crédito Productivo Impulso: Tasa de interés: 24,5 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Agro Crece: Tasa de interés: 18,9 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Mujer Emprende: Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Educativo Avanza: Tasa de interés: 15,6 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones; Productos de Crédito.md › Crédito Agro Crece > Condiciones; Productos de Crédito.md › Crédito Mujer Emprende > Condiciones; Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
  },
  "¿Cuál es la tasa de interés del Crédito Educativo Avanza?": {
   "estado": "Exitosa",
@@ -424,9 +447,12 @@
  "¿Cuál microseguro tiene la prima más baja?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Vida Protegida"
+   "Portafolio de Microseguros.md › Vida Protegida",
+   "Portafolio de Microseguros.md › Accidente Personal Esencial",
+   "Portafolio de Microseguros.md › Negocio Seguro",
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Vida Protegida):\n- Edad mínima: 18 años.\n- Prima mensual: $9.900\n\nFuente: Portafolio de Microseguros.md › Vida Protegida"
+  "respuesta": "Según «Portafolio de Microseguros», por producto:\n- Vida Protegida: Prima mensual: $9.900\n- Accidente Personal Esencial: Prima mensual: $7.500\n- Negocio Seguro: Prima mensual: $12.000\n- Salud Básica Familiar: Prima mensual: $15.000\n\nFuentes: Portafolio de Microseguros.md › Vida Protegida; Portafolio de Microseguros.md › Accidente Personal Esencial; Portafolio de Microseguros.md › Negocio Seguro; Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Cuáles son las buenas prácticas del asesor?": {
   "estado": "Exitosa",
@@ -493,14 +519,18 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cuánto cuesta el seguro de vida?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Vida Protegida):\n- Prima mensual: $9.900\n\nFuente: Portafolio de Microseguros.md › Vida Protegida"
  },
  "¿Cuánto cuesta mensualmente Accidente Personal Esencial?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Prima mensual: $7.500\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
  },
  "¿Cuánto cuesta solicitar un crédito?": {
   "estado": "Exitosa",
@@ -538,23 +568,25 @@
  "¿Cuánto se demora en desembolsar un crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Procedimientos Operativos.md › Desembolso"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Desembolso):\n- Plazo: 2 días hábiles después de la aprobación.\n- Canales: Abono a cuenta bancaria; Giro en oficina.\n\nFuente: Procedimientos Operativos.md › Desembolso"
  },
  "¿Cuánto se demora la aprobación de una solicitud de crédito y el desembolso?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?",
+   "Procedimientos Operativos.md › Desembolso"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nSegún «Procedimientos Operativos» (sección: Desembolso):\n- Plazo: 2 días hábiles después de la aprobación.\n- Canales: Abono a cuenta bancaria; Giro en oficina.\n\nFuentes: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?; Procedimientos Operativos.md › Desembolso"
  },
  "¿Cuánto tarda el desembolso después de la aprobación del crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?",
+   "Procedimientos Operativos.md › Desembolso"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nSegún «Procedimientos Operativos» (sección: Desembolso):\n- Plazo: 2 días hábiles después de la aprobación.\n\nFuentes: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?; Procedimientos Operativos.md › Desembolso"
  },
  "¿Cuánto tarda el desembolso?": {
   "estado": "Exitosa",
@@ -566,9 +598,10 @@
  "¿Cuánto tarda la aprobación de la solicitud de crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?",
+   "Procedimientos Operativos.md › Solicitud de Crédito"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?; Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿Cuánto tarda la aprobación de un crédito?": {
   "estado": "Exitosa",
@@ -585,9 +618,9 @@
  "¿Cuánto tarda la aprobación del Crédito Mujer Emprende?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Mujer Emprende"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Mujer Emprende):\n- Dirigido a mujeres emprendedoras con negocios en etapa temprana.\n\nFuente: Productos de Crédito.md › Crédito Mujer Emprende"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Todas las tasas son de referencia y se confirman en la evaluación de riesgo.\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n- El estudio de crédito no tiene costo para el solicitante.\n- La aprobación está sujeta a la política de riesgo vigente.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Cuánto tarda la decisión de crédito?": {
   "estado": "Exitosa",
@@ -602,17 +635,18 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cuánto tarda una reclamación de Negocio Seguro?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Reclamaciones"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuánto tarda una reclamación?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
    "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuánto tiempo de respuesta tiene la solicitud de crédito?": {
   "estado": "Exitosa",
@@ -637,11 +671,9 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cuánto tiempo tarda la gestión de una reclamación?": {
-  "estado": "Exitosa",
-  "fuentes": [
-   "Procedimientos Operativos.md › Gestión de PQR"
-  ],
-  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Tiempo objetivo: 5 días hábiles.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cuánto tiempo tarda la gestión de una solicitud de crédito?": {
   "estado": "Sin información suficiente",
@@ -656,37 +688,40 @@
   "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Tiempo objetivo: 5 días hábiles.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
  },
  "¿Cuánto vale la prima de Negocio Seguro?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Prima mensual: $12.000\n\nFuente: Portafolio de Microseguros.md › Negocio Seguro"
  },
  "¿Cuántos días hábiles toma la evaluación de riesgo?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Procedimientos Operativos.md › Solicitud de Crédito"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Solicitud de Crédito):\n4. Evaluación de riesgo.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuente: Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿Cuántos días hábiles toma la respuesta a una reclamación de seguro?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
+   "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuántos días hábiles toma validar los documentos de una reclamación?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n3. Validación documental.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuántos días tarda en llegar la plata después de aprobado el crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Educativo Avanza > Condiciones):\n- Periodo de gracia: Hasta 12 meses después de terminar los estudios\n\nFuente: Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
  },
  "¿Cuántos días tengo para resolver una queja?": {
   "estado": "Sin información suficiente",
@@ -715,17 +750,17 @@
  "¿Cómo debe comunicarse el asesor con el cliente?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Manual del Asesor Comercial.md › Información Sensible"
+   "Manual del Asesor Comercial.md › Buenas Prácticas"
   ],
-  "respuesta": "Según «Manual del Asesor Comercial» (sección: Información Sensible):\n- Nunca compartir: Información de otros clientes; Configuraciones internas; Credenciales; Información tecnológica reservada.\n\nFuente: Manual del Asesor Comercial.md › Información Sensible"
+  "respuesta": "Según «Manual del Asesor Comercial» (sección: Buenas Prácticas):\n- Proteger información del cliente.\n\nFuente: Manual del Asesor Comercial.md › Buenas Prácticas"
  },
  "¿Cómo presento una reclamación de Vida Protegida?": {
   "estado": "Exitosa",
   "fuentes": [
    "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
-   "Portafolio de Microseguros.md › Vida Protegida"
+   "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Vida Protegida):\n- Cobertura máxima: $20.000.000\n- Edad mínima: 18 años.\n- Edad máxima: 70 años.\n- Prima mensual: $9.900\n- Incluye: Muerte por cualquier causa; Auxilio funerario.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Vida Protegida"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cómo radica un cliente una queja?": {
   "estado": "Sin información suficiente",
@@ -733,11 +768,9 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cómo recibe el cliente el dinero del crédito?": {
-  "estado": "Exitosa",
-  "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
-  ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cómo se hace la reclamación de un microseguro de salud?": {
   "estado": "Sin información suficiente",
@@ -745,42 +778,48 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Cómo se hace una reclamación de un seguro?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
+   "Portafolio de Microseguros.md › Reclamaciones"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cómo se paga el Crédito Agro Crece?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Agro Crece"
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Agro Crece):\n- Dirigido a pequeños y medianos productores agropecuarios.\n\nFuente: Productos de Crédito.md › Crédito Agro Crece"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Agro Crece > Condiciones):\n- Periodicidad de pago: Mensual, trimestral o semestral según ciclo productivo\n\nSegún «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuentes: Productos de Crédito.md › Crédito Agro Crece > Condiciones; Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
  },
  "¿Cómo se paga la prima de Negocio Seguro?": {
   "estado": "Exitosa",
   "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas",
    "Portafolio de Microseguros.md › Negocio Seguro"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Prima mensual: $12.000\n\nFuente: Portafolio de Microseguros.md › Negocio Seguro"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nSegún «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Prima mensual: $12.000\n\nFuentes: Portafolio de Microseguros.md › Pago de primas; Portafolio de Microseguros.md › Negocio Seguro"
  },
  "¿Cómo se pagan las primas?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nFuente: Portafolio de Microseguros.md › Pago de primas"
  },
  "¿Cómo se presenta una reclamación de microseguro?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
+   "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nFuente: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cómo se reclama el auxilio funerario?": {
-  "estado": "Exitosa",
-  "fuentes": [
-   "Portafolio de Microseguros.md › Accidente Personal Esencial"
-  ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "¿Desde qué edad se puede asegurar a un niño en Salud Básica Familiar?": {
   "estado": "Exitosa",
@@ -809,9 +848,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
  },
  "¿El Crédito Educativo Avanza permite pago anticipado sin penalidad?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
  },
  "¿El Crédito Educativo Avanza requiere codeudor?": {
   "estado": "Exitosa",
@@ -821,9 +862,11 @@
   "respuesta": "Según «Productos de Crédito» (sección: Crédito Educativo Avanza > Requisitos):\n- Documento de identidad.\n- Orden de matrícula vigente.\n- Codeudor con ingresos demostrables.\n\nFuente: Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
  },
  "¿El Crédito Mujer Emprende permite abonos a capital?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Condiciones generales de los créditos"
+  ],
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿El Crédito Productivo Impulso tiene periodo de gracia?": {
   "estado": "Sin información suficiente",
@@ -838,9 +881,11 @@
   "respuesta": "Según «Productos de Crédito» (sección: Crédito Educativo Avanza > Requisitos):\n- Documento de identidad.\n- Orden de matrícula vigente.\n- Codeudor con ingresos demostrables.\n\nFuente: Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
  },
  "¿El cliente paga algo por el estudio de su solicitud?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Condiciones generales de los créditos"
+  ],
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n- El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿El estudio de crédito del Agro Crece tiene costo?": {
   "estado": "Exitosa",
@@ -878,9 +923,10 @@
  "¿El pago de la prima de Salud Básica Familiar es mensual?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Salud Básica Familiar"
+   "Portafolio de Microseguros.md › Salud Básica Familiar",
+   "Portafolio de Microseguros.md › Pago de primas"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Prima mensual: $15.000\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Prima mensual: $15.000\n\nSegún «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n\nFuentes: Portafolio de Microseguros.md › Salud Básica Familiar; Portafolio de Microseguros.md › Pago de primas"
  },
  "¿El solicitante paga el estudio de crédito?": {
   "estado": "Exitosa",
@@ -902,9 +948,11 @@
   "respuesta": "Según «Políticas de Atención» (sección: Transparencia):\n- Toda respuesta debe estar sustentada en documentación oficial.\n\nFuente: Políticas de Atención.md › Transparencia"
  },
  "¿En qué horario de atención se pueden radicar PQR?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ],
+  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
  },
  "¿En qué horario puedo pagar la prima en oficinas?": {
   "estado": "Sin información suficiente",
@@ -912,14 +960,18 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Es obligatoria la actualización de datos para pedir un crédito?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
  },
  "¿Es obligatoria la actualización de datos?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
  },
  "¿Hasta qué edad se puede tomar Vida Protegida?": {
   "estado": "Exitosa",
@@ -931,9 +983,9 @@
  "¿Hasta qué hora atiende la línea telefónica?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Procedimientos Operativos.md › Gestión de PQR"
+   "Procedimientos Operativos.md › Horarios de atención"
   ],
-  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Horarios de atención):\n- Línea telefónica: Lunes a sábado de 7:00 a.m. a 7:00 p.m.\n\nFuente: Procedimientos Operativos.md › Horarios de atención"
  },
  "¿Hay auxilio por maternidad en algún seguro?": {
   "estado": "Exitosa",
@@ -957,9 +1009,10 @@
  "¿Hay que pagar por la solicitud del crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?",
+   "Procedimientos Operativos.md › Solicitud de Crédito"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?; Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿La aprobación del crédito depende de la política de riesgo?": {
   "estado": "Sin información suficiente",
@@ -988,9 +1041,9 @@
  "¿Las condiciones de pago anticipado tienen penalidad?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Las oficinas abren los domingos?": {
   "estado": "Sin información suficiente",
@@ -1003,18 +1056,19 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Las tasas de interés son fijas?": {
-  "estado": "Exitosa",
-  "fuentes": [
-   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
-  ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Mujer Emprende > Condiciones):\n- Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuente: Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "¿Las tasas de los créditos son de referencia?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones",
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones",
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Mujer Emprende > Condiciones):\n- Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuente: Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  "respuesta": "Según «Productos de Crédito», por producto:\n- Crédito Productivo Impulso: Tasa de interés: 24,5 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Agro Crece: Tasa de interés: 18,9 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Mujer Emprende: Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n- Crédito Educativo Avanza: Tasa de interés: 15,6 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones; Productos de Crédito.md › Crédito Agro Crece > Condiciones; Productos de Crédito.md › Crédito Mujer Emprende > Condiciones; Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
  },
  "¿Los seguros cubren actos intencionales?": {
   "estado": "Exitosa",
@@ -1038,9 +1092,11 @@
   "respuesta": "Según «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Coberturas: Incendio; Inundación; Daños accidentales.\n\nFuente: Portafolio de Microseguros.md › Negocio Seguro"
  },
  "¿Negocio Seguro excluye actos intencionales?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Exclusiones generales):\n- Actos intencionales del asegurado.\n\nFuente: Portafolio de Microseguros.md › Exclusiones generales"
  },
  "¿Para quién es el Crédito Agro Crece?": {
   "estado": "Exitosa",
@@ -1115,22 +1171,23 @@
  "¿Puedo hacer abonos a capital?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Puedo pagar antes de tiempo el Crédito Productivo Impulso?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?",
-   "Productos de Crédito.md › Crédito Productivo Impulso"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nSegún «Productos de Crédito» (sección: Crédito Productivo Impulso):\n- Dirigido a pequeños comerciantes y microempresarios.\n\nFuentes: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?; Productos de Crédito.md › Crédito Productivo Impulso"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Todas las tasas son de referencia y se confirman en la evaluación de riesgo.\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n- El estudio de crédito no tiene costo para el solicitante.\n- La aprobación está sujeta a la política de riesgo vigente.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Puedo pagar la prima con descuento en la cuota del crédito?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nFuente: Portafolio de Microseguros.md › Pago de primas"
  },
  "¿Puedo radicar una PQR por teléfono?": {
   "estado": "Exitosa",
@@ -1159,9 +1216,10 @@
  "¿Qué actividades financia Agro Crece?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables",
+   "Productos de Crédito.md › Crédito Agro Crece > Requisitos"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Agro Crece > Actividades financiables):\n- Siembra.\n- Compra de maquinaria.\n- Sistemas de riego.\n- Infraestructura rural.\n\nFuente: Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Agro Crece > Actividades financiables):\n- Siembra.\n- Compra de maquinaria.\n- Sistemas de riego.\n- Infraestructura rural.\n\nSegún «Productos de Crédito» (sección: Crédito Agro Crece > Requisitos):\n- Plan de inversión de la actividad agropecuaria.\n\nFuentes: Productos de Crédito.md › Crédito Agro Crece > Actividades financiables; Productos de Crédito.md › Crédito Agro Crece > Requisitos"
  },
  "¿Qué beneficios tiene el Crédito Mujer Emprende?": {
   "estado": "Exitosa",
@@ -1173,9 +1231,9 @@
  "¿Qué beneficios tiene el pago anticipado?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Qué canales de atención hay?": {
   "estado": "Exitosa",
@@ -1252,7 +1310,7 @@
   "fuentes": [
    "Portafolio de Microseguros.md › Accidente Personal Esencial"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Cobertura máxima: $25.000.000\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Cobertura máxima: $25.000.000\n- Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
  },
  "¿Qué cubre Negocio Seguro?": {
   "estado": "Exitosa",
@@ -1266,7 +1324,7 @@
   "fuentes": [
    "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Qué datos se requieren en la solicitud de crédito?": {
   "estado": "Sin información suficiente",
@@ -1353,9 +1411,12 @@
  "¿Qué documentos piden para un crédito?": {
   "estado": "Exitosa",
   "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Requisitos",
+   "Productos de Crédito.md › Crédito Agro Crece > Requisitos",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Requisitos",
    "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Educativo Avanza > Requisitos):\n- Documento de identidad.\n- Orden de matrícula vigente.\n- Codeudor con ingresos demostrables.\n\nFuente: Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  "respuesta": "Según «Productos de Crédito», por producto:\n- Crédito Productivo Impulso: Documento de identidad.\n- Crédito Productivo Impulso: Evidencia de actividad económica.\n- Crédito Productivo Impulso: Evidencia básica de ingresos.\n- Crédito Agro Crece: Documento de identidad.\n- Crédito Agro Crece: Certificado de tradición y libertad del predio o contrato de arrendamiento.\n- Crédito Agro Crece: Plan de inversión de la actividad agropecuaria.\n- Crédito Mujer Emprende: Documento de identidad.\n- Crédito Mujer Emprende: Evidencia de actividad económica (mínimo 6 meses).\n- Crédito Mujer Emprende: Carta de intención con la descripción del negocio.\n- Crédito Educativo Avanza: Documento de identidad.\n- Crédito Educativo Avanza: Orden de matrícula vigente.\n- Crédito Educativo Avanza: Codeudor con ingresos demostrables.\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Requisitos; Productos de Crédito.md › Crédito Agro Crece > Requisitos; Productos de Crédito.md › Crédito Mujer Emprende > Requisitos; Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
  },
  "¿Qué documentos requiere la solicitud del Crédito Agro Crece?": {
   "estado": "Exitosa",
@@ -1426,9 +1487,11 @@
   "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Tiempo objetivo: 5 días hábiles.\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
  },
  "¿Qué exclusiones tiene Vida Protegida?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Exclusiones generales):\n- Enfermedades preexistentes no declaradas.\n- Actos intencionales del asegurado.\n- Participación en actividades ilícitas.\n\nFuente: Portafolio de Microseguros.md › Exclusiones generales"
  },
  "¿Qué exclusiones tienen los microseguros?": {
   "estado": "Exitosa",
@@ -1466,9 +1529,10 @@
  "¿Qué garantías pide el Crédito Productivo Impulso?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Productivo Impulso > Garantías"
+   "Productos de Crédito.md › Crédito Productivo Impulso > Garantías",
+   "Productos de Crédito.md › Crédito Productivo Impulso > Requisitos"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso > Garantías):\n- Hasta $15.000.000: firma personal.\n- Desde $15.000.001: codeudor o garantía mobiliaria.\n\nFuente: Productos de Crédito.md › Crédito Productivo Impulso > Garantías"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso > Garantías):\n- Hasta $15.000.000: firma personal.\n- Desde $15.000.001: codeudor o garantía mobiliaria.\n\nSegún «Productos de Crédito» (sección: Crédito Productivo Impulso > Requisitos):\n- Documento de identidad.\n- Evidencia de actividad económica.\n- Evidencia básica de ingresos.\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Garantías; Productos de Crédito.md › Crédito Productivo Impulso > Requisitos"
  },
  "¿Qué gestión se hace con una PQR?": {
   "estado": "Exitosa",
@@ -1515,9 +1579,10 @@
  "¿Qué incluye el auxilio funerario?": {
   "estado": "Exitosa",
   "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida",
    "Portafolio de Microseguros.md › Accidente Personal Esencial"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
+  "respuesta": "Según «Portafolio de Microseguros», por producto:\n- Vida Protegida: Incluye: Muerte por cualquier causa; Auxilio funerario.\n- Accidente Personal Esencial: Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuentes: Portafolio de Microseguros.md › Vida Protegida; Portafolio de Microseguros.md › Accidente Personal Esencial"
  },
  "¿Qué información nunca debo compartir?": {
   "estado": "Exitosa",
@@ -1538,7 +1603,7 @@
   "fuentes": [
    "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Qué microseguros hay?": {
   "estado": "Exitosa",
@@ -1550,16 +1615,20 @@
  "¿Qué microseguros incluyen auxilio funerario?": {
   "estado": "Exitosa",
   "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida",
    "Portafolio de Microseguros.md › Accidente Personal Esencial"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Accidente Personal Esencial):\n- Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuente: Portafolio de Microseguros.md › Accidente Personal Esencial"
+  "respuesta": "Según «Portafolio de Microseguros», por producto:\n- Vida Protegida: Incluye: Muerte por cualquier causa; Auxilio funerario.\n- Accidente Personal Esencial: Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n\nFuentes: Portafolio de Microseguros.md › Vida Protegida; Portafolio de Microseguros.md › Accidente Personal Esencial"
  },
  "¿Qué no cubren los microseguros?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Portafolio de Microseguros.md › Negocio Seguro"
+   "Portafolio de Microseguros.md › Vida Protegida",
+   "Portafolio de Microseguros.md › Accidente Personal Esencial",
+   "Portafolio de Microseguros.md › Negocio Seguro",
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Negocio Seguro):\n- Cobertura máxima: $15.000.000\n- Coberturas: Incendio; Inundación; Daños accidentales.\n\nFuente: Portafolio de Microseguros.md › Negocio Seguro"
+  "respuesta": "Según «Portafolio de Microseguros», por producto:\n- Vida Protegida: Cobertura máxima: $20.000.000\n- Vida Protegida: Incluye: Muerte por cualquier causa; Auxilio funerario.\n- Accidente Personal Esencial: Cobertura máxima: $25.000.000\n- Accidente Personal Esencial: Incluye: Incapacidad permanente; Muerte accidental; Auxilio funerario.\n- Negocio Seguro: Cobertura máxima: $15.000.000\n- Negocio Seguro: Coberturas: Incendio; Inundación; Daños accidentales.\n- Salud Básica Familiar: Cobertura máxima: $10.000.000\n- Salud Básica Familiar: Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuentes: Portafolio de Microseguros.md › Vida Protegida; Portafolio de Microseguros.md › Accidente Personal Esencial; Portafolio de Microseguros.md › Negocio Seguro; Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Qué ocurre si no se actualizan los datos del cliente?": {
   "estado": "Exitosa",
@@ -1578,9 +1647,9 @@
  "¿Qué papeles necesito para pedir el Crédito Productivo Impulso?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Productivo Impulso"
+   "Productos de Crédito.md › Crédito Productivo Impulso > Requisitos"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso):\n- Dirigido a pequeños comerciantes y microempresarios.\n\nFuente: Productos de Crédito.md › Crédito Productivo Impulso"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso > Requisitos):\n- Documento de identidad.\n- Evidencia de actividad económica.\n- Evidencia básica de ingresos.\n\nFuente: Productos de Crédito.md › Crédito Productivo Impulso > Requisitos"
  },
  "¿Qué pasa con la evaluación de riesgo de un crédito?": {
   "estado": "Exitosa",
@@ -1599,9 +1668,10 @@
  "¿Qué pasa si el cliente no hace la actualización de datos?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?",
+   "Procedimientos Operativos.md › Actualización de Datos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nSegún «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n- Documentos válidos: Documento de identidad; Certificado laboral; Declaración de renta.\n\nFuentes: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?; Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Qué pasa si no hago la actualización de datos a tiempo?": {
   "estado": "Sin información suficiente",
@@ -1618,9 +1688,10 @@
  "¿Qué pasa si un cliente no actualiza sus datos?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?",
+   "Procedimientos Operativos.md › Actualización de Datos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nSegún «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n- Documentos válidos: Documento de identidad; Certificado laboral; Declaración de renta.\n\nFuentes: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?; Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Qué pasos sigue el asesor para escalar un caso?": {
   "estado": "Exitosa",
@@ -1696,9 +1767,12 @@
  "¿Qué requisitos tienen los créditos?": {
   "estado": "Exitosa",
   "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Requisitos",
+   "Productos de Crédito.md › Crédito Agro Crece > Requisitos",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Requisitos",
    "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Educativo Avanza > Requisitos):\n- Documento de identidad.\n- Orden de matrícula vigente.\n- Codeudor con ingresos demostrables.\n\nFuente: Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  "respuesta": "Según «Productos de Crédito», por producto:\n- Crédito Productivo Impulso: Documento de identidad.\n- Crédito Productivo Impulso: Evidencia de actividad económica.\n- Crédito Productivo Impulso: Evidencia básica de ingresos.\n- Crédito Agro Crece: Documento de identidad.\n- Crédito Agro Crece: Certificado de tradición y libertad del predio o contrato de arrendamiento.\n- Crédito Agro Crece: Plan de inversión de la actividad agropecuaria.\n- Crédito Mujer Emprende: Documento de identidad.\n- Crédito Mujer Emprende: Evidencia de actividad económica (mínimo 6 meses).\n- Crédito Mujer Emprende: Carta de intención con la descripción del negocio.\n- Crédito Educativo Avanza: Documento de identidad.\n- Crédito Educativo Avanza: Orden de matrícula vigente.\n- Crédito Educativo Avanza: Codeudor con ingresos demostrables.\n\nFuentes: Productos de Crédito.md › Crédito Productivo Impulso > Requisitos; Productos de Crédito.md › Crédito Agro Crece > Requisitos; Productos de Crédito.md › Crédito Mujer Emprende > Requisitos; Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
  },
  "¿Qué se considera información sensible?": {
   "estado": "Sin información suficiente",
@@ -1717,14 +1791,14 @@
   "fuentes": [
    "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Qué seguro cubre urgencias?": {
   "estado": "Exitosa",
   "fuentes": [
    "Portafolio de Microseguros.md › Salud Básica Familiar"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Cobertura máxima: $10.000.000\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Salud Básica Familiar):\n- Incluye: Hospitalización por enfermedad; Urgencias; Auxilio por maternidad.\n\nFuente: Portafolio de Microseguros.md › Salud Básica Familiar"
  },
  "¿Qué son casos especiales en el manual del asesor?": {
   "estado": "Exitosa",
@@ -1736,16 +1810,15 @@
  "¿Qué soportes se presentan en una reclamación?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
-  ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nFuente: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
- },
- "¿Qué tiempo de respuesta tiene una petición?": {
-  "estado": "Exitosa",
-  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
    "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n2. Presentar soportes.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
+ },
+ "¿Qué tiempo de respuesta tiene una petición?": {
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "¿Qué tiempo de validación tiene una PQR?": {
   "estado": "Sin información suficiente",
@@ -1762,23 +1835,23 @@
  "¿Se cobra penalidad por pago anticipado?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Se cubren enfermedades preexistentes no declaradas?": {
   "estado": "Exitosa",
   "fuentes": [
    "Portafolio de Microseguros.md › Exclusiones generales"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Exclusiones generales):\n- Enfermedades preexistentes no declaradas.\n\nFuente: Portafolio de Microseguros.md › Exclusiones generales"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Exclusiones generales):\n- Enfermedades preexistentes no declaradas.\n- Actos intencionales del asegurado.\n\nFuente: Portafolio de Microseguros.md › Exclusiones generales"
  },
  "¿Se permiten abonos a capital en los créditos?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Se puede compartir información de otros clientes?": {
   "estado": "Bloqueada por seguridad",
@@ -1866,9 +1939,10 @@
  "¿Tiene costo la solicitud de crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?",
+   "Procedimientos Operativos.md › Solicitud de Crédito"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?; Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿Un cliente puede tener Vida Protegida y Salud Básica Familiar al mismo tiempo?": {
   "estado": "Sin información suficiente",
@@ -1888,9 +1962,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Un cliente puede tener más de un microseguro?):\n- Sí. Los microseguros son independientes y un cliente puede contratar varios, siempre que cumpla las condiciones de edad de cada producto.\n\nFuente: Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
  },
  "¿Vida Protegida cubre enfermedades preexistentes?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Exclusiones generales):\n- Enfermedades preexistentes no declaradas.\n- Actos intencionales del asegurado.\n\nFuente: Portafolio de Microseguros.md › Exclusiones generales"
  },
  "¿Vida Protegida incluye auxilio funerario?": {
   "estado": "Exitosa",

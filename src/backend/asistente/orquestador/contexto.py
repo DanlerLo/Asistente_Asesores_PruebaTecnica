@@ -19,6 +19,7 @@ import re
 from dataclasses import dataclass
 
 from ..herramientas.corpus import Fragmento
+from ..herramientas.entidades import MAX_RAICES_ENTIDAD, nombra_entidad
 from ..herramientas.texto import normalizar, raices_unicas
 
 _INICIOS_SEGUIMIENTO = frozenset({"y", "e"})
@@ -31,7 +32,11 @@ _SUSTANTIVOS = frozenset(
      "poliza", "polizas", "prestamo", "prestamos", "plan", "planes"}
 )
 _RE_PALABRA = re.compile(r"[a-záéíóúüñ]+")
-_MAX_RAICES_ENTIDAD = 5
+# «su/sus» apuntan a algo anterior salvo que la frase tenga una persona de la que hablar
+# («¿cada cuánto debe un cliente actualizar su información?»).
+_POSESIVOS = frozenset({"su", "sus"})
+_PERSONAS = frozenset({"cliente", "clientes", "clienta", "asesor", "asesora", "asesores", "usuario", "persona"})
+_ADVERBIOS_DE_SEGUIMIENTO = frozenset({"también", "tambien"})
 
 
 @dataclass(frozen=True)
@@ -56,22 +61,14 @@ def entidades_del_corpus(fragmentos: list[Fragmento]) -> list[Entidad]:
     for fragmento in fragmentos:
         raices = fragmento.entidad_raices
         es_pregunta = fragmento.entidad.strip().endswith("?")
-        if fragmento.entidad and not es_pregunta and raices and len(raices) <= _MAX_RAICES_ENTIDAD:
+        if fragmento.entidad and not es_pregunta and raices and len(raices) <= MAX_RAICES_ENTIDAD:
             vistas.setdefault(fragmento.entidad, Entidad(fragmento.entidad, raices))
     return sorted(vistas.values(), key=lambda e: e.nombre)
 
 
-def _nombra(entidad: Entidad, raices: set[str]) -> bool:
-    """Mismo criterio que el bloqueo por entidad: nombre completo o casi completo."""
-    coincidencias = len(entidad.raices & raices)
-    if coincidencias == len(entidad.raices):
-        return True
-    return coincidencias >= 2 and coincidencias >= len(entidad.raices) - 1
-
-
 def entidades_nombradas(texto: str, entidades: list[Entidad]) -> list[str]:
     raices = raices_unicas(texto)
-    nombradas = [e for e in entidades if _nombra(e, raices)]
+    nombradas = [e for e in entidades if nombra_entidad(e.raices, raices)]
     # Si una entidad nombrada está contenida en otra también nombrada, se conserva la más específica.
     return [e.nombre for e in nombradas if not any(e.raices < o.raices for o in nombradas)]
 
@@ -81,6 +78,10 @@ def es_seguimiento(pregunta: str) -> bool:
     if not palabras:
         return False
     if palabras[0] in _INICIOS_SEGUIMIENTO or any(p in _DEMOSTRATIVOS for p in palabras):
+        return True
+    if any(p in _ADVERBIOS_DE_SEGUIMIENTO for p in palabras):
+        return True
+    if any(p in _POSESIVOS for p in palabras) and not any(p in _PERSONAS for p in palabras):
         return True
     return any(
         actual in _DEMOSTRATIVOS_CERCANOS and normalizar(siguiente) in _SUSTANTIVOS

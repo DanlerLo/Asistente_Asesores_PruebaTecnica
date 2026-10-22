@@ -7,10 +7,12 @@ motivo queda en el log como ``motivo_ruta``.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from ..dominio import RespuestaGenerada, respuesta_sin_informacion
 from ..generacion.llm import ProveedorLLM
+from ..herramientas.corpus import Fragmento
 from ..herramientas.recuperacion import Resultado
 
 
@@ -25,6 +27,7 @@ class AgenteFueraDeDominio:
         *,
         umbral_cobertura: float,
         proveedor_llm: ProveedorLLM | None = None,
+        fragmentos: Sequence[Fragmento] = (),
     ) -> RespuestaGenerada:
         return respuesta_sin_informacion()
 

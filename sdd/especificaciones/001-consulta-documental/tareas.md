@@ -51,6 +51,7 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 - [x] T-039 RF-13 (hallazgo de la auditoría contra el PDF): pruebas con productos inexistentes («hipotecario», «Exequial Plus», «mascotas», «vivienda») y atributo inexistente («salario»), más pruebas de no regresión («¿qué crédito financia…?»).
 - [x] T-040 Implementar `IndiceBM25.nombra_algo_inexistente` y ruta `inexistente` en el enrutador; banco de 340 preguntas: solo cambian las 6 incorrectas.
 - [x] T-041 El banco de regresión compara también el texto de la respuesta (antes solo estado y fuentes: 108 de 293 respuestas podían cambiar sin que fallara nada). Hallazgo B3 de la auditoría.
+- [x] T-042 Motor (hallazgos B1, B2, B4–B9, B11 de la auditoría): vocabulario y corrección ortográfica (RF-14), secciones generales y comparaciones (RF-15), sin adivinar producto (RF-16), catálogo por agente (RF-O9). Evaluación 48,5 % → 83,5 %; 87 respuestas del banco revisadas una a una antes de regenerar la foto.
 
 ## Fase G — Datos y documentación
 - [x] T-024 Ampliar `Data/` con registros ficticios adicionales y `Preguntas Frecuentes.md` (sin tocar el archivo restringido).

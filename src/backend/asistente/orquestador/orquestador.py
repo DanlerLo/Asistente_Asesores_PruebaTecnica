@@ -92,7 +92,8 @@ class Orquestador:
         else:
             # El contexto pasa por el mismo guardrail: una pregunta anterior bloqueable se ignora.
             permitidas = [p for p in anteriores if evaluar_entrada(p).permitido]
-            resolucion = resolver_pregunta(pregunta, permitidas, self.entidades)
+            corregida = pregunta if self.corpus.vacio else self.indice.corregir(pregunta)  # «requicitos»
+            resolucion = resolver_pregunta(corregida, permitidas, self.entidades)
             referente = resolucion.referente
             if resolucion.sin_referente:  # «¿Y el plazo?» sin saber de qué producto: no adivinar
                 generada = respuesta_sin_informacion()
@@ -159,6 +160,7 @@ class Orquestador:
             resultados,
             umbral_cobertura=self.cfg.umbral_cobertura,
             proveedor_llm=self.proveedor_llm,
+            fragmentos=self.corpus.fragmentos,
         )
         return generada, ruta.agente.nombre, ruta.motivo
 

@@ -24,6 +24,7 @@ Reorganizar el backend en capas con una responsabilidad cada una y resolver las 
 | RF-O6 | Las preguntas bloqueadas por el guardrail de entrada no llegan al enrutador ni a ningún agente. |
 | RF-O7 | El log `consulta atendida` incluye el agente que atendió (`agente`) y el motivo de enrutamiento (`motivo_ruta`); `GET /api/salud` lista los agentes disponibles. |
 | RF-O8 | `POST /api/consultar` conserva su contrato (RF-01): mismos campos, mismos códigos y mismos estados. |
+| RF-O9 | Los agentes de dominio con catálogo (*crédito* y *microseguros*) responden por su cuenta las preguntas que piden un atributo **sin nombrar un producto** («¿Cuál crédito tiene la tasa más baja?», «¿Qué microseguro tiene la cobertura más alta?»): listan la línea de ese atributo para cada producto de su documento, con la fuente de cada uno, sin calcular ni elegir (el asesor compara). Con «más bajo/más alto» se prefieren las líneas de mínimo/máximo. El agente *operativo* no tiene catálogo. Es comportamiento propio: con los mismos fragmentos, el agente de crédito y el operativo responden distinto. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -90,4 +91,15 @@ Característica: Orquestador con agentes especializados
     Cuando se analizan las importaciones del paquete asistente
     Entonces ningún módulo de "herramientas" o "seguridad" importa "agentes", "orquestador" o "api"
     Y ningún módulo de "agentes" importa "orquestador" o "api"
+
+  Escenario: El agente de crédito lista un atributo por producto
+    Cuando el asesor pregunta "¿Cuál crédito tiene la tasa más baja?"
+    Entonces la atiende el agente "credito"
+    Y la respuesta contiene la tasa de cada crédito: "24,5 %", "18,9 %", "21,2 %" y "15,6 %"
+    Y hay una fuente por crédito
+
+  Escenario: Los agentes no son intercambiables
+    Dado un enrutador sin especialistas (todo lo atiende el agente operativo)
+    Cuando el asesor pregunta "¿Cuál crédito tiene la tasa más baja?"
+    Entonces la respuesta no es la lista por producto
 ```

@@ -29,6 +29,9 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-11 | Con `LLM_PROVIDER=groq` (único proveedor; otro valor se rechaza con un mensaje claro), el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo (red, cuota, respuesta vacía) se degrada al motor extractivo. El modo por defecto sigue siendo `none` (sin red). |
 | RF-12 | Si el fragmento mejor puntuado trata lo que nombra la pregunta (p. ej. «Gestión de PQR») pero no responde el atributo pedido, el motor extractivo no recurre a otro fragmento que no mencione ninguno de los términos de esa sección (los títulos con forma de pregunta y las palabras de categoría no cuentan). La regla nunca descarta el fragmento principal. Ante la duda responde RF-05. |
 | RF-13 | Si la pregunta nombra un producto que no existe en la base («crédito hipotecario», «Seguro Exequial Plus», «microseguro de mascotas») o pide un atributo inexistente de un documento («salario del asesor»), responde RF-05 en lugar de contestar con datos de otro producto. Se detecta con el vocabulario indexado: una palabra desconocida justo después de «crédito/seguro/microseguro/póliza/préstamo» (salvo tras «qué/cuál», donde sigue un verbo), o preguntas cuyas únicas palabras conocidas son el nombre de un documento. |
+| RF-14 | El vocabulario del asesor se traduce al de los documentos en preguntas y documentos por igual («cubre/incluye/ampara» → cobertura, «cuesta/vale/mensualidad» → prima, «carencia» → gracia, «queja/petición» → PQR, «papeles» → requisitos, «más bajo/menor» → mínimo, «más alto/largo» → máximo…); los errores de tipeo leves se corrigen contra el vocabulario del corpus (misma longitud ± 1, similitud ≥ 0,84, nunca conjugaciones ni palabras de categoría). |
+| RF-15 | Si la pregunta nombra un producto, quedan fuera los demás productos (RF-04), pero las secciones generales, procedimientos y preguntas frecuentes siguen respondiendo («¿qué exclusiones tiene Vida Protegida?» → Exclusiones generales). Una comparación conserva los dos productos nombrados; dos subsecciones del mismo producto se responden juntas si la segunda aporta lo pedido. |
+| RF-16 | Sin producto nombrado, el motor no elige uno al azar: si otro producto responde lo mismo, no responde con ninguno (el agente de dominio lista por producto, RF-O9). Una pregunta frecuente solo responde si su título comparte 2+ términos con la pregunta, y con un único término útil solo responde la sección que ese término nombra (no «abonos a capital» para «la capital de Francia»). |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -147,4 +150,12 @@ Característica: Consulta documental con citación de fuentes
     Entonces el estado es "Sin información suficiente"
     Y la respuesta es exactamente "No tengo información suficiente para responder."
     Y no se responde con la tasa de otro crédito
+
+  Escenario: Sección general de un producto nombrado
+    Cuando envío la pregunta "¿Qué exclusiones tiene Vida Protegida?"
+    Entonces la respuesta contiene "Enfermedades preexistentes no declaradas"
+
+  Escenario: Vocabulario del asesor
+    Cuando envío la pregunta "¿Cuánto cuesta Vida Protegida?"
+    Entonces la respuesta contiene "Prima mensual: $9.900"
 ```
