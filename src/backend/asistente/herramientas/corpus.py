@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -310,28 +311,30 @@ def cargar_corpus(data_dir: Path, archivos_restringidos: tuple[str, ...] = ()) -
         key=lambda p: p.name,
     )
     for archivo in archivos:
+        # macOS puede entregar nombres en NFD ("e" + tilde combinante); se citan siempre en NFC.
+        nombre = unicodedata.normalize("NFC", archivo.name)
         try:
             texto = archivo.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            corpus.advertencias.append(f"{archivo.name}: no es UTF-8 válido, se omitió")
+            corpus.advertencias.append(f"{nombre}: no es UTF-8 válido, se omitió")
             continue
-        if es_restringido(archivo.name, texto, archivos_restringidos):
-            corpus.excluidos.append(archivo.name)
+        if es_restringido(nombre, texto, archivos_restringidos):
+            corpus.excluidos.append(nombre)
             secretos |= extraer_secretos(texto)
-            log.info("documento restringido excluido del índice", extra={"archivo": archivo.name})
+            log.info("documento restringido excluido del índice", extra={"archivo": nombre})
             continue
         huella = hashlib.sha256(" ".join(texto.split()).encode("utf-8")).hexdigest()
         if huella in hashes:
-            corpus.duplicados.append((archivo.name, hashes[huella]))
+            corpus.duplicados.append((nombre, hashes[huella]))
             corpus.advertencias.append(
-                f"{archivo.name}: contenido duplicado de {hashes[huella]}, se indexó una sola vez"
+                f"{nombre}: contenido duplicado de {hashes[huella]}, se indexó una sola vez"
             )
             continue
-        hashes[huella] = archivo.name
-        fragmentos, advertencias = fragmentar(texto, archivo.name)
+        hashes[huella] = nombre
+        fragmentos, advertencias = fragmentar(texto, nombre)
         corpus.fragmentos.extend(fragmentos)
         corpus.advertencias.extend(advertencias)
-        corpus.documentos.append(archivo.name)
+        corpus.documentos.append(nombre)
 
     corpus.secretos = frozenset(secretos)
     if corpus.vacio:

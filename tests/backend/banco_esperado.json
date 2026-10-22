@@ -1,0 +1,1619 @@
+{
+ "Compara el monto máximo de Agro Crece y Productivo Impulso": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  ]
+ },
+ "Compara la prima de Vida Protegida y Salud Básica Familiar": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "Compara la tasa del Crédito Mujer Emprende con la del Educativo Avanza": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones",
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
+  ]
+ },
+ "Hola, tengo un cliente comerciante que quiere un crédito de 20 millones, ¿qué garantía le piden y cuál es la tasa?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "Mi cliente tiene 68 años, ¿puede tomar Vida Protegida?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "Quiero saber el monto mínimo y máximo del Crédito Mujer Emprende y su plazo máximo": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "Un cliente agricultor quiere comprar maquinaria, ¿qué crédito le sirve y cuál es el plazo máximo?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+  ]
+ },
+ "Un cliente quiere pagar la prima del seguro con descuento de su crédito, ¿es posible?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "Un cliente quiere saber cuándo le desembolsan el crédito que le aprobaron ayer": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "Un cliente radicó una PQR hace 3 días, ¿cuánto tiempo más debe esperar?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿A quién va dirigido el Crédito Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende"
+  ]
+ },
+ "¿A qué hora abre la línea telefónica?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Accidente Personal Esencial cubre incapacidad permanente?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Agro Crece financia sistemas de riego?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+  ]
+ },
+ "¿Atienden los sábados en oficina?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Cada cuánto debe un cliente actualizar su información?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Cada cuánto se deben actualizar los datos del cliente?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Cada cuánto se paga la prima?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Con qué periodicidad se pagan las primas de los microseguros?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Cuál crédito tiene la tasa más baja?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  ]
+ },
+ "¿Cuál es el horario de atención de la línea telefónica los sábados?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Cuál es el horario de atención de las oficinas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Cuál es el horario de atención para desembolsos en oficina?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es el horario de atención telefónica y presencial?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Cuál es el horario de la línea telefónica?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Cuál es el horario para pagar la prima en oficinas?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es el monto máximo de los créditos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "¿Cuál es el monto máximo del Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  ]
+ },
+ "¿Cuál es el monto máximo del Crédito Vivienda Feliz?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es el monto mínimo del Crédito Educativo Avanza?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
+  ]
+ },
+ "¿Cuál es el periodo de gracia del Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones"
+  ]
+ },
+ "¿Cuál es el periodo de gracia del Crédito Educativo Avanza?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
+  ]
+ },
+ "¿Cuál es el plazo de desembolso del Crédito Agro Crece?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es el plazo de desembolso después de la aprobación?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Desembolso"
+  ]
+ },
+ "¿Cuál es el plazo del desembolso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Desembolso"
+  ]
+ },
+ "¿Cuál es el plazo mínimo del Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  ]
+ },
+ "¿Cuál es el procedimiento de desembolso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Desembolso"
+  ]
+ },
+ "¿Cuál es el procedimiento de reclamación de un microseguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  ]
+ },
+ "¿Cuál es el salario de un asesor comercial?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es el tiempo de respuesta de la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Cuál es el tiempo estimado de una reclamación de microseguro?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es el tiempo objetivo de respuesta de una PQR?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Cuál es la cobertura de Salud Básica Familiar?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Cuál es la cobertura máxima de Negocio Seguro y su prima?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Cuál es la cobertura máxima de Vida Protegida?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Cuál es la diferencia entre Negocio Seguro y Salud Básica Familiar?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Cuál es la diferencia entre Vida Protegida y Accidente Personal Esencial?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Cuál es la edad máxima para Salud Básica Familiar?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Cuál es la periodicidad de pago del Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones"
+  ]
+ },
+ "¿Cuál es la periodicidad de pago del Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  ]
+ },
+ "¿Cuál es la política de pago anticipado?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Cuál es la política de protección de información?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Protección de Información"
+  ]
+ },
+ "¿Cuál es la política de reclamaciones?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es la política para la actualización de datos?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es la prima de Vida Protegida y cómo se paga?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Cuál es la prima de los microseguros?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Cuál es la prima mensual de Vida Protegida?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Cuál es la prima mensual del Seguro Exequial Plus?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es la tasa de interés de los créditos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "¿Cuál es la tasa de interés del Crédito Educativo Avanza?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Condiciones"
+  ]
+ },
+ "¿Cuál es la tasa de interés y el costo del estudio del Crédito Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "¿Cuál es la tasa del Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones"
+  ]
+ },
+ "¿Cuál es la tasa del crédito hipotecario?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuál es la validación de identidad en la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Cuál microseguro tiene la prima más baja?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Cuáles son las buenas prácticas del asesor?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Buenas Prácticas"
+  ]
+ },
+ "¿Cuáles son las exclusiones generales de los microseguros?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ]
+ },
+ "¿Cuáles son los canales de pago del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Cuáles son los canales de radicación de PQR y el tiempo objetivo?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Cuáles son los pasos de la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Cuáles son los requisitos y el costo del estudio de crédito?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánta plata me prestan como máximo en el Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  ]
+ },
+ "¿Cuánto cubre el microseguro de mascotas?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto cuesta el estudio de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿Cuánto cuesta el estudio de la solicitud?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto cuesta el seguro de vida?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto cuesta mensualmente Accidente Personal Esencial?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto cuesta solicitar un crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿Cuánto demora la aprobación de una solicitud?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto es el tiempo de respuesta para la solicitud de un microseguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Cuánto es la cuota del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Cuánto paga Accidente Personal Esencial por muerte accidental?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Cuánto se demora en desembolsar un crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuánto se demora la aprobación de una solicitud de crédito y el desembolso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuánto tarda el desembolso después de la aprobación del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuánto tarda el desembolso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Desembolso"
+  ]
+ },
+ "¿Cuánto tarda la aprobación de la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuánto tarda la aprobación de un crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuánto tarda la aprobación de un microseguro?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tarda la aprobación del Crédito Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende"
+  ]
+ },
+ "¿Cuánto tarda la decisión de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Cuánto tarda la gestión de un desembolso?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tarda una reclamación de Negocio Seguro?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tarda una reclamación?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
+   "Portafolio de Microseguros.md › Reclamaciones"
+  ]
+ },
+ "¿Cuánto tiempo de respuesta tiene la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Cuánto tiempo es válido para una PQR?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tiempo se demora en responder un reclamo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tiempo tarda el desembolso de un crédito aprobado y por qué canales se entrega el dinero?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tiempo tarda la gestión de una reclamación?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Cuánto tiempo tarda la gestión de una solicitud de crédito?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuánto tiempo tiene una PQR para resolverse?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Cuánto vale la prima de Negocio Seguro?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuántos días hábiles toma la evaluación de riesgo?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuántos días hábiles toma la respuesta a una reclamación de seguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuántos días hábiles toma validar los documentos de una reclamación?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuántos días tarda en llegar la plata después de aprobado el crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ]
+ },
+ "¿Cuántos días tengo para resolver una queja?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuántos días tiene la entidad para responder una petición, queja o reclamo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cuántos meses de plazo máximo tiene Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones"
+  ]
+ },
+ "¿Cuántos meses dura la actualización de datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Actualización de Datos"
+  ]
+ },
+ "¿Cómo debe comunicarse el asesor con el cliente?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Información Sensible"
+  ]
+ },
+ "¿Cómo presento una reclamación de Vida Protegida?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Cómo radica un cliente una queja?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cómo recibe el cliente el dinero del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Cómo se hace la reclamación de un microseguro de salud?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cómo se hace una reclamación de un seguro?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cómo se paga el Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece"
+  ]
+ },
+ "¿Cómo se paga la prima de Negocio Seguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Cómo se pagan las primas?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Cómo se presenta una reclamación de microseguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  ]
+ },
+ "¿Cómo se reclama el auxilio funerario?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Desde qué edad se puede asegurar a un niño en Salud Básica Familiar?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Dónde puede un cliente radicar una queja o reclamo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Dónde se paga la cuota del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Dónde se puede pagar el crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿El Crédito Educativo Avanza permite pago anticipado sin penalidad?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿El Crédito Educativo Avanza requiere codeudor?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  ]
+ },
+ "¿El Crédito Mujer Emprende permite abonos a capital?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿El Crédito Productivo Impulso tiene periodo de gracia?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿El Educativo requiere codeudor con ingresos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  ]
+ },
+ "¿El cliente paga algo por el estudio de su solicitud?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿El estudio de crédito del Agro Crece tiene costo?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿El estudio de crédito tiene costo?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿El estudio del crédito se cobra al cliente?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿El horario de atención en oficinas incluye sábados?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿El pago anticipado tiene penalidad en los créditos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿El pago de la prima de Salud Básica Familiar es mensual?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿El solicitante paga el estudio de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿En cuánto tiempo se responde una PQR?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿En qué debe estar sustentada toda respuesta?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Transparencia"
+  ]
+ },
+ "¿En qué horario de atención se pueden radicar PQR?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿En qué horario puedo pagar la prima en oficinas?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Es obligatoria la actualización de datos para pedir un crédito?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Es obligatoria la actualización de datos?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Hasta qué edad se puede tomar Vida Protegida?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Hasta qué hora atiende la línea telefónica?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Hay auxilio por maternidad en algún seguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Hay costo en la actualización de datos?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Hay penalidad por pago anticipado de un crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Hay que pagar por la solicitud del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿La aprobación del crédito depende de la política de riesgo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿La evaluación de riesgo confirma la tasa?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Condiciones generales de los créditos"
+  ]
+ },
+ "¿La solicitud de crédito requiere documento de identidad?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿La solicitud de un crédito tiene algún costo para el cliente?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Las condiciones de pago anticipado tienen penalidad?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Las oficinas abren los domingos?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Las reclamaciones requieren soportes?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Las tasas de interés son fijas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "¿Las tasas de los créditos son de referencia?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "¿Los seguros cubren actos intencionales?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ]
+ },
+ "¿Mujer Emprende da mentoría?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Beneficios"
+  ]
+ },
+ "¿Negocio Seguro cubre inundación?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Negocio Seguro excluye actos intencionales?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Para quién es el Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece"
+  ]
+ },
+ "¿Por qué canales se desembolsa el Crédito Mujer Emprende?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Por qué canales se hace el desembolso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Desembolso"
+  ]
+ },
+ "¿Por qué canales se paga la prima de un microseguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Por qué canales se radica una PQR?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Puede un cliente con Negocio Seguro contratar otro microseguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
+  ]
+ },
+ "¿Puede un cliente con Vida Protegida tener también Salud Básica Familiar?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Puede un cliente contratar dos seguros al tiempo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Puede un cliente pagar su crédito antes del plazo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Puede un cliente tener varios microseguros a la vez?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
+  ]
+ },
+ "¿Puedo compartir credenciales con un cliente?": {
+  "estado": "Bloqueada por seguridad",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Información Sensible",
+   "Políticas de Atención.md › Política de Escalamiento"
+  ]
+ },
+ "¿Puedo hacer abonos a capital?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Puedo pagar antes de tiempo el Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?",
+   "Productos de Crédito.md › Crédito Productivo Impulso"
+  ]
+ },
+ "¿Puedo pagar la prima con descuento en la cuota del crédito?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Puedo radicar una PQR por teléfono?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Quién está autorizado para consultar información de clientes?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Protección de Información"
+  ]
+ },
+ "¿Quién ganó el partido de fútbol ayer?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Quién puede consultar la información de clientes?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué actividades financia Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+  ]
+ },
+ "¿Qué beneficios tiene el Crédito Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Beneficios"
+  ]
+ },
+ "¿Qué beneficios tiene el pago anticipado?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Qué canales de atención hay?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Qué canales de pago hay para las primas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Qué certificado pide Agro Crece para el predio?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Requisitos"
+  ]
+ },
+ "¿Qué coberturas tiene Negocio Seguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Qué condiciones de edad debe cumplir un cliente para tener varios microseguros?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
+  ]
+ },
+ "¿Qué condiciones generales tienen los créditos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Condiciones generales de los créditos"
+  ]
+ },
+ "¿Qué crédito es para mujeres emprendedoras?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende"
+  ]
+ },
+ "¿Qué crédito es para pequeños comerciantes?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso"
+  ]
+ },
+ "¿Qué crédito financia infraestructura rural?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+  ]
+ },
+ "¿Qué crédito sirve para estudiantes universitarios?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza"
+  ]
+ },
+ "¿Qué cubre Accidente Personal Esencial?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Qué cubre Negocio Seguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Qué cubre el seguro de salud?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Qué datos se requieren en la solicitud de crédito?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué debe hacer el asesor si no está seguro de una respuesta?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué debe hacer un asesor cuando exista incertidumbre?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Política de Escalamiento"
+  ]
+ },
+ "¿Qué debe indicar toda respuesta de un asistente digital?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Política de Citas"
+  ]
+ },
+ "¿Qué debo responder si no hay información documental?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Casos Especiales"
+  ]
+ },
+ "¿Qué dice el manual del asesor sobre buenas prácticas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Buenas Prácticas"
+  ]
+ },
+ "¿Qué dice la política de citas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Política de Citas"
+  ]
+ },
+ "¿Qué dice la política de escalamiento?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Política de Escalamiento"
+  ]
+ },
+ "¿Qué dice la política de transparencia?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Transparencia"
+  ]
+ },
+ "¿Qué diferencia hay entre el Crédito Productivo Impulso y el Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece",
+   "Productos de Crédito.md › Crédito Productivo Impulso"
+  ]
+ },
+ "¿Qué diferencia hay entre los requisitos de Mujer Emprende y Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Requisitos",
+   "Productos de Crédito.md › Crédito Mujer Emprende > Requisitos"
+  ]
+ },
+ "¿Qué documentos necesito para solicitar el Crédito Educativo Avanza?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  ]
+ },
+ "¿Qué documentos piden para un crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  ]
+ },
+ "¿Qué documentos requiere la solicitud del Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Requisitos"
+  ]
+ },
+ "¿Qué documentos se reciben en la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Qué documentos sirven para actualizar datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Actualización de Datos"
+  ]
+ },
+ "¿Qué documentos son válidos para la actualización de datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Actualización de Datos"
+  ]
+ },
+ "¿Qué edad máxima tiene Accidente Personal Esencial?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué edad máxima tiene el microseguro de Salud Básica Familiar?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Qué edad mínima se requiere para Vida Protegida?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Qué es la evaluación de riesgo en la solicitud?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Qué es la transparencia en las políticas de atención?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Transparencia"
+  ]
+ },
+ "¿Qué es una PQR?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Qué exclusiones tiene Vida Protegida?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué exclusiones tienen los microseguros?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ]
+ },
+ "¿Qué formación ofrece Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Beneficios"
+  ]
+ },
+ "¿Qué garantía pide el Impulso para montos hasta 15 millones?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Garantías"
+  ]
+ },
+ "¿Qué garantía se pide para un crédito de más de 15 millones?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Garantías"
+  ]
+ },
+ "¿Qué garantías aplican a la solicitud de crédito?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué garantías pide el Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Garantías"
+  ]
+ },
+ "¿Qué gestión se hace con una PQR?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Qué hacer cuando una consulta no tenga soporte documental?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Casos Especiales"
+  ]
+ },
+ "¿Qué hacer en casos especiales sin soporte documental?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Casos Especiales"
+  ]
+ },
+ "¿Qué horario de atención tienen los sábados las oficinas y la línea?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Qué horario tienen las oficinas entre semana?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Qué horario tienen las oficinas los sábados?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ]
+ },
+ "¿Qué incluye el auxilio funerario?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Qué información nunca debo compartir?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Información Sensible"
+  ]
+ },
+ "¿Qué microseguro cubre incendio?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Qué microseguro cubre maternidad?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Qué microseguros hay?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Índice"
+  ]
+ },
+ "¿Qué microseguros incluyen auxilio funerario?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Accidente Personal Esencial"
+  ]
+ },
+ "¿Qué no cubren los microseguros?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Negocio Seguro"
+  ]
+ },
+ "¿Qué ocurre si no se actualizan los datos del cliente?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Qué orden de matrícula pide el Educativo Avanza?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  ]
+ },
+ "¿Qué papeles necesito para pedir el Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso"
+  ]
+ },
+ "¿Qué pasa con la evaluación de riesgo de un crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Condiciones generales de los créditos"
+  ]
+ },
+ "¿Qué pasa con la tasa en la evaluación de riesgo de la solicitud?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Condiciones generales de los créditos"
+  ]
+ },
+ "¿Qué pasa si el cliente no hace la actualización de datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Qué pasa si no hago la actualización de datos a tiempo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué pasa si un cliente no actualiza sus datos y quiere hacer una solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Qué pasa si un cliente no actualiza sus datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Qué pasos sigue el asesor para escalar un caso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Política de Escalamiento"
+  ]
+ },
+ "¿Qué pasos sigue una reclamación de microseguro y cuánto tarda?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  ]
+ },
+ "¿Qué periodicidad tiene la actualización de datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Actualización de Datos"
+  ]
+ },
+ "¿Qué periodo de gracia tiene el Crédito Mujer Emprende?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué plazo máximo tiene el Crédito Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  ]
+ },
+ "¿Qué plazo tiene la Gestión de PQR?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué productos de crédito existen?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Índice"
+  ]
+ },
+ "¿Qué requisitos de edad tienen los microseguros?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué requisitos pide el Crédito Productivo Impulso?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Productivo Impulso > Requisitos"
+  ]
+ },
+ "¿Qué requisitos tiene el Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Requisitos"
+  ]
+ },
+ "¿Qué requisitos tiene el Crédito Mujer Emprende?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Mujer Emprende > Requisitos"
+  ]
+ },
+ "¿Qué requisitos tienen los créditos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Educativo Avanza > Requisitos"
+  ]
+ },
+ "¿Qué se considera información sensible?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Qué se valida en la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Solicitud de Crédito"
+  ]
+ },
+ "¿Qué seguro cubre hospitalización?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Qué seguro cubre urgencias?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Salud Básica Familiar"
+  ]
+ },
+ "¿Qué son casos especiales en el manual del asesor?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Casos Especiales"
+  ]
+ },
+ "¿Qué soportes se presentan en una reclamación?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  ]
+ },
+ "¿Qué tiempo de respuesta tiene una petición?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Reclamaciones"
+  ]
+ },
+ "¿Qué tiempo de validación tiene una PQR?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Se cobra el estudio en la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿Se cobra penalidad por pago anticipado?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Se cubren enfermedades preexistentes no declaradas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Exclusiones generales"
+  ]
+ },
+ "¿Se permiten abonos a capital en los créditos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Se puede compartir información de otros clientes?": {
+  "estado": "Bloqueada por seguridad",
+  "fuentes": [
+   "Manual del Asesor Comercial.md › Información Sensible",
+   "Políticas de Atención.md › Política de Escalamiento"
+  ]
+ },
+ "¿Se puede financiar compra de maquinaria con Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Productos de Crédito.md › Crédito Agro Crece > Actividades financiables"
+  ]
+ },
+ "¿Se puede hacer la actualización de datos por la línea telefónica?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Se puede hacer pago anticipado del crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Se puede pagar anticipado el Crédito Agro Crece?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Se puede pagar la prima en corresponsales bancarios?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Pago de primas"
+  ]
+ },
+ "¿Se puede pagar un crédito antes de tiempo?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  ]
+ },
+ "¿Se puede radicar una reclamación de seguro en oficinas?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ]
+ },
+ "¿Se puede recibir el crédito por giro en oficina?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Desembolso"
+  ]
+ },
+ "¿Si un cliente no actualiza datos puede pedir otro crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  ]
+ },
+ "¿Sirve el certificado laboral para la actualización de datos?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Actualización de Datos"
+  ]
+ },
+ "¿Tiene costo el estudio para el Crédito Educativo Avanza?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿Tiene costo la solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ]
+ },
+ "¿Un cliente puede tener Vida Protegida y Salud Básica Familiar al mismo tiempo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Un cliente puede tener más de un microseguro de vida?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Un cliente puede tener más de un microseguro?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
+  ]
+ },
+ "¿Vida Protegida cubre enfermedades preexistentes?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Vida Protegida incluye auxilio funerario?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ]
+ },
+ "¿Y el más bajo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ },
+ "¿Y el plazo?": {
+  "estado": "Sin información suficiente",
+  "fuentes": []
+ }
+}

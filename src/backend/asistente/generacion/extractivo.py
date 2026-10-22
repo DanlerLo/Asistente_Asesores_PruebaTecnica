@@ -7,26 +7,11 @@ local, determinista y, por construcción, incapaz de "inventar" información.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
 
-from .corpus import Fragmento
-from .recuperacion import Resultado
-from .texto import raices_unicas
-
-ESTADO_EXITOSA = "Exitosa"
-ESTADO_SIN_INFO = "Sin información suficiente"
-ESTADO_BLOQUEADA = "Bloqueada por seguridad"
-ESTADOS = (ESTADO_EXITOSA, ESTADO_SIN_INFO, ESTADO_BLOQUEADA)
-
-FRASE_SIN_INFO = "No tengo información suficiente para responder."
-MENSAJE_BLOQUEO = (
-    "Esta consulta no puede ser atendida: involucra información restringida "
-    "(credenciales, configuraciones internas, datos de otros clientes o intentos de "
-    "alterar las reglas del asistente). Si requieres esa información, escala el caso "
-    "al área responsable y registra el evento. "
-    "Fuente: Manual del Asesor Comercial.md › Información Sensible; "
-    "Políticas de Atención.md › Política de Escalamiento"
-)
+from ..dominio import ESTADO_EXITOSA, Fuente, RespuestaGenerada, respuesta_sin_informacion
+from ..herramientas.corpus import Fragmento
+from ..herramientas.recuperacion import Resultado
+from ..herramientas.texto import raices_unicas
 
 MAX_LINEAS_POR_FRAGMENTO = 12
 MAX_FRAGMENTOS_EN_RESPUESTA = 2
@@ -41,44 +26,6 @@ RAICES_GENERICAS = frozenset(
     }
 )  # para preguntas con 2+ términos; evita falsos positivos por una sola palabra
 _RE_PREFIJO_LISTA = re.compile(r"^(\d+\.|-)\s")
-
-
-@dataclass(frozen=True)
-class Fuente:
-    documento: str
-    archivo: str
-    seccion: str
-    puntaje: float
-    extracto: str = ""
-
-    def a_dict(self) -> dict:
-        return {
-            "documento": self.documento,
-            "archivo": self.archivo,
-            "seccion": self.seccion,
-            "puntaje": round(self.puntaje, 3),
-            "extracto": self.extracto,
-        }
-
-
-@dataclass
-class RespuestaGenerada:
-    texto: str
-    estado: str
-    fuentes: list[Fuente] = field(default_factory=list)
-    modo: str = "extractivo"
-
-
-def respuesta_sin_informacion(modo: str = "extractivo") -> RespuestaGenerada:
-    return RespuestaGenerada(texto=FRASE_SIN_INFO, estado=ESTADO_SIN_INFO, fuentes=[], modo=modo)
-
-
-def respuesta_bloqueada(motivo: str = "") -> RespuestaGenerada:
-    fuentes = [
-        Fuente("Manual del Asesor Comercial", "Manual del Asesor Comercial.md", "Información Sensible", 1.0),
-        Fuente("Políticas de Atención", "Políticas de Atención.md", "Política de Escalamiento", 1.0),
-    ]
-    return RespuestaGenerada(texto=MENSAJE_BLOQUEO, estado=ESTADO_BLOQUEADA, fuentes=fuentes, modo="guardrail")
 
 
 def seleccionar_lineas(
@@ -162,17 +109,35 @@ def _misma_entidad(a: Fragmento, b: Fragmento) -> bool:
     return a.archivo == b.archivo
 
 
+def _terminos_distintivos(principal: Fragmento, consulta: frozenset[str]) -> frozenset[str]:
+    """Raíces de la pregunta que nombran la sección del fragmento mejor puntuado («pqr» en «Gestión de PQR»).
+
+    Los títulos con forma de pregunta (preguntas frecuentes, llenos de palabras comunes) y las
+    palabras de categoría no cuentan.
+    """
+    titulos: set[str] = set()
+    for parte in principal.ruta_seccion.split(">"):
+        if not parte.strip().endswith("?"):
+            titulos |= raices_unicas(parte)
+    return frozenset((consulta & titulos) - RAICES_GENERICAS)
+
+
 def responder_extractivo(pregunta: str, resultados: list[Resultado], umbral_cobertura: float) -> RespuestaGenerada:
     consulta = raices_unicas(pregunta)
     if not consulta or not resultados:
         return respuesta_sin_informacion()
     consulta_util = resultados[0].consulta_util or frozenset(consulta)
     nombradas = _raices_nombradas(resultados, consulta_util)
+    # RF-12: si el fragmento mejor puntuado trata lo que nombra la pregunta («Gestión de PQR») pero
+    # no responde el atributo pedido, no se recurre a otro fragmento que solo coincide en palabras
+    # comunes («tiempo», «válido» ≈ «Validación» de microseguros): el respaldo debe mencionar al
+    # menos un término de esa sección. Solo aplica a ese respaldo, nunca al fragmento principal.
+    exigidos = _terminos_distintivos(resultados[0].fragmento, consulta_util)
 
     bloques: list[tuple[Fragmento, list[str]]] = []
     fuentes: list[Fuente] = []
     puntaje_principal = 0.0
-    for resultado in resultados:
+    for posicion, resultado in enumerate(resultados):
         if resultado.cobertura < umbral_cobertura:
             continue
         if len(consulta) >= MINIMO_TERMINOS_COINCIDENTES and len(resultado.terminos) < MINIMO_TERMINOS_COINCIDENTES:
@@ -184,6 +149,9 @@ def responder_extractivo(pregunta: str, resultados: list[Resultado], umbral_cobe
             or _misma_entidad(bloques[0][0], resultado.fragmento)
             or not _entidad_nombrada(resultado.fragmento, consulta_util)
         ):
+            continue
+        es_respaldo = posicion > 0 and not bloques
+        if es_respaldo and exigidos and not exigidos & raices_unicas(resultado.fragmento.texto_indexable):
             continue
         lineas = seleccionar_lineas(resultado.fragmento, consulta_util, nombradas)
         if not lineas:

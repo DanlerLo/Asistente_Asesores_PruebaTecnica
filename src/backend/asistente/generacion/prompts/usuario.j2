@@ -1,0 +1,11 @@
+{#- Mensaje de usuario: fragmentos recuperados (marcados como datos) y la pregunta.
+    Variables: fragmentos (list[Fragmento]), pregunta (str). Todo valor pasa por el filtro ``dato``. -#}
+<fragmentos>
+{% for f in fragmentos %}
+<fragmento id="{{ loop.index }}" archivo="{{ f.archivo | dato | replace('"', "'") }}" seccion="{{ (f.ruta_seccion or "documento completo") | dato | replace('"', "'") }}">
+{{ f.contenido | dato }}
+</fragmento>
+{% endfor %}
+</fragmentos>
+
+<pregunta>{{ pregunta | dato }}</pregunta>

@@ -45,6 +45,12 @@ SINONIMOS: dict[str, str] = {
 }
 
 _RE_TOKEN = re.compile(r"[a-z0-9]+")
+# Comparativos de las preguntas («¿y el más bajo?») -> el atributo que usan los documentos («mínimo»).
+# Los documentos no usan estas expresiones, así que no cambia el índice.
+_COMPARATIVOS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\bmas\s+(bajo|baja|bajos|bajas|pequeno|pequena)\b|\bmenor(es)?\b"), "minimo"),
+    (re.compile(r"\bmas\s+(alto|alta|altos|altas|grande|grandes)\b|\bmayor(es)?\b"), "maximo"),
+)
 _VOCALES = "aeiou"
 
 
@@ -84,17 +90,28 @@ def raiz(palabra: str) -> str:
     return p
 
 
+def palabras(texto: str) -> list[str]:
+    """Palabras normalizadas en orden (sin tildes, con comparativos), sin quitar stopwords."""
+    normalizado = normalizar(texto)
+    for patron, reemplazo in _COMPARATIVOS:
+        normalizado = patron.sub(reemplazo, normalizado)
+    return _RE_TOKEN.findall(normalizado)
+
+
+def raiz_con_sinonimos(palabra: str) -> str:
+    base = raiz(palabra)
+    return SINONIMOS.get(base, base)
+
+
 def tokenizar(texto: str, *, quitar_stopwords: bool = True) -> list[str]:
     """Convierte texto en una lista de raíces normalizadas."""
-    tokens = _RE_TOKEN.findall(normalizar(texto))
     salida: list[str] = []
-    for token in tokens:
+    for token in palabras(texto):
         if len(token) < 2 and not token.isdigit():
             continue
         if quitar_stopwords and token in STOPWORDS:
             continue
-        base = raiz(token)
-        salida.append(SINONIMOS.get(base, base))
+        salida.append(raiz_con_sinonimos(token))
     return salida
 
 

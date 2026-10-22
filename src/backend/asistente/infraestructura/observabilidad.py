@@ -33,3 +33,5 @@ def configurar_logging(nivel: str = "INFO") -> None:
     manejador.setFormatter(FormateadorJSON())
     raiz.handlers = [manejador]
     raiz.setLevel(nivel.upper())
+    # httpx registra cada URL solicitada en INFO: se silencia para no llenar los logs ni filtrar datos de la URL.
+    logging.getLogger("httpx").setLevel(logging.WARNING)

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from asistente.guardrails import ErrorValidacion, evaluar_entrada, filtrar_salida, validar_pregunta
+from asistente.seguridad.guardrails import ErrorValidacion, evaluar_entrada, filtrar_salida, validar_pregunta
 
 # --------------------------------------------------------------------------- validación
 
@@ -103,5 +103,6 @@ def test_salida_con_forma_de_credencial_se_bloquea(texto):
 
 
 def test_salida_normal_se_permite():
-    assert filtrar_salida("Según «Productos de Crédito»: Monto máximo: $50.000.000. Fuente: Productos de Crédito.md").permitido
+    texto = "Según «Productos de Crédito»: Monto máximo: $50.000.000. Fuente: Productos de Crédito.md"
+    assert filtrar_salida(texto).permitido
     assert filtrar_salida("Tiempo objetivo: 5 días hábiles. PQR radicado en oficinas.").permitido

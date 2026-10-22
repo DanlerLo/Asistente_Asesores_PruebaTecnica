@@ -1,8 +1,10 @@
 """Pruebas de normalización de texto y carga/fragmentación del corpus (RF-01, RF-02, RF-07, RF-08)."""
 from __future__ import annotations
 
-from asistente.corpus import Corpus, cargar_corpus, es_instruccion_sospechosa, extraer_secretos, fragmentar
-from asistente.texto import normalizar, raiz, tokenizar
+import unicodedata
+
+from asistente.herramientas.corpus import Corpus, cargar_corpus, es_instruccion_sospechosa, extraer_secretos, fragmentar
+from asistente.herramientas.texto import normalizar, raiz, tokenizar
 
 from conftest import crear_base_documental, valores_restringidos
 
@@ -105,6 +107,16 @@ def test_documentos_duplicados_se_indexan_una_sola_vez(tmp_path):
     assert corpus.documentos == ["copia (2).md"] or len(corpus.documentos) == 1
     assert len(corpus.duplicados) == 2
     assert len({f.archivo for f in corpus.fragmentos}) == 1
+
+
+def test_nombres_de_archivo_se_normalizan_a_nfc(tmp_path):
+    # macOS puede entregar "Crédito" descompuesto (NFD): e + tilde combinante.
+    nombre_nfd = unicodedata.normalize("NFD", "Productos de Crédito.md")
+    contenido = "# Productos\n\n## Crédito Z\n\nMonto máximo: $1\n"
+    data_dir = crear_base_documental(tmp_path / "data", {nombre_nfd: contenido})
+    corpus = cargar_corpus(data_dir)
+    assert corpus.documentos == ["Productos de Crédito.md"]
+    assert {f.archivo for f in corpus.fragmentos} == {"Productos de Crédito.md"}
 
 
 def test_base_documental_vacia_o_inexistente(tmp_path):

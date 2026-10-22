@@ -1,7 +1,7 @@
 """Pruebas del contrato HTTP (RF-01, RF-05, RF-06, RF-09, RF-10)."""
 from __future__ import annotations
 
-from asistente.motor import ESTADO_BLOQUEADA, ESTADO_EXITOSA, ESTADO_SIN_INFO, FRASE_SIN_INFO
+from asistente.dominio import ESTADO_BLOQUEADA, ESTADO_EXITOSA, ESTADO_SIN_INFO, FRASE_SIN_INFO
 
 from conftest import valores_restringidos
 
@@ -12,7 +12,7 @@ def test_consulta_valida(cliente):
     r = cliente.post("/api/consultar", json={"pregunta": "¿Cuál es el monto máximo del Crédito Productivo Impulso?"})
     assert r.status_code == 200
     datos = r.json()
-    assert CAMPOS_RESPUESTA <= set(datos)
+    assert set(datos) == CAMPOS_RESPUESTA  # contrato exacto (RF-01, RF-O8)
     assert datos["estado"] == ESTADO_EXITOSA
     assert "$50.000.000" in datos["respuesta"]
     assert datos["fuentes"][0]["archivo"] == "Productos de Crédito.md"
@@ -86,16 +86,17 @@ def test_error_interno_no_expone_detalles(cfg, corpus, monkeypatch):
     """RF-S7: una excepción inesperada devuelve un mensaje genérico, sin traza ni rutas."""
     from fastapi.testclient import TestClient
 
+    from asistente.infraestructura.persistencia import RepositorioConsultas
     from asistente.main import crear_app
-    from asistente.persistencia import RepositorioConsultas
 
     def explotar(_pregunta):
         raise RuntimeError("detalle sensible: /ruta/interna/config.py")
 
     app = crear_app(cfg=cfg, corpus=corpus, repositorio=RepositorioConsultas(":memory:"))
     with TestClient(app, raise_server_exceptions=False) as cliente:
-        monkeypatch.setattr(cliente.app.state.servicio, "consultar", explotar)
+        monkeypatch.setattr(cliente.app.state.orquestador, "consultar", explotar)
         r = cliente.post("/api/consultar", json={"pregunta": "¿Cuál es el monto máximo?"})
     assert r.status_code == 500
-    assert r.json() == {"error": "Ocurrió un error interno. Intenta de nuevo o escala el caso.", "codigo": "ERROR_INTERNO"}
+    mensaje = "Ocurrió un error interno. Intenta de nuevo o escala el caso."
+    assert r.json() == {"error": mensaje, "codigo": "ERROR_INTERNO"}
     assert "config.py" not in r.text and "RuntimeError" not in r.text

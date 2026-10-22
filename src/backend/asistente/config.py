@@ -13,7 +13,7 @@ from pathlib import Path
 # src/backend/asistente/config.py -> parents[3] es la raíz del repositorio.
 RAIZ_PROYECTO = Path(__file__).resolve().parents[3]
 
-PROVEEDORES_LLM = ("none",)
+PROVEEDORES_LLM = ("none", "groq")
 
 
 @dataclass(frozen=True)
@@ -32,6 +32,7 @@ class Configuracion:
     )
     llm_provider: str = "none"
     llm_model: str = ""
+    groq_api_key: str = ""
     llm_timeout_segundos: float = 30.0
 
     @classmethod
@@ -64,5 +65,6 @@ class Configuracion:
             cors_origenes=origenes,
             llm_provider=proveedor,
             llm_model=os.getenv("LLM_MODEL", "").strip(),
+            groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
             llm_timeout_segundos=float(os.getenv("LLM_TIMEOUT_SEGUNDOS", "30")),
         )

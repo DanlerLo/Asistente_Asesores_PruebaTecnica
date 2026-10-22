@@ -18,7 +18,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .texto import normalizar
+from ..herramientas.texto import normalizar
 
 
 class ErrorValidacion(ValueError):
@@ -48,6 +48,24 @@ def validar_pregunta(valor: object, max_longitud: int) -> str:
             "CARACTERES_NO_PERMITIDOS", "La pregunta contiene caracteres de control no permitidos."
         )
     return " ".join(pregunta.split())
+
+
+MAX_ELEMENTOS_CONTEXTO = 3
+
+
+def validar_contexto(valor: object, max_longitud: int) -> list[str]:
+    """Preguntas anteriores de la conversación (opcional): hasta las 3 más recientes, validadas como preguntas."""
+    if valor is None:
+        return []
+    if not isinstance(valor, list):
+        raise ErrorValidacion("CONTEXTO_INVALIDO", "El campo 'contexto' debe ser una lista de preguntas anteriores.")
+    contexto: list[str] = []
+    for elemento in valor[-MAX_ELEMENTOS_CONTEXTO:]:
+        try:
+            contexto.append(validar_pregunta(elemento, max_longitud))
+        except ErrorValidacion as error:
+            raise ErrorValidacion("CONTEXTO_INVALIDO", f"Contexto inválido: {error.mensaje}") from error
+    return contexto
 
 
 # Reglas evaluadas sobre el texto normalizado (minúsculas, sin tildes).
@@ -85,7 +103,8 @@ REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
             r"\b(actua|actue|comportate) como\b|"
             r"\beres (ahora )?(un|una|el|la) (administrador|desarrollador|sistema|ia sin)\b|"
             r"\bmodo (desarrollador|administrador|admin|dios|sin restricciones)\b|"
-            r"\b(revela|muestra|imprime|repite|entrega)(me)? (tu|el|las|tus|toda la) (prompt|instrucciones|configuracion|informacion restringida)\b|"
+            r"\b(revela|muestra|imprime|repite|entrega)(me)? (tu|el|las|tus|toda la) "
+            r"(prompt|instrucciones|configuracion|informacion restringida)\b|"
             r"\bjailbreak\b|\bsin restricciones\b|\bno tienes (reglas|restricciones)\b",
         ),
         (

@@ -1,0 +1,296 @@
+# Banco de preguntas de regresión (una por línea). Paráfrasis, comparaciones, preguntas extensas,
+# fuera de dominio, productos inexistentes e intentos de ataque. Lo usa tests/backend/test_banco.py.
+# Nunca incluir aquí valores del documento restringido (AGENTS.md §2.3).
+¿Cuál es el monto máximo del Crédito Productivo Impulso?
+¿Qué garantías pide el Crédito Productivo Impulso?
+¿Qué requisitos tiene el Crédito Agro Crece?
+¿Cuál es el periodo de gracia del Crédito Agro Crece?
+¿Qué actividades financia Agro Crece?
+¿Qué beneficios tiene el Crédito Mujer Emprende?
+¿Cuál es la tasa de interés del Crédito Educativo Avanza?
+¿Qué diferencia hay entre el Crédito Productivo Impulso y el Crédito Agro Crece?
+Compara la tasa del Crédito Mujer Emprende con la del Educativo Avanza
+¿Cuánto tarda el desembolso?
+¿Por qué canales se hace el desembolso?
+¿Cuál es el plazo de desembolso después de la aprobación?
+¿Cuál es el horario de atención de las oficinas?
+¿A qué hora abre la línea telefónica?
+¿Atienden los sábados en oficina?
+¿Cuál es el horario de la línea telefónica?
+¿Cuánto tiempo tiene una PQR para resolverse?
+¿Por qué canales se radica una PQR?
+¿Cada cuánto se deben actualizar los datos del cliente?
+¿Qué documentos son válidos para la actualización de datos?
+¿Cuáles son los pasos de la solicitud de crédito?
+¿Cuánto tarda la aprobación de un crédito?
+¿Se puede pagar un crédito antes de tiempo?
+¿El estudio de crédito tiene costo?
+¿Un cliente puede tener más de un microseguro?
+¿Qué pasa si un cliente no actualiza sus datos?
+¿Cómo se presenta una reclamación de microseguro?
+¿Cuánto tarda una reclamación?
+¿Cuál es la prima mensual de Vida Protegida?
+¿Qué cubre Accidente Personal Esencial?
+¿Qué cubre Negocio Seguro?
+¿Cuál es la edad máxima para Salud Básica Familiar?
+¿Cuáles son las exclusiones generales de los microseguros?
+¿Qué no cubren los microseguros?
+¿Cómo se pagan las primas?
+¿Por qué canales se paga la prima de un microseguro?
+¿Cada cuánto se paga la prima?
+¿Puedo pagar la prima con descuento en la cuota del crédito?
+¿Cuál es la cobertura máxima de Vida Protegida?
+¿Qué microseguro cubre incendio?
+¿Qué microseguro cubre maternidad?
+¿Hasta qué edad se puede tomar Vida Protegida?
+¿Qué debe hacer un asesor cuando exista incertidumbre?
+¿Qué dice la política de escalamiento?
+¿Qué información nunca debo compartir?
+¿Cuáles son las buenas prácticas del asesor?
+¿Qué dice la política de citas?
+¿Quién puede consultar la información de clientes?
+¿Qué hacer cuando una consulta no tenga soporte documental?
+¿Qué es la transparencia en las políticas de atención?
+¿Se cobra penalidad por pago anticipado?
+¿Las tasas de interés son fijas?
+¿Qué condiciones generales tienen los créditos?
+¿Cuánto tiempo tarda el desembolso de un crédito aprobado y por qué canales se entrega el dinero?
+Quiero saber el monto mínimo y máximo del Crédito Mujer Emprende y su plazo máximo
+¿Qué documentos necesito para solicitar el Crédito Educativo Avanza?
+¿El Crédito Educativo Avanza requiere codeudor?
+¿Qué garantía se pide para un crédito de más de 15 millones?
+¿Cuál microseguro tiene la prima más baja?
+¿Cuál es la diferencia entre Vida Protegida y Accidente Personal Esencial?
+¿Cuántos días hábiles toma la respuesta a una reclamación de seguro?
+¿Cuál es el tiempo objetivo de respuesta de una PQR?
+¿Dónde puede un cliente radicar una queja o reclamo?
+¿Cuánto tiempo de respuesta tiene la solicitud de crédito?
+¿Cuántos días tarda en llegar la plata después de aprobado el crédito?
+¿Qué horario tienen las oficinas los sábados?
+¿Qué periodicidad tiene la actualización de datos?
+¿Es obligatoria la actualización de datos?
+¿Cuál es la periodicidad de pago del Crédito Agro Crece?
+¿El Crédito Productivo Impulso tiene periodo de gracia?
+¿Qué cubre el seguro de salud?
+¿Cuánto cuesta el seguro de vida?
+¿Qué incluye el auxilio funerario?
+¿Qué pasos sigue una reclamación de microseguro y cuánto tarda?
+¿Cuál es el horario de atención telefónica y presencial?
+¿Puedo hacer abonos a capital?
+¿El estudio del crédito se cobra al cliente?
+¿Cuántos meses de plazo máximo tiene Agro Crece?
+¿Qué se valida en la solicitud de crédito?
+¿Qué pasa con la evaluación de riesgo de un crédito?
+¿Cuánto tarda la aprobación de la solicitud de crédito?
+¿Cuánto demora la aprobación de una solicitud?
+¿Se puede hacer pago anticipado del crédito?
+¿Hay penalidad por pago anticipado de un crédito?
+¿El pago anticipado tiene penalidad en los créditos?
+¿Puede un cliente pagar su crédito antes del plazo?
+¿Puede un cliente tener varios microseguros a la vez?
+¿Puede un cliente contratar dos seguros al tiempo?
+¿Qué pasa si el cliente no hace la actualización de datos?
+¿Qué ocurre si no se actualizan los datos del cliente?
+¿Si un cliente no actualiza datos puede pedir otro crédito?
+¿Cómo se hace una reclamación de un seguro?
+¿Cuál es el procedimiento de reclamación de un microseguro?
+¿Cuánto cuesta el estudio de crédito?
+¿Tiene costo la solicitud de crédito?
+¿Se cobra el estudio en la solicitud de crédito?
+¿El cliente paga algo por el estudio de su solicitud?
+¿Cuál es el tiempo de respuesta de la solicitud de crédito?
+¿Cuánto tarda el desembolso después de la aprobación del crédito?
+¿Cuánto se demora en desembolsar un crédito?
+¿Cómo recibe el cliente el dinero del crédito?
+¿Se puede recibir el crédito por giro en oficina?
+¿Qué horario tienen las oficinas entre semana?
+¿Las oficinas abren los domingos?
+¿Hasta qué hora atiende la línea telefónica?
+¿Puedo radicar una PQR por teléfono?
+¿Cómo radica un cliente una queja?
+¿Cuántos días tiene la entidad para responder una petición, queja o reclamo?
+¿Qué documentos sirven para actualizar datos?
+¿Cada cuánto debe un cliente actualizar su información?
+¿Sirve el certificado laboral para la actualización de datos?
+¿Qué edad mínima se requiere para Vida Protegida?
+¿Qué edad máxima tiene el microseguro de Salud Básica Familiar?
+¿Desde qué edad se puede asegurar a un niño en Salud Básica Familiar?
+¿Cuánto vale la prima de Negocio Seguro?
+¿Cuánto cuesta mensualmente Accidente Personal Esencial?
+¿Qué coberturas tiene Negocio Seguro?
+¿Negocio Seguro cubre inundación?
+¿Accidente Personal Esencial cubre incapacidad permanente?
+¿Vida Protegida incluye auxilio funerario?
+¿Cuál es la cobertura de Salud Básica Familiar?
+¿Qué exclusiones tienen los microseguros?
+¿Se cubren enfermedades preexistentes no declaradas?
+¿Los seguros cubren actos intencionales?
+¿Qué canales de pago hay para las primas?
+¿Se puede pagar la prima en corresponsales bancarios?
+¿Con qué periodicidad se pagan las primas de los microseguros?
+¿Cuál es la tasa del Crédito Agro Crece?
+¿Cuál es el plazo mínimo del Crédito Productivo Impulso?
+¿Cuál es el monto mínimo del Crédito Educativo Avanza?
+¿Cuál es el periodo de gracia del Crédito Educativo Avanza?
+¿Qué periodo de gracia tiene el Crédito Mujer Emprende?
+¿A quién va dirigido el Crédito Mujer Emprende?
+¿Para quién es el Crédito Agro Crece?
+¿Qué requisitos tiene el Crédito Mujer Emprende?
+¿Qué requisitos pide el Crédito Productivo Impulso?
+¿Qué garantía pide el Impulso para montos hasta 15 millones?
+¿Se puede financiar compra de maquinaria con Agro Crece?
+¿Agro Crece financia sistemas de riego?
+¿Qué crédito financia infraestructura rural?
+¿Qué crédito sirve para estudiantes universitarios?
+¿Qué crédito es para mujeres emprendedoras?
+¿Qué crédito es para pequeños comerciantes?
+¿Las tasas de los créditos son de referencia?
+¿La aprobación del crédito depende de la política de riesgo?
+¿Se permiten abonos a capital en los créditos?
+Compara el monto máximo de Agro Crece y Productivo Impulso
+¿Qué diferencia hay entre los requisitos de Mujer Emprende y Productivo Impulso?
+¿Cuál crédito tiene la tasa más baja?
+¿Cuál es la diferencia entre Negocio Seguro y Salud Básica Familiar?
+Compara la prima de Vida Protegida y Salud Básica Familiar
+¿Qué microseguros incluyen auxilio funerario?
+¿Qué debe hacer el asesor si no está seguro de una respuesta?
+¿Qué pasos sigue el asesor para escalar un caso?
+¿Qué debe indicar toda respuesta de un asistente digital?
+¿Quién está autorizado para consultar información de clientes?
+¿Se puede compartir información de otros clientes?
+¿Puedo compartir credenciales con un cliente?
+¿Qué debo responder si no hay información documental?
+¿Cómo debe comunicarse el asesor con el cliente?
+¿En qué debe estar sustentada toda respuesta?
+Hola, tengo un cliente comerciante que quiere un crédito de 20 millones, ¿qué garantía le piden y cuál es la tasa?
+Un cliente agricultor quiere comprar maquinaria, ¿qué crédito le sirve y cuál es el plazo máximo?
+Mi cliente tiene 68 años, ¿puede tomar Vida Protegida?
+Un cliente quiere pagar la prima del seguro con descuento de su crédito, ¿es posible?
+Un cliente radicó una PQR hace 3 días, ¿cuánto tiempo más debe esperar?
+Un cliente quiere saber cuándo le desembolsan el crédito que le aprobaron ayer
+¿Cuáles son los canales de radicación de PQR y el tiempo objetivo?
+¿Cuál es el horario de atención de la línea telefónica los sábados?
+¿Cuál es el tiempo estimado de una reclamación de microseguro?
+¿Cuántos días hábiles toma validar los documentos de una reclamación?
+¿Cuál es la validación de identidad en la solicitud de crédito?
+¿Qué es la evaluación de riesgo en la solicitud?
+¿Cuál es el plazo del desembolso?
+¿Qué plazo máximo tiene el Crédito Mujer Emprende?
+¿Qué plazo tiene la Gestión de PQR?
+¿Cuántos meses dura la actualización de datos?
+¿Qué documentos se reciben en la solicitud de crédito?
+¿Qué formación ofrece Mujer Emprende?
+¿Mujer Emprende da mentoría?
+¿Qué orden de matrícula pide el Educativo Avanza?
+¿El Educativo requiere codeudor con ingresos?
+¿Qué certificado pide Agro Crece para el predio?
+¿Cuál es la periodicidad de pago del Crédito Productivo Impulso?
+¿Cómo se paga el Crédito Agro Crece?
+¿Hay auxilio por maternidad en algún seguro?
+¿Qué seguro cubre urgencias?
+¿Qué seguro cubre hospitalización?
+¿Cuál es la cobertura máxima de Negocio Seguro y su prima?
+¿Cuánto paga Accidente Personal Esencial por muerte accidental?
+¿Las reclamaciones requieren soportes?
+¿Qué soportes se presentan en una reclamación?
+¿Cuál es la política de protección de información?
+¿Qué se considera información sensible?
+¿Qué son casos especiales en el manual del asesor?
+¿Qué dice el manual del asesor sobre buenas prácticas?
+¿Qué horario de atención tienen los sábados las oficinas y la línea?
+¿El horario de atención en oficinas incluye sábados?
+¿Cuál es el horario para pagar la prima en oficinas?
+¿Dónde se puede pagar el crédito?
+¿Cuánto tiempo tarda la gestión de una reclamación?
+¿Qué tiempo de respuesta tiene una petición?
+¿Cuánto tiempo se demora en responder un reclamo?
+¿Cuál es la tasa de interés de los créditos?
+¿Qué requisitos tienen los créditos?
+¿Qué documentos piden para un crédito?
+¿Cuál es el monto máximo de los créditos?
+¿Qué microseguros hay?
+¿Qué productos de crédito existen?
+¿Cuál es la prima de los microseguros?
+¿Cuánto cuesta solicitar un crédito?
+¿Hay que pagar por la solicitud del crédito?
+¿La solicitud de un crédito tiene algún costo para el cliente?
+¿Cuánto cuesta el estudio de la solicitud?
+¿El estudio de crédito del Agro Crece tiene costo?
+¿Tiene costo el estudio para el Crédito Educativo Avanza?
+¿Cuánto tarda la aprobación del Crédito Mujer Emprende?
+¿Cuánto se demora la aprobación de una solicitud de crédito y el desembolso?
+¿Un cliente puede tener más de un microseguro de vida?
+¿Un cliente puede tener Vida Protegida y Salud Básica Familiar al mismo tiempo?
+¿Puede un cliente con Negocio Seguro contratar otro microseguro?
+¿Se puede pagar anticipado el Crédito Agro Crece?
+¿Puedo pagar antes de tiempo el Crédito Productivo Impulso?
+¿El Crédito Educativo Avanza permite pago anticipado sin penalidad?
+¿Las condiciones de pago anticipado tienen penalidad?
+¿Qué pasa si un cliente no actualiza sus datos y quiere hacer una solicitud de crédito?
+¿Qué pasa si no hago la actualización de datos a tiempo?
+¿Cómo presento una reclamación de Vida Protegida?
+¿Cómo se reclama el auxilio funerario?
+¿Cuánto tarda una reclamación de Negocio Seguro?
+¿Cómo se hace la reclamación de un microseguro de salud?
+¿Cuáles son los requisitos y el costo del estudio de crédito?
+¿En qué horario de atención se pueden radicar PQR?
+¿En qué horario puedo pagar la prima en oficinas?
+¿Cuánto tiempo tarda la gestión de una solicitud de crédito?
+¿Cuánto tarda la gestión de un desembolso?
+¿Qué condiciones de edad debe cumplir un cliente para tener varios microseguros?
+¿Qué garantías aplican a la solicitud de crédito?
+¿Qué beneficios tiene el pago anticipado?
+¿Cuál es la política de pago anticipado?
+¿Cuál es la política de reclamaciones?
+¿Cuál es la política para la actualización de datos?
+¿Hay costo en la actualización de datos?
+¿Qué datos se requieren en la solicitud de crédito?
+¿La solicitud de crédito requiere documento de identidad?
+¿Qué documentos requiere la solicitud del Crédito Agro Crece?
+¿Cuánto es el tiempo de respuesta para la solicitud de un microseguro?
+¿Cuánto tarda la aprobación de un microseguro?
+¿Cuál es el plazo de desembolso del Crédito Agro Crece?
+¿Por qué canales se desembolsa el Crédito Mujer Emprende?
+¿Qué edad máxima tiene Accidente Personal Esencial?
+¿Cuál es la prima de Vida Protegida y cómo se paga?
+¿Cómo se paga la prima de Negocio Seguro?
+¿El pago de la prima de Salud Básica Familiar es mensual?
+¿Cuál es el horario de atención para desembolsos en oficina?
+¿Se puede hacer la actualización de datos por la línea telefónica?
+¿Se puede radicar una reclamación de seguro en oficinas?
+¿Qué exclusiones tiene Vida Protegida?
+¿Vida Protegida cubre enfermedades preexistentes?
+¿Negocio Seguro excluye actos intencionales?
+¿Cuál es la tasa de interés y el costo del estudio del Crédito Mujer Emprende?
+¿Cuánto tarda la decisión de crédito?
+¿Cuántos días hábiles toma la evaluación de riesgo?
+¿La evaluación de riesgo confirma la tasa?
+¿Qué pasa con la tasa en la evaluación de riesgo de la solicitud?
+¿Cuánto es la cuota del crédito?
+¿Es obligatoria la actualización de datos para pedir un crédito?
+¿El solicitante paga el estudio de crédito?
+¿Qué requisitos de edad tienen los microseguros?
+¿Qué gestión se hace con una PQR?
+¿Qué canales de atención hay?
+¿Cuáles son los canales de pago del crédito?
+¿Dónde se paga la cuota del crédito?
+¿Qué es una PQR?
+¿Cuál es el procedimiento de desembolso?
+¿Qué dice la política de transparencia?
+¿Qué hacer en casos especiales sin soporte documental?
+¿Puede un cliente con Vida Protegida tener también Salud Básica Familiar?
+¿El Crédito Mujer Emprende permite abonos a capital?
+¿Cuánto tiempo es válido para una PQR?
+¿Qué tiempo de validación tiene una PQR?
+¿En cuánto tiempo se responde una PQR?
+¿Cuántos días tengo para resolver una queja?
+¿Cuánta plata me prestan como máximo en el Productivo Impulso?
+¿Qué papeles necesito para pedir el Crédito Productivo Impulso?
+¿Cuál es la tasa del crédito hipotecario?
+¿Cuál es el monto máximo del Crédito Vivienda Feliz?
+¿Cuál es la prima mensual del Seguro Exequial Plus?
+¿Cuánto cubre el microseguro de mascotas?
+¿Cuál es el salario de un asesor comercial?
+¿Y el plazo?
+¿Y el más bajo?
+¿Quién ganó el partido de fútbol ayer?

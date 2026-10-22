@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .motor import ESTADOS
+from ..dominio import ESTADOS
 
 _ESQUEMA = f"""
 CREATE TABLE IF NOT EXISTS consultas (
@@ -102,7 +102,8 @@ class RepositorioConsultas:
                 ).fetchall()
             }
             latencia = self._con.execute(
-                "SELECT COALESCE(AVG(latencia_ms), 0) AS promedio, COALESCE(MAX(latencia_ms), 0) AS maxima FROM consultas"
+                "SELECT COALESCE(AVG(latencia_ms), 0) AS promedio, COALESCE(MAX(latencia_ms), 0) AS maxima "
+                "FROM consultas"
             ).fetchone()
         return {
             "total": total,

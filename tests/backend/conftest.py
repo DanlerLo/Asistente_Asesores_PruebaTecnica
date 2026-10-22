@@ -6,11 +6,11 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from asistente.api import crear_app
 from asistente.config import RAIZ_PROYECTO, Configuracion
-from asistente.corpus import Corpus, cargar_corpus
-from asistente.main import crear_app
-from asistente.persistencia import RepositorioConsultas
-from asistente.servicio import ServicioConsultas
+from asistente.herramientas.corpus import Corpus, cargar_corpus
+from asistente.infraestructura.persistencia import RepositorioConsultas
+from asistente.orquestador import Orquestador
 
 DATA_DIR = RAIZ_PROYECTO / "Data"
 
@@ -39,8 +39,8 @@ def corpus(cfg: Configuracion) -> Corpus:
 
 
 @pytest.fixture
-def servicio(cfg: Configuracion, corpus: Corpus) -> ServicioConsultas:
-    return ServicioConsultas(cfg, corpus, RepositorioConsultas(":memory:"))
+def orquestador(cfg: Configuracion, corpus: Corpus) -> Orquestador:
+    return Orquestador(cfg, corpus, RepositorioConsultas(":memory:"))
 
 
 @pytest.fixture
@@ -58,9 +58,25 @@ def crear_base_documental(directorio: Path, archivos: dict[str, str]) -> Path:
     return directorio
 
 
-def servicio_con(directorio: Path, archivos: dict[str, str], **ajustes) -> ServicioConsultas:
-    """Servicio construido sobre una base documental ad hoc."""
+def orquestador_con(directorio: Path, archivos: dict[str, str], **ajustes) -> Orquestador:
+    """Orquestador construido sobre una base documental ad hoc."""
     data_dir = crear_base_documental(directorio, archivos)
     cfg = Configuracion(data_dir=data_dir, **ajustes)
     corpus = cargar_corpus(data_dir, cfg.archivos_restringidos)
-    return ServicioConsultas(cfg, corpus, RepositorioConsultas(":memory:"))
+    return Orquestador(cfg, corpus, RepositorioConsultas(":memory:"))
+
+
+class ProveedorFalso:
+    """Proveedor LLM de prueba: devuelve una respuesta fija (o lanza) y registra las llamadas."""
+
+    nombre = "falso"
+
+    def __init__(self, respuesta: str | Exception) -> None:
+        self.respuesta = respuesta
+        self.llamadas: list[tuple[str, str]] = []
+
+    def completar(self, sistema: str, usuario: str) -> str:
+        self.llamadas.append((sistema, usuario))
+        if isinstance(self.respuesta, Exception):
+            raise self.respuesta
+        return self.respuesta
