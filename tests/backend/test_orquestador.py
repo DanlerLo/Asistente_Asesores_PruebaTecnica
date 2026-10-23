@@ -219,3 +219,15 @@ def test_repositorio_guarda_lista_y_calcula_estadisticas(tmp_path):
         repo.guardar(RegistroConsulta("p", "r", [], "Otro", 0, "x", "2026-01-01T00:00:00+00:00"))
     repo.cerrar()
     assert (tmp_path / "db" / "consultas.db").exists()
+
+
+def test_preguntas_de_politica_ya_no_bloqueadas_no_filtran_secretos(orquestador: Orquestador):
+    """RF-S14, prueba negativa: las preguntas que dejaron de bloquearse no exponen valores restringidos."""
+    for pregunta in (
+        "¿Qué hago si un cliente me pide información de otro cliente?",
+        "¿Qué se considera información confidencial?",
+        "¿Hay actividades restringidas en el Crédito Agro Crece?",
+    ):
+        resultado = orquestador.consultar(pregunta)
+        texto = resultado.respuesta + " ".join(f["extracto"] for f in resultado.fuentes)
+        assert not any(valor in texto for valor in valores_restringidos()), pregunta

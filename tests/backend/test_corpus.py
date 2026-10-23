@@ -244,3 +244,60 @@ def test_bom_no_convierte_el_titulo_en_texto(tmp_path):
     fragmentos = cargar_corpus_seguro(data_dir).fragmentos
     assert all("Título real" not in linea for f in fragmentos for linea in f.lineas)
     assert any(f.ruta_seccion.startswith("Sección") for f in fragmentos)
+
+
+# --------------------------------------------------------------------------- restringidos (RF-S12, hallazgo C9)
+
+def _excluidos(tmp_path, archivos: dict[str, str]):
+    corpus = cargar_corpus_seguro(crear_base_documental(tmp_path / "data", archivos))
+    return corpus.excluidos, corpus.advertencias
+
+
+def test_marca_de_clasificacion_en_cualquier_linea_excluye(tmp_path):
+    relleno = "".join(f"Línea {n}.\n" for n in range(15))
+    excluidos, _ = _excluidos(tmp_path, {"notas.md": f"# Notas\n\n{relleno}CLASIFICACIÓN: RESERVADO\n"})
+    assert excluidos == ["notas.md"]
+
+
+def test_contenido_con_forma_de_credencial_excluye_aunque_no_este_marcado(tmp_path):
+    excluidos, advertencias = _excluidos(
+        tmp_path,
+        {"publico.md": "# Público\n\n## Tema\n\nDato.\n", "config.md": "# Config\n\nToken: QZX-4821-KLM\n"},
+    )
+    assert excluidos == ["config.md"]
+    assert "config.md: excluido del índice (contenido con forma de credencial)" in advertencias
+    assert "QZX" not in " ".join(advertencias)  # el aviso nunca reproduce el valor
+
+
+def test_cada_exclusion_queda_avisada_con_su_motivo(tmp_path):
+    _, advertencias = _excluidos(tmp_path, {"secreto.md": "# S\n\nCLASIFICACIÓN: CONFIDENCIAL\n\nDato.\n"})
+    assert "secreto.md: excluido del índice (marca de clasificación)" in advertencias
+
+
+@pytest.mark.parametrize(
+    "linea",
+    [
+        "La palabra clave para recordar es confianza.",
+        "El asesor nunca debe pedir la contraseña del cliente.",
+        "Token de turno: entregue el número impreso al cliente.",
+    ],
+)
+def test_menciones_normales_de_claves_no_excluyen_un_documento_publico(tmp_path, linea):
+    """Prueba negativa: ampliar la detección no debe sacar del índice documentos legítimos."""
+    excluidos, _ = _excluidos(tmp_path, {"guia.md": f"# Guía\n\n## Tema\n\n{linea}\n"})
+    assert excluidos == []
+
+
+def test_los_documentos_publicos_reales_no_se_excluyen(cfg):
+    corpus = cargar_corpus_seguro(cfg.data_dir, ())  # sin lista de nombres: solo por contenido
+    assert corpus.excluidos == ["Información restringida.md"]
+
+
+def test_enlace_simbolico_fuera_de_data_se_ignora(tmp_path):
+    externo = tmp_path / "fuera.md"
+    externo.write_text("# Fuera\n\n## Tema\n\nDato externo.\n", encoding="utf-8")
+    data_dir = crear_base_documental(tmp_path / "data", {"guia.md": "# Guía\n\n## Tema\n\nDato.\n"})
+    (data_dir / "enlace.md").symlink_to(externo)
+    corpus = cargar_corpus_seguro(data_dir)
+    assert corpus.documentos == ["guia.md"]
+    assert any("enlace.md" in a and "fuera del directorio" in a for a in corpus.advertencias)
