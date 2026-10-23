@@ -10,6 +10,7 @@ from ..generacion.llm import ProveedorLLM, responder_con_llm
 from ..herramientas.corpus import Fragmento
 from ..herramientas.entidades import pertenece_a
 from ..herramientas.recuperacion import Resultado
+from ..herramientas.semantica import ContextoSemantico
 from .catalogo import listar_por_producto
 
 
@@ -25,6 +26,7 @@ class Agente(Protocol):
         umbral_cobertura: float,
         proveedor_llm: ProveedorLLM | None = None,
         fragmentos: Sequence[Fragmento] = (),
+        semantico: ContextoSemantico | None = None,
     ) -> RespuestaGenerada: ...
 
 
@@ -47,13 +49,34 @@ class AgenteDocumental:
         umbral_cobertura: float,
         proveedor_llm: ProveedorLLM | None = None,
         fragmentos: Sequence[Fragmento] = (),
+        semantico: ContextoSemantico | None = None,
     ) -> RespuestaGenerada:
         if self.catalogo:
             por_producto = listar_por_producto(pregunta, fragmentos, self.documentos)
             if por_producto is not None:
                 return por_producto
         if proveedor_llm is not None:
-            generada = responder_con_llm(pregunta, resultados, proveedor_llm)
+            contexto = self._contexto_llm(resultados, fragmentos, semantico)
+            generada = responder_con_llm(pregunta, contexto, proveedor_llm)
             if generada is not None:
                 return generada
+        # El modo extractivo no responde por similitud (ADR-25): medido, aumentaba las respuestas equivocadas.
         return responder_extractivo(pregunta, resultados, umbral_cobertura)
+
+    def _contexto_llm(
+        self, resultados: list[Resultado], fragmentos: Sequence[Fragmento], semantico: ContextoSemantico | None
+    ) -> list[Resultado]:
+        """RF-E5: lo mejor de BM25, lo parecido por significado y el resto del documento del agente, con tope."""
+        if semantico is None:
+            return resultados
+        tope = semantico.max_fragmentos_llm
+        mitad = (tope + 1) // 2
+        candidatos = [
+            *(r.fragmento for r in resultados[:mitad]),
+            *semantico.fragmentos(tope),
+            *(f for f in fragmentos if f.ruta_seccion != "Índice" and self.atiende(f.archivo)),
+            *(r.fragmento for r in resultados[mitad:]),
+        ]
+        por_id = {r.fragmento.id: r for r in resultados}
+        elegidos = list(dict.fromkeys(candidatos))[:tope]
+        return [por_id.get(f.id) or Resultado(f, 0.0, frozenset(), 0.0) for f in elegidos]

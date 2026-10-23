@@ -7,6 +7,7 @@ from ..dominio import RespuestaGenerada, respuesta_sin_informacion
 from ..generacion.llm import ProveedorLLM
 from ..herramientas.corpus import Fragmento
 from ..herramientas.recuperacion import Resultado
+from ..herramientas.semantica import ContextoSemantico
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,7 @@ class AgenteFueraDeDominio:
         umbral_cobertura: float,
         proveedor_llm: ProveedorLLM | None = None,
         fragmentos: Sequence[Fragmento] = (),
+        semantico: ContextoSemantico | None = None,
     ) -> RespuestaGenerada:
         return respuesta_sin_informacion()
 

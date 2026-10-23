@@ -8,7 +8,8 @@ from ..config import Configuracion
 from ..dominio import ESTADO_BLOQUEADA, Fuente, RespuestaGenerada, respuesta_bloqueada, respuesta_sin_informacion
 from ..generacion.llm import ProveedorLLM
 from ..herramientas.corpus import Corpus
-from ..herramientas.recuperacion import IndiceBM25
+from ..herramientas.recuperacion import IndiceBM25, Resultado
+from ..herramientas.semantica import ContextoSemantico, Embebedor, IndiceSemantico
 from ..infraestructura.persistencia import RegistroConsulta, RepositorioConsultas, ahora_iso
 from ..seguridad.guardrails import (
     CITAS_BLOQUEO,
@@ -60,6 +61,17 @@ def _citas_de_bloqueo(corpus: Corpus) -> list[Fuente]:
     return citas
 
 
+def _indice_semantico(corpus: Corpus, embebedor: Embebedor | None) -> IndiceSemantico | None:
+    """RF-E7: si el modelo no carga, se sigue con recuperación léxica."""
+    if embebedor is None or corpus.vacio:
+        return None
+    try:
+        return IndiceSemantico(corpus.fragmentos, embebedor)
+    except Exception as exc:  # noqa: BLE001 - cualquier fallo del modelo degrada a léxico
+        log.warning("embeddings no disponibles, se usa recuperación léxica", extra={"error": type(exc).__name__})
+        return None
+
+
 class Orquestador:
     def __init__(
         self,
@@ -68,6 +80,7 @@ class Orquestador:
         repositorio: RepositorioConsultas,
         proveedor_llm: ProveedorLLM | None = None,
         enrutador: Enrutador | None = None,
+        embebedor: Embebedor | None = None,
     ) -> None:
         self.cfg = cfg
         self.corpus = corpus
@@ -79,6 +92,7 @@ class Orquestador:
         self.entidades = entidades_del_corpus(corpus.fragmentos)
         # Citas del bloqueo resueltas contra el corpus: sin esas secciones, no se citan archivos inexistentes.
         self.fuentes_bloqueo = _citas_de_bloqueo(corpus)
+        self.semantico = _indice_semantico(corpus, embebedor)
 
     def consultar(self, pregunta_cruda: object, contexto: object = None) -> ResultadoConsulta:
         """Lanza ``ErrorValidacion`` si la pregunta o el contexto no son válidos."""
@@ -155,6 +169,11 @@ class Orquestador:
     def _delegar(self, pregunta: str) -> tuple[RespuestaGenerada, str, str]:
         inexistente = not self.corpus.vacio and self.indice.nombra_algo_inexistente(pregunta)
         resultados = [] if self.corpus.vacio or inexistente else self.indice.buscar(pregunta, top_k=self.cfg.top_k)
+        similares = self.semantico.similares(pregunta) if self.semantico and not inexistente else []
+        semantico = ContextoSemantico(tuple(similares), self.cfg.umbral_semantico, self.cfg.llm_max_fragmentos)
+        if not resultados and similares and similares[0].similitud >= self.cfg.umbral_semantico:
+            # RF-E3: sin coincidencias léxicas, lo parecido por significado decide el agente.
+            resultados = [Resultado(f, 0.0, frozenset(), 0.0) for f in semantico.fragmentos(self.cfg.top_k)]
         ruta = self.enrutador.elegir(resultados, base_vacia=self.corpus.vacio, inexistente=inexistente)
         generada = ruta.agente.responder(
             pregunta,
@@ -162,6 +181,7 @@ class Orquestador:
             umbral_cobertura=self.cfg.umbral_cobertura,
             proveedor_llm=self.proveedor_llm,
             fragmentos=self.corpus.fragmentos,
+            semantico=semantico,
         )
         return generada, ruta.agente.nombre, ruta.motivo
 
@@ -200,5 +220,6 @@ class Orquestador:
             "advertencias": list(self.corpus.advertencias),
             "modo": self.proveedor_llm.nombre if self.proveedor_llm else "extractivo",
             "agentes": self.enrutador.agentes,
+            "embeddings": "local" if self.semantico else "none",
             "max_longitud_pregunta": self.cfg.max_longitud_pregunta,
         }

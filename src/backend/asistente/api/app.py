@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ..config import Configuracion
 from ..generacion.llm import construir_proveedor
 from ..herramientas.corpus import Corpus
+from ..herramientas.semantica import Embebedor, construir_embebedor
 from ..infraestructura.observabilidad import configurar_logging, id_solicitud, instalar_id_de_solicitud
 from ..infraestructura.persistencia import RepositorioConsultas
 from ..orquestador import Orquestador
@@ -47,7 +48,9 @@ def crear_app(
     async def ciclo_de_vida(app: FastAPI):
         corpus_real = corpus if corpus is not None else cargar_corpus_seguro(cfg.data_dir, cfg.archivos_restringidos)
         repo = repositorio if repositorio is not None else RepositorioConsultas(cfg.db_path)
-        app.state.orquestador = Orquestador(cfg, corpus_real, repo, construir_proveedor(cfg))
+        app.state.orquestador = Orquestador(
+            cfg, corpus_real, repo, construir_proveedor(cfg), embebedor=_embebedor(cfg)
+        )
         log.info("aplicación iniciada", extra={"data_dir": str(cfg.data_dir), "modo": cfg.llm_provider})
         yield
         app.state.orquestador.cerrar()
@@ -69,6 +72,15 @@ def crear_app(
     _registrar_errores(app)
     app.include_router(rutas)
     return app
+
+
+def _embebedor(cfg: Configuracion) -> Embebedor | None:
+    """RF-E7: sin el modelo (librería ausente o primera descarga sin red) se sigue con recuperación léxica."""
+    try:
+        return construir_embebedor(cfg.embeddings, cfg.embeddings_modelo, cfg.embeddings_cache)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("embeddings no disponibles, se usa recuperación léxica", extra={"error": type(exc).__name__})
+        return None
 
 
 def _registrar_middleware(app: FastAPI) -> None:
