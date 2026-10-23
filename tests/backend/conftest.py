@@ -15,8 +15,7 @@ from asistente.seguridad.ingesta import cargar_corpus_seguro
 
 DATA_DIR = RAIZ_PROYECTO / "Data"
 
-# Cadenas ficticias del archivo restringido de ejemplo: deben estar fuera del índice
-# y NUNCA aparecer en una respuesta. Se leen del archivo para no duplicarlas en el código.
+# Los valores restringidos se leen del archivo en tiempo de prueba; nunca se escriben en el código.
 _RESTRINGIDO = DATA_DIR / "Información restringida.md"
 
 

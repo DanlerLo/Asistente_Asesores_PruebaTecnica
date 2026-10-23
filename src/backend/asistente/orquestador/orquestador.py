@@ -1,11 +1,3 @@
-"""Orquestador: conduce el flujo completo de una consulta (RF-O1).
-
-    validar -> guardrail de entrada -> recuperar -> enrutar -> agente responde
-            -> guardrail de salida -> persistir
-
-La seguridad no se delega: los guardrails se aplican aquí, antes y después de
-cualquier agente. Es independiente de HTTP para poder probarlo de forma unitaria.
-"""
 from __future__ import annotations
 
 import logging
@@ -60,7 +52,6 @@ class ResultadoConsulta:
 
 
 def _citas_de_bloqueo(corpus: Corpus) -> list[Fuente]:
-    """Secciones de ``CITAS_BLOQUEO`` presentes en el corpus, en ese orden."""
     citas: list[Fuente] = []
     for archivo, seccion in CITAS_BLOQUEO:
         fragmento = next((f for f in corpus.fragmentos if (f.archivo, f.ruta_seccion) == (archivo, seccion)), None)
@@ -90,10 +81,7 @@ class Orquestador:
         self.fuentes_bloqueo = _citas_de_bloqueo(corpus)
 
     def consultar(self, pregunta_cruda: object, contexto: object = None) -> ResultadoConsulta:
-        """Atiende una pregunta. Lanza ``ErrorValidacion`` si la entrada o el contexto no son válidos.
-
-        ``contexto``: preguntas anteriores de la conversación (opcional, especificación 006).
-        """
+        """Lanza ``ErrorValidacion`` si la pregunta o el contexto no son válidos."""
         inicio = time.perf_counter()
         pregunta = validar_pregunta(pregunta_cruda, self.cfg.max_longitud_pregunta)
         anteriores = validar_contexto(contexto, self.cfg.max_longitud_pregunta)
@@ -114,8 +102,7 @@ class Orquestador:
                 agente, motivo_ruta = self.enrutador.fuera_de_dominio.nombre, "seguimiento_sin_referente"
             else:
                 generada, agente, motivo_ruta = self._delegar(resolucion.pregunta)
-            # RF-S8: también las fuentes; con LLM el texto puede no repetir el dato, pero el extracto lleva el
-            # fragmento crudo al frontend y al historial.
+            # RF-S8: también las fuentes, porque el extracto llega crudo al frontend y al historial.
             textos = [generada.texto, *(f"{f.documento} {f.seccion} {f.extracto}" for f in generada.fuentes)]
             evaluaciones = (filtrar_salida(texto, self.corpus.secretos) for texto in textos)
             salida = next((evaluacion for evaluacion in evaluaciones if not evaluacion.permitido), None)
@@ -147,7 +134,7 @@ class Orquestador:
                 "latencia_ms": latencia_ms,
                 "n_fuentes": len(fuentes),
                 "seguridad": detalle,
-                "referente": referente,  # entidad heredada del contexto (nombre del corpus, nunca texto libre)
+                "referente": referente,  # nombre del corpus, nunca texto libre
                 "longitud_pregunta": len(pregunta),
             },
         )
@@ -166,7 +153,6 @@ class Orquestador:
         )
 
     def _delegar(self, pregunta: str) -> tuple[RespuestaGenerada, str, str]:
-        """Recupera evidencia, elige el agente y le delega la respuesta."""
         inexistente = not self.corpus.vacio and self.indice.nombra_algo_inexistente(pregunta)
         resultados = [] if self.corpus.vacio or inexistente else self.indice.buscar(pregunta, top_k=self.cfg.top_k)
         ruta = self.enrutador.elegir(resultados, base_vacia=self.corpus.vacio, inexistente=inexistente)
@@ -180,7 +166,6 @@ class Orquestador:
         return generada, ruta.agente.nombre, ruta.motivo
 
     def estado_llm(self) -> dict:
-        """Proveedor configurado, si está activo, llamadas desde el arranque y última cuota conocida."""
         configurado = self._proveedor_configurado
         cuota = configurado.cuota if configurado else None
         return {
@@ -193,15 +178,11 @@ class Orquestador:
         }
 
     def cerrar(self) -> None:
-        """Libera las conexiones del proveedor LLM configurado (al apagar el servicio)."""
         if self._proveedor_configurado is not None:
             self._proveedor_configurado.cerrar()
 
     def cambiar_modo_llm(self, activo: bool) -> dict:
-        """Desactiva el LLM (modo sin conexión) o reactiva el proveedor configurado en ``.env``.
-
-        Nunca activa un proveedor que una persona no haya configurado (AGENTS.md §5).
-        """
+        """Nunca activa un proveedor que una persona no haya configurado en ``.env`` (AGENTS.md §5)."""
         if activo and self._proveedor_configurado is None:
             raise ErrorValidacion(
                 "LLM_NO_CONFIGURADO", "No hay un proveedor LLM configurado (LLM_PROVIDER en .env)."

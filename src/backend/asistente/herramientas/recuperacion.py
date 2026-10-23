@@ -1,11 +1,3 @@
-"""Recuperación léxica (BM25) sobre los fragmentos del corpus.
-
-Sin dependencias externas: el corpus es pequeño y una implementación propia
-de BM25 es suficiente, determinista y fácil de probar. Cuando la pregunta
-nombra una entidad (p. ej. un producto: "Crédito Productivo Impulso") la
-búsqueda se restringe a los fragmentos de esa entidad para evitar responder
-con datos de otro producto ("bloqueo por entidad").
-"""
 from __future__ import annotations
 
 import difflib
@@ -33,7 +25,7 @@ TIPOS_DE_PRODUCTO = frozenset(
      "prestamo", "prestamos"}
 )
 _CONECTORES_DE_NOMBRE = frozenset({"de", "del", "para", "el", "la", "los", "las"})
-# «¿Qué crédito financia…?», «¿cuál seguro sirve…?»: tras un interrogativo sigue un verbo, no un nombre.
+# «¿Qué crédito financia…?»: tras un interrogativo sigue un verbo, no un nombre.
 _INTERROGATIVOS = frozenset({"que", "cual", "cuales"})
 # Adjetivos de listado: «¿cuáles son los créditos disponibles?» no nombra un producto.
 _ADJETIVOS_DE_LISTADO = frozenset(
@@ -57,6 +49,8 @@ class Resultado:
 
 
 class IndiceBM25:
+    """BM25 propio: el corpus es pequeño y así es determinista y sin dependencias."""
+
     def __init__(self, fragmentos: list[Fragmento], k1: float = 1.5, b: float = 0.75) -> None:
         self.fragmentos = list(fragmentos)
         self.k1, self.b = k1, b
@@ -76,7 +70,6 @@ class IndiceBM25:
         self._raices_documentos: frozenset[str] = frozenset().union(
             *(raices_unicas(f.documento) for f in self.fragmentos)
         )
-        # Fragmentos "Índice" por documento, para preguntas sobre el documento completo.
         self._indices_documento: list[tuple[int, frozenset[str]]] = [
             (i, frozenset(raices_unicas(f.documento)))
             for i, f in enumerate(self.fragmentos)
@@ -88,24 +81,10 @@ class IndiceBM25:
         return not self.fragmentos
 
     def conoce(self, raiz: str) -> bool:
-        """La raíz aparece en algún documento indexado."""
         return raiz in self._idf
 
     def nombra_algo_inexistente(self, pregunta: str) -> bool:
-        """RF-13: la pregunta pide un producto o un atributo que no existe en la base documental.
-
-        La búsqueda ignora las palabras que no están en ningún documento (saludos, ruido), así que
-        «¿tasa del crédito hipotecario?» terminaba respondiendo con la tasa de otro crédito. Casos:
-
-        1. Tras «crédito/seguro/microseguro/póliza/préstamo» (y a lo sumo «de», «para», artículos)
-           viene una palabra desconocida: nombra un producto inexistente. No aplica tras «qué/cuál»
-           («¿qué crédito financia…?», sigue un verbo), cuando la palabra anterior es conocida
-           («Negocio Seguro ampara…»: «seguro» es parte de un nombre) ni ante adjetivos de listado
-           («créditos disponibles»).
-        2. Las únicas palabras conocidas son las del nombre de un documento («asesor comercial») y
-           hay palabras desconocidas («salario»): pide un atributo que no está en la base. No aplica
-           si lo conocido son solo categorías («tipos de microseguros»): es un listado.
-        """
+        """RF-13: la pregunta pide un producto o atributo inexistente («crédito hipotecario»)."""
         secuencia = palabras(pregunta)
         for i, palabra in enumerate(secuencia):
             if palabra not in TIPOS_DE_PRODUCTO or (i > 0 and secuencia[i - 1] in _INTERROGATIVOS):
@@ -116,6 +95,7 @@ class IndiceBM25:
             j = i + 1
             while j < len(secuencia) and secuencia[j] in _CONECTORES_DE_NOMBRE:
                 j += 1
+            # Tras «crédito/seguro…» viene una palabra desconocida: nombra un producto inexistente.
             if j < len(secuencia):
                 siguiente = secuencia[j]
                 if (
@@ -127,6 +107,7 @@ class IndiceBM25:
                     and not self.conoce(raiz_con_sinonimos(siguiente))
                 ):
                     return True
+        # Solo se conoce el nombre de un documento y hay palabras desconocidas: atributo inexistente.
         raices = raices_unicas(pregunta)
         desconocidas = {r for r in raices if not self.conoce(r)}
         conocidas = raices - desconocidas
@@ -135,13 +116,7 @@ class IndiceBM25:
         )
 
     def corregir(self, pregunta: str) -> str:
-        """Corrige errores ortográficos leves contra el vocabulario del corpus («requicitos», «desenbolso»).
-
-        Solo palabras de 5+ letras que no existen en ningún documento y se parecen mucho (≥ 0,84) a una
-        que sí existe con casi la misma longitud (± 1 letra); el resto del texto queda intacto.
-        Los nombres inventados («hipotecario», «exequial») no se parecen a nada y siguen
-        desconocidos (RF-13).
-        """
+        """Corrige errores de tipeo contra el vocabulario del corpus («requicitos», «desenbolso»)."""
         def reemplazar(coincidencia: re.Match[str]) -> str:
             original = coincidencia.group(0)
             palabra = normalizar(original)
@@ -152,8 +127,7 @@ class IndiceBM25:
                 or self.conoce(raiz_con_sinonimos(palabra))
             ):
                 return original
-            # Solo errores de tipeo (misma longitud ± 1): «prestan» no debe volverse «presentan»; y no
-            # conjugaciones (una palabra es prefijo de la otra: «tomar»/«toma», «tramita»/«tramitar»).
+            # Longitud ± 1 y sin prefijos: «prestan» no es «presentan» ni «toma» es «tomar».
             candidatas = [
                 v for v in self._vocabulario
                 if abs(len(v) - len(palabra)) <= 1 and not (v.startswith(palabra) or palabra.startswith(v))
@@ -164,13 +138,7 @@ class IndiceBM25:
         return _RE_PALABRA_ORIGINAL.sub(reemplazar, pregunta)
 
     def _candidatos(self, consulta: set[str]) -> list[int]:
-        """Índices de fragmentos a considerar (bloqueo por entidad si aplica).
-
-        Los fragmentos "Índice" no compiten aquí: solo se usan cuando la pregunta
-        trata sobre el documento completo (ver ``_priorizar_indice``).
-
-        Si la pregunta nombra una entidad, quedan fuera los demás productos; el resto compite.
-        """
+        """Si la pregunta nombra una entidad, quedan fuera los demás productos; los índices nunca compiten."""
         bloqueados: list[int] = []
         normales: list[int] = []
         for i, fragmento in enumerate(self.fragmentos):
@@ -186,17 +154,14 @@ class IndiceBM25:
                 bloqueados.append(i)
         if not bloqueados:
             return normales
-        # Nombrar una entidad excluye solo a los OTROS PRODUCTOS (RF-04: no responder con datos de otro
-        # crédito o microseguro). Las secciones generales («Exclusiones generales», «Reclamaciones»),
-        # los procedimientos y las preguntas frecuentes siguen compitiendo. Hallazgo B2.
+        # RF-04: se excluyen solo los otros productos; secciones generales y procedimientos siguen compitiendo.
         return bloqueados + [i for i in normales if i not in bloqueados and not es_producto(self.fragmentos[i])]
 
     def buscar(self, pregunta: str, top_k: int = 3) -> list[Resultado]:
         consulta = raices_unicas(pregunta)
         if not consulta or self.vacio:
             return []
-        # Las palabras que no existen en ningún documento no pueden emparejarse con nada:
-        # no penalizan la cobertura (p. ej. saludos o ruido en preguntas largas).
+        # Las palabras ausentes del corpus (saludos, ruido) no penalizan la cobertura.
         consulta_util = frozenset(t for t in consulta if t in self._idf) or frozenset(consulta)
         resultados: list[Resultado] = []
         for i in self._candidatos(consulta):
@@ -225,10 +190,8 @@ class IndiceBM25:
         return resultados[:top_k]
 
     def _priorizar_indice(self, consulta: set[str], resultados: list[Resultado]) -> list[Resultado]:
-        """Si la pregunta solo nombra un documento ("¿qué productos de crédito existen?"),
-        su fragmento Índice pasa al primer lugar."""
+        """Si la pregunta solo nombra un documento («¿qué créditos existen?»), su Índice pasa primero."""
         mejor = resultados[0].puntaje if resultados else 1.0
-        # Se comparan solo las raíces que existen en el corpus: «¿cuáles son los créditos disponibles?».
         conocidas = {t for t in consulta if t in self._idf}
         for i, raices_titulo in self._indices_documento:
             if conocidas and conocidas <= raices_titulo:

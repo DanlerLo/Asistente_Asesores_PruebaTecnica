@@ -1,4 +1,3 @@
-"""Agentes especializados por dominio y agente de fuera de dominio."""
 from .base import Agente, AgenteDocumental
 from .credito import AGENTE_CREDITO
 from .fuera_de_dominio import AGENTE_FUERA_DE_DOMINIO, AgenteFueraDeDominio

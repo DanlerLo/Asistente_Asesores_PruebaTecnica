@@ -1,9 +1,3 @@
-"""Modelos y constantes del dominio compartidos por todas las capas.
-
-Aquí viven los tres estados de una consulta, la frase canónica sin
-información y la forma de una respuesta con sus fuentes. No depende de
-ningún otro módulo del paquete.
-"""
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -54,7 +48,6 @@ def respuesta_sin_informacion(modo: str = "extractivo") -> RespuestaGenerada:
 
 
 def respuesta_bloqueada(fuentes: Sequence[Fuente] = ()) -> RespuestaGenerada:
-    """Mensaje de bloqueo; cita las políticas que lo respaldan solo si existen en el corpus (hallazgo F6)."""
     texto = MENSAJE_BLOQUEO
     if fuentes:
         texto += " Fuente: " + "; ".join(f"{f.archivo} › {f.seccion}" for f in fuentes)

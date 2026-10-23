@@ -1,18 +1,3 @@
-"""Preguntas de seguimiento: hereda el producto o la sección de la conversación (especificación 006).
-
-«¿Cuál es el monto máximo del Crédito Productivo Impulso?» → «¿Y el más bajo?» se responde como
-«¿Y el más bajo? (Crédito Productivo Impulso)». Reglas deterministas, sin LLM:
-
-* Solo hay seguimiento con marcadores explícitos: empieza por «y»/«e» («¿Y el plazo?») o usa un
-  demostrativo que apunta a algo anterior («ese crédito», «esa póliza»). Se evalúa con tildes
-  («está» es verbo, no demostrativo) y sin «su/sus», que suele referirse a alguien de la misma
-  frase («¿cada cuánto debe un cliente actualizar su información?»). Una pregunta nueva nunca
-  hereda contexto.
-* Se hereda la **entidad** (nombre de producto o sección del corpus) que nombraba la pregunta
-  más reciente del contexto, nunca texto libre del contexto: no puede inyectar nada.
-* Si es seguimiento y no hay referente, no se adivina: ``sin_referente`` (el orquestador responde
-  la frase canónica).
-"""
 from __future__ import annotations
 
 import re
@@ -32,8 +17,7 @@ _SUSTANTIVOS = frozenset(
      "poliza", "polizas", "prestamo", "prestamos", "plan", "planes"}
 )
 _RE_PALABRA = re.compile(r"[a-záéíóúüñ]+")
-# «su/sus» apuntan a algo anterior salvo que la frase tenga una persona de la que hablar
-# («¿cada cuánto debe un cliente actualizar su información?»).
+# «su/sus» apuntan atrás salvo que la frase nombre a una persona («un cliente actualiza su información»).
 _POSESIVOS = frozenset({"su", "sus"})
 _PERSONAS = frozenset({"cliente", "clientes", "clienta", "asesor", "asesora", "asesores", "usuario", "persona"})
 _ADVERBIOS_DE_SEGUIMIENTO = frozenset({"también", "tambien"})
@@ -53,10 +37,7 @@ class Resolucion:
 
 
 def entidades_del_corpus(fragmentos: list[Fragmento]) -> list[Entidad]:
-    """Productos y secciones (encabezados de nivel 2) que una pregunta puede nombrar.
-
-    Los títulos de preguntas frecuentes («¿Se puede pagar…?») no son referentes.
-    """
+    """Productos y secciones de nivel 2 que una pregunta puede nombrar; las preguntas frecuentes no cuentan."""
     vistas: dict[str, Entidad] = {}
     for fragmento in fragmentos:
         raices = fragmento.entidad_raices
@@ -93,6 +74,7 @@ def resolver_pregunta(pregunta: str, contexto: list[str], entidades: list[Entida
     if not es_seguimiento(pregunta) or entidades_nombradas(pregunta, entidades):
         return Resolucion(pregunta)
     for anterior in reversed(contexto):
+        # Se hereda un nombre del corpus, nunca texto libre del contexto: no hay por dónde inyectar.
         heredadas = entidades_nombradas(anterior, entidades)
         if heredadas:
             referente = ", ".join(heredadas)

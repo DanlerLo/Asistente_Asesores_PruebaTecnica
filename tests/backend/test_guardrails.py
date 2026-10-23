@@ -160,7 +160,7 @@ def test_la_pregunta_validada_no_conserva_caracteres_invisibles():
     ],
 )
 def test_preguntas_sobre_procedimientos_y_politicas_no_se_bloquean(pregunta: str):
-    """Antes eran falsos positivos: el Manual y las políticas responden estas preguntas del trabajo diario."""
+    """El Manual y las políticas responden estas preguntas del trabajo diario."""
     assert evaluar_entrada(validar_pregunta(pregunta, 1000)).permitido, pregunta
 
 

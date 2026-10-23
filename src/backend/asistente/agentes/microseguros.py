@@ -1,4 +1,3 @@
-"""Agente de microseguros (coberturas, edades, reclamaciones)."""
 from __future__ import annotations
 
 from .base import AgenteDocumental

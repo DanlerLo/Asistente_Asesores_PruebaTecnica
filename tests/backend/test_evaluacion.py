@@ -1,9 +1,4 @@
-"""Evaluación de corrección del motor extractivo (modo por defecto, sin LLM).
-
-El banco (``test_banco.py``) detecta *cambios*; este conjunto mide *aciertos*: cada pregunta trae el dato
-exacto que la respuesta debe contener según ``Data/`` o exige la frase canónica. La precisión no puede
-bajar de ``PRECISION_MINIMA`` (trinquete): cuando un cambio del motor la mejora, se sube el mínimo.
-"""
+"""Precisión mínima del motor extractivo sobre respuestas esperadas (modo por defecto, sin LLM)."""
 from __future__ import annotations
 
 import json
@@ -16,7 +11,7 @@ from asistente.infraestructura.persistencia import RepositorioConsultas
 from asistente.orquestador import Orquestador
 
 EVALUACION = Path(__file__).with_name("evaluacion.json")
-PRECISION_MINIMA = 0.83  # línea base 47/97 (48,5 %); tras las mejoras del motor 81/97 (83,5 %); solo sube
+PRECISION_MINIMA = 0.83  # trinquete: solo se sube cuando el motor mejora
 
 
 def _acierta(caso: dict, estado: str, respuesta: str) -> bool:

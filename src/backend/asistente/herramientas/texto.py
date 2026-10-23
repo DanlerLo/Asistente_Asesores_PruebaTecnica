@@ -1,9 +1,3 @@
-"""Normalización de texto en español: tildes, minúsculas, stopwords y raíces.
-
-El objetivo no es un stemmer lingüísticamente perfecto sino uno determinista,
-sin dependencias y consistente: se aplica exactamente igual a documentos y a
-preguntas, que es lo que importa para el emparejamiento.
-"""
 from __future__ import annotations
 
 import re
@@ -43,7 +37,7 @@ SINONIMOS: dict[str, str] = {
     "exig": "requisit",
     "exigen": "requisit",
     "tiemp": "tiemp",
-    # Vocabulario del asesor -> término de los documentos (hallazgo B6 de la auditoría).
+    # Vocabulario del asesor -> término de los documentos.
     "incluy": "cobertur",  # los microseguros listan sus coberturas como «Incluye:»
     "ampar": "cobertur",
     "carenci": "graci",
@@ -70,8 +64,7 @@ SINONIMOS: dict[str, str] = {
     "papel": "requisit",  # «¿qué papeles necesito?»
 }
 
-# Palabras de categoría que no distinguen un atributo («¿qué cubre el seguro X?»): no cuentan como atributo
-# pedido ni como palabra desconocida, y no se corrigen ortográficamente («compara» no es «compra»).
+# Palabras de categoría: no cuentan como atributo pedido ni como desconocidas, y no se corrigen.
 RAICES_GENERICAS = frozenset(
     {
         "segur", "microsegur", "credit", "product", "servici", "poliz",  # categorías
@@ -82,7 +75,6 @@ RAICES_GENERICAS = frozenset(
 
 _RE_TOKEN = re.compile(r"[a-z0-9]+")
 # Comparativos de las preguntas («¿y el más bajo?») -> el atributo que usan los documentos («mínimo»).
-# Los documentos no usan estas expresiones, así que no cambia el índice.
 _COMPARATIVOS: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"\bmas\s+(bajo|baja|bajos|bajas|pequeno|pequena)\b|\bmenor(es)?\b"), "minimo"),
     (re.compile(r"\bmas\s+(alto|alta|altos|altas|grande|grandes)\b|\bmayor(es)?\b"), "maximo"),
@@ -95,20 +87,13 @@ _VOCALES = "aeiou"
 
 
 def normalizar(texto: str) -> str:
-    """Quita tildes/diacríticos y pasa a minúsculas (``Crédito`` -> ``credito``)."""
     descompuesto = unicodedata.normalize("NFKD", texto)
     sin_marcas = "".join(c for c in descompuesto if not unicodedata.combining(c))
     return sin_marcas.lower()
 
 
 def raiz(palabra: str) -> str:
-    """Raíz aproximada: elimina plurales, sufijos -ción/-sión, terminaciones
-    verbales frecuentes y la vocal final de género.
-
-    ``reclamaciones``/``reclamación`` -> ``reclam``, ``clientes`` -> ``client``,
-    ``máximo``/``máxima`` -> ``maxim``, ``créditos``/``crédito`` -> ``credit``,
-    ``actualizan``/``actualiza``/``actualización`` -> ``actualiz``.
-    """
+    """Stemmer determinista y aproximado; importa que se aplique igual a documentos y preguntas."""
     p = palabra
     if len(p) <= 3:
         return p
@@ -131,7 +116,7 @@ def raiz(palabra: str) -> str:
 
 
 def palabras(texto: str) -> list[str]:
-    """Palabras normalizadas en orden (sin tildes, con comparativos), sin quitar stopwords."""
+    """Palabras normalizadas en orden, sin quitar stopwords."""
     normalizado = normalizar(texto)
     for patron, reemplazo in _COMPARATIVOS:
         normalizado = patron.sub(reemplazo, normalizado)
@@ -144,7 +129,6 @@ def raiz_con_sinonimos(palabra: str) -> str:
 
 
 def tokenizar(texto: str, *, quitar_stopwords: bool = True) -> list[str]:
-    """Convierte texto en una lista de raíces normalizadas."""
     salida: list[str] = []
     for token in palabras(texto):
         if len(token) < 2 and not token.isdigit():
@@ -156,5 +140,4 @@ def tokenizar(texto: str, *, quitar_stopwords: bool = True) -> list[str]:
 
 
 def raices_unicas(texto: str) -> set[str]:
-    """Conjunto de raíces (sin stopwords) de un texto."""
     return set(tokenizar(texto))

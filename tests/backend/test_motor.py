@@ -62,7 +62,11 @@ def test_indice_vacio_no_falla():
         ),
         ("¿Qué seguro cubre incendios?", "Incendio", "Negocio Seguro"),
         ("¿Qué documentos son válidos para actualizar datos?", "Certificado laboral", "Actualización de Datos"),
-        ("¿Cuáles son los pasos de una solicitud de crédito?", "1. Recepción de documentos.", "Solicitud de Crédito"),
+        (
+            "¿Cuáles son los pasos de una solicitud de crédito?",
+            "1. Recepción de documentos.",
+            "Solicitud de Crédito",
+        ),
         ("¿Qué productos de crédito existen?", "Crédito Educativo Avanza", "Índice"),
     ],
 )
@@ -121,8 +125,7 @@ def test_parafrasis_no_responde_con_datos_de_otro_tema(indice: IndiceBM25, pregu
 @pytest.mark.parametrize(
     ("pregunta", "esperado"),
     [
-        # Respuestas generales (preguntas frecuentes) que no repiten el nombre del producto:
-        # RF-12 no debe descartarlas (regresión detectada en revisión con 316 preguntas).
+        # RF-12: respuestas generales que no repiten el nombre del producto siguen siendo válidas.
         ("¿Se puede pagar anticipado el Crédito Agro Crece?", "pago anticipado sin penalidad"),
         ("¿Puede un cliente con Negocio Seguro contratar otro microseguro?", "Los microseguros son independientes"),
         ("¿El estudio de crédito del Agro Crece tiene costo?", "no tiene costo"),
@@ -158,7 +161,7 @@ def test_no_responde_con_datos_de_otro_producto(indice: IndiceBM25):
     ],
 )
 def test_producto_o_atributo_inexistente_no_responde_con_otro(orquestador, pregunta: str):
-    """Antes respondía con datos de otro producto (p. ej. la tasa del Mujer Emprende para «hipotecario»)."""
+    """No debe responder con datos de otro producto (p. ej. la tasa del Mujer Emprende para «hipotecario»)."""
     resultado = orquestador.consultar(pregunta)
     assert resultado.estado == ESTADO_SIN_INFO
     assert resultado.respuesta == FRASE_SIN_INFO and resultado.fuentes == []

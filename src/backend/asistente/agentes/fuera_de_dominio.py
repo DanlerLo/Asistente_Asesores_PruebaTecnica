@@ -1,10 +1,3 @@
-"""Agente de fuera de dominio: preguntas sin relación con la base documental.
-
-Responde siempre la frase canónica, sin fuentes y sin invocar un LLM (no hay
-evidencia que redactar y así no se gasta una llamada). La prueba técnica fija
-tres estados, por lo que el resultado es *Sin información suficiente*; el
-motivo queda en el log como ``motivo_ruta``.
-"""
 from __future__ import annotations
 
 from collections.abc import Sequence

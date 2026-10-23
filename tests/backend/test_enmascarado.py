@@ -1,5 +1,4 @@
-"""El historial guarda la pregunta sin datos sensibles (RF-S13). Sin autenticación, el historial es
-compartido: lo que se persiste no debe exponer claves, documentos de identidad ni contactos."""
+"""El historial guarda la pregunta sin datos sensibles (RF-S13)."""
 from __future__ import annotations
 
 import pytest

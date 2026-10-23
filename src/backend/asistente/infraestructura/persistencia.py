@@ -1,9 +1,3 @@
-"""Persistencia de consultas en SQLite (biblioteca estándar, sin dependencias).
-
-Cada consulta atendida se registra con: pregunta, fecha y hora (UTC, ISO 8601),
-respuesta generada, fuentes utilizadas (JSON), estado, latencia y modo de
-generación. Es la base de la observabilidad del sistema.
-"""
 from __future__ import annotations
 
 import json
@@ -47,7 +41,7 @@ def ahora_iso() -> str:
 
 
 class RepositorioConsultas:
-    """Acceso a la tabla ``consultas``. Seguro para uso desde varios hilos."""
+    """Seguro para uso desde varios hilos."""
 
     def __init__(self, ruta: Path | str = ":memory:") -> None:
         self.ruta = str(ruta)

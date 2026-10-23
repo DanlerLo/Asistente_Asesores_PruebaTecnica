@@ -1,7 +1,4 @@
-/**
- * Orientación breve para respuestas «Sin información suficiente». La frase canónica del backend se muestra
- * intacta en la respuesta (lo exige el enunciado); esto solo sugiere qué preguntar.
- */
+/** Sugiere qué preguntar ante «Sin información suficiente»; la frase canónica del backend no se toca. */
 const SUGERENCIAS = [
   '¿Cuál es el plazo máximo del Crédito Agro Crece?',
   '¿Qué cubre Vida Protegida?',

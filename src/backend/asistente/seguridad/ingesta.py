@@ -1,26 +1,3 @@
-"""Política de seguridad de la ingesta de documentos (hallazgo F5).
-
-Las reglas que deciden qué entra al índice viven aquí, junto a los demás guardrails, y no en el
-cargador de documentos:
-
-* **Los documentos son datos, nunca instrucciones.** Una línea o un encabezado con apariencia de
-  instrucción para un asistente se descarta (RF-S5, RF-S11). Es una heurística de mejor esfuerzo: la
-  garantía real es no indexar lo restringido y el filtro de salida.
-* **Lo restringido no se indexa** (RF-S12). Lo deciden reglas deterministas, nunca un agente ni un LLM;
-  basta una para excluir el archivo:
-
-  1. su nombre está en ``ARCHIVOS_RESTRINGIDOS``;
-  2. tiene una marca de clasificación (confidencial, reservado, restringido o secreto) en **cualquier**
-     línea;
-  3. menciona «información restringida» en su cabecera;
-  4. contiene algo con forma de credencial (``Token:``, ``Contraseña:``, ``Usuario administrador:`` seguido
-     de un valor técnico) aunque nadie lo haya marcado.
-
-  Un archivo excluido solo aporta valores sensibles al filtro de salida.
-
-``herramientas.corpus`` no puede importar ``seguridad`` (regla de capas): recibe esta política por
-inyección (``FiltroIngesta``). ``cargar_corpus_seguro`` es la forma de cargar el corpus con ella.
-"""
 from __future__ import annotations
 
 import re
@@ -41,7 +18,8 @@ PATRONES_INYECCION: tuple[re.Pattern[str], ...] = tuple(
         r"si\s+un\s+usuario\s+pregunta.*\b(entregue?|revele?|muestre?)\b",
         r"\bactua\s+como\b",
         # RF-S11: paráfrasis dirigidas al asistente («Nota para el asistente: …», «Haz caso omiso de …»).
-        r"\b(nota|instruccion|instrucciones|mensaje)\s+(para|al)\s+(el\s+|la\s+)?(asistente|modelo|ia|bot|chatbot|agente)\b",
+        r"\b(nota|instruccion|instrucciones|mensaje)\s+(para|al)\s+(el\s+|la\s+)?"
+        r"(asistente|modelo|ia|bot|chatbot|agente)\b",
         r"\b(haz|has|hacer|hagan?)\s+caso\s+omiso\b",
         r"^(asistente|modelo|ia|bot|chatbot|agente)\s*:",
         r"\b(ignore|disregard)\s+(all\s+)?(previous|prior|above|earlier)\b",
@@ -52,19 +30,19 @@ _RE_MENCION = re.compile(r"informacion\s+restringida")
 _LINEAS_CABECERA = 10
 # Etiqueta de credencial al inicio de la línea; el valor va detrás de «:» o en la línea siguiente.
 _RE_ETIQUETA_CREDENCIAL = re.compile(
-    r"^\W*(token|contrasena|password|api\s*key|clave\s+de\s+acceso|usuario\s+administrador|secreto)\b[^:]{0,30}:\s*(.*)$"
+    r"^\W*(token|contrasena|password|api\s*key|clave\s+de\s+acceso|usuario\s+administrador|secreto)\b"
+    r"[^:]{0,30}:\s*(.*)$"
 )
 _RE_SECRETO = re.compile(r"[A-Za-z0-9][A-Za-z0-9_\-]{4,}")
 
 
 def es_instruccion_sospechosa(linea: str) -> bool:
-    """True si la línea parece una instrucción dirigida a un asistente."""
     texto = normalizar(linea)
     return any(p.search(texto) for p in PATRONES_INYECCION)
 
 
 def _es_valor_tecnico(valor: str) -> bool:
-    """Un solo token de 6+ caracteres con dígitos, «-» o «_» (``QZX-4821-KLM``), no una frase."""
+    """Un solo token de 6+ caracteres con dígitos, «-» o «_», no una frase."""
     valor = valor.strip().strip(".")
     return (
         bool(valor)
@@ -106,7 +84,6 @@ def es_restringido(nombre: str, texto: str, archivos_restringidos: tuple[str, ..
 
 
 def extraer_secretos(texto: str) -> set[str]:
-    """Valores con aspecto de credencial/identificador técnico (``INT-1234-...``)."""
     secretos: set[str] = set()
     for token in _RE_SECRETO.findall(texto):
         tiene_digito = any(c.isdigit() for c in token)
@@ -117,7 +94,7 @@ def extraer_secretos(texto: str) -> set[str]:
 
 @dataclass(frozen=True)
 class PoliticaIngesta:
-    """Implementa ``herramientas.corpus.FiltroIngesta`` con las reglas de este módulo."""
+    """Se inyecta como ``FiltroIngesta`` porque ``herramientas`` no puede importar ``seguridad``."""
 
     archivos_restringidos: tuple[str, ...] = ()
 
@@ -132,5 +109,5 @@ class PoliticaIngesta:
 
 
 def cargar_corpus_seguro(data_dir: Path, archivos_restringidos: tuple[str, ...] = ()) -> Corpus:
-    """Carga ``data_dir`` aplicando la política de ingesta (única forma de cargar el corpus en la app)."""
+    """Única forma de cargar el corpus en la app."""
     return cargar_corpus(data_dir, PoliticaIngesta(archivos_restringidos))

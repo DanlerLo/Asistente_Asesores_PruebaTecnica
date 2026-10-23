@@ -1,16 +1,3 @@
-"""Carga y renderizado de los prompts del LLM desde ``prompts/*.j2`` (Jinja2).
-
-* ``autoescape`` desactivado: los prompts son texto plano, no HTML; escapar
-  alteraría montos y símbolos de los fragmentos.
-* ``StrictUndefined``: una variable faltante es un error, nunca texto vacío.
-* Los valores insertados no se reinterpretan como plantilla, así que un
-  ``{{ ... }}`` dentro de un documento llega al modelo como dato literal.
-* El filtro ``dato`` impide que un documento o una pregunta cierren el bloque
-  de datos (``</fragmentos>``, ``</pregunta>``) o inyecten un fragmento falso:
-  elimina los caracteres invisibles de formato (con los que se disfraza una
-  etiqueta) y convierte todo ``<`` (y sus variantes Unicode) en ``‹``. El resto
-  del texto (montos, ``$``, ``&``, tildes) se conserva tal cual.
-"""
 from __future__ import annotations
 
 import unicodedata
@@ -22,12 +9,12 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 DIRECTORIO_PROMPTS = Path(__file__).parent / "prompts"
 
-# "<" y sus variantes de ancho completo / forma pequeña: ninguna puede abrir una etiqueta.
+# Neutralizar todo «<» impide que un documento cierre el bloque de datos (``</fragmentos>``) del prompt.
 _MENOR_QUE = str.maketrans({"<": "‹", "\uff1c": "‹", "\ufe64": "‹"})
 
 
 def neutralizar_delimitadores(valor: object) -> str:
-    """Quita caracteres invisibles de formato (categoría Unicode Cf) y neutraliza todo ``<``."""
+    """Quita caracteres invisibles (Unicode Cf), con los que se disfraza una etiqueta, y neutraliza ``<``."""
     visible = "".join(c for c in str(valor) if unicodedata.category(c) != "Cf")
     return visible.translate(_MENOR_QUE)
 
@@ -36,7 +23,7 @@ def neutralizar_delimitadores(valor: object) -> str:
 def _entorno() -> Environment:
     entorno = Environment(
         loader=FileSystemLoader(DIRECTORIO_PROMPTS),
-        autoescape=False,
+        autoescape=False,  # texto plano: escapar alteraría montos y símbolos
         undefined=StrictUndefined,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -46,5 +33,4 @@ def _entorno() -> Environment:
 
 
 def renderizar(nombre: str, **variables: Any) -> str:
-    """Renderiza ``prompts/<nombre>`` con las variables dadas."""
     return _entorno().get_template(nombre).render(**variables)

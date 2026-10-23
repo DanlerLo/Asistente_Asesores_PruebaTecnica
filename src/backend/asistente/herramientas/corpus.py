@@ -1,12 +1,3 @@
-"""Carga de la base documental (``Data/*.md``): lectura, exclusión de restringidos y duplicados.
-
-* La fragmentación vive en ``herramientas.markdown``.
-* Qué es restringido y qué es una instrucción embebida lo decide la política de ingesta
-  (``seguridad.ingesta``), que llega por inyección como ``FiltroIngesta``: esta capa no importa
-  ``seguridad`` y no se puede cargar un corpus sin una política.
-* **Documentos duplicados** (mismo contenido con otro nombre) se indexan una sola vez para no
-  duplicar fuentes.
-"""
 from __future__ import annotations
 
 import hashlib
@@ -26,7 +17,7 @@ EXTENSIONES_SOPORTADAS = (".md", ".txt")
 
 
 class FiltroIngesta(Protocol):
-    """Reglas de seguridad de la ingesta (implementación: ``seguridad.ingesta.PoliticaIngesta``)."""
+    """Se inyecta desde ``seguridad.ingesta`` para que esta capa no importe ``seguridad``."""
 
     def motivo_restriccion(self, nombre: str, texto: str) -> str | None: ...
 
@@ -50,7 +41,7 @@ class Corpus:
 
 
 def cargar_corpus(data_dir: Path, filtro: FiltroIngesta) -> Corpus:
-    """Lee todos los documentos soportados de ``data_dir`` y construye el corpus."""
+    """Excluye restringidos y duplicados; de los restringidos solo conserva sus secretos para filtrarlos."""
     corpus = Corpus()
     secretos: set[str] = set()
     if not data_dir.exists() or not data_dir.is_dir():

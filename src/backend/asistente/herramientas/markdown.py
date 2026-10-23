@@ -1,15 +1,3 @@
-"""Fragmentación de documentos Markdown en secciones recuperables (``Fragmento``).
-
-Normaliza el contenido a líneas autocontenidas:
-
-* filas de tabla ``| Monto máximo | $50.000.000 |`` -> ``Monto máximo: $50.000.000``
-* tablas de 3+ columnas -> ``Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses`` (RF-20)
-* etiqueta + valor en líneas separadas -> ``Edad máxima: 70 años.``
-* etiqueta + lista -> ``Coberturas: Incendio; Inundación; Daños accidentales.``
-
-Qué es una instrucción embebida lo decide la política de ingesta (``seguridad.ingesta``), que llega
-como parámetro: esta capa no importa ``seguridad``.
-"""
 from __future__ import annotations
 
 import re
@@ -31,8 +19,6 @@ _MINIMO_ETIQUETAS_COMUNES = 2
 
 @dataclass(frozen=True)
 class Fragmento:
-    """Unidad mínima recuperable: una sección de un documento."""
-
     id: str
     documento: str  # nombre legible (archivo sin extensión)
     archivo: str  # nombre del archivo
@@ -52,9 +38,7 @@ class Fragmento:
         return f"{self.documento} {self.ruta_seccion} {self.contenido}"
 
 
-# ----------------------------------------------------------------------------
-# Líneas
-# ----------------------------------------------------------------------------
+# --- Líneas ---
 
 
 def _limpiar(linea: str) -> str:
@@ -63,7 +47,6 @@ def _limpiar(linea: str) -> str:
 
 
 def _clasificar(linea: str) -> str:
-    """Tipo de una línea cruda: vacia, encabezado, hr, tabla_sep, tabla, lista, etiqueta, texto."""
     if not linea.strip():
         return "vacia"
     if _RE_ENCABEZADO.match(linea):
@@ -98,20 +81,16 @@ def _celdas(linea: str) -> list[str]:
     return [_limpiar(c) for c in linea.strip().strip("|").split("|")]
 
 
-# ----------------------------------------------------------------------------
-# Productos
-# ----------------------------------------------------------------------------
+# --- Productos ---
 
 
 def _etiquetas(fragmentos: list[Fragmento]) -> set[str]:
-    """Etiquetas de atributo de una entidad («Monto máximo», «Prima mensual»): el texto antes de «:»."""
+    """Texto antes de «:» en cada línea («Monto máximo», «Prima mensual»)."""
     return {linea.split(":", 1)[0].strip().lower() for f in fragmentos for linea in f.lineas if ":" in linea}
 
 
 def _marcar_productos(fragmentos: list[Fragmento]) -> list[Fragmento]:
-    """Una entidad es un producto si su ficha comparte 2+ etiquetas de atributo con otra entidad del mismo
-    documento (los créditos comparten «Monto máximo»/«Plazo máximo»; los microseguros «Cobertura máxima»/
-    «Prima mensual»). Las secciones del Manual, las políticas o los procedimientos no forman fichas."""
+    """Una entidad es producto si comparte 2+ etiquetas de atributo con otra entidad del documento."""
     por_entidad: dict[str, list[Fragmento]] = {}
     for f in fragmentos:
         if f.entidad and not f.entidad.strip().endswith("?"):
@@ -124,16 +103,11 @@ def _marcar_productos(fragmentos: list[Fragmento]) -> list[Fragmento]:
     return [replace(f, producto=f.entidad in productos) for f in fragmentos]
 
 
-# ----------------------------------------------------------------------------
-# Fragmentación
-# ----------------------------------------------------------------------------
+# --- Fragmentación ---
 
 
 class _Fragmentador:
-    """Recorre las líneas de un documento una vez; cada tipo de línea tiene su método.
-
-    Cada método ``_procesar_*`` consume una o más líneas y devuelve el índice de la siguiente.
-    """
+    """Cada ``_procesar_*`` consume una o más líneas y devuelve el índice de la siguiente."""
 
     def __init__(self, texto: str, archivo: str, es_instruccion: Callable[[str], bool]) -> None:
         self.archivo = archivo
@@ -193,7 +167,7 @@ class _Fragmentador:
         if not linea:
             return
         if self.es_instruccion(linea):
-            # RF-S10: archivo y línea, nunca el texto: podría contener un valor sensible y sale por /api/salud.
+            # RF-S10: nunca el texto: podría tener un valor sensible y sale por /api/salud.
             self.advertencias.append(
                 f"{self.archivo}, línea {i + 1}: se descartó una línea con apariencia de instrucción"
             )
@@ -285,9 +259,5 @@ class _Fragmentador:
 def fragmentar(
     texto: str, archivo: str, es_instruccion: Callable[[str], bool]
 ) -> tuple[list[Fragmento], list[str]]:
-    """Divide un documento Markdown en fragmentos por encabezado.
-
-    ``es_instruccion`` decide qué línea o encabezado se descarta por parecer una instrucción
-    (``seguridad.ingesta.es_instruccion_sospechosa``). Devuelve los fragmentos y las advertencias.
-    """
+    """Un fragmento por encabezado; descarta las líneas que ``es_instruccion`` marca como inyección."""
     return _Fragmentador(texto, archivo, es_instruccion).ejecutar()

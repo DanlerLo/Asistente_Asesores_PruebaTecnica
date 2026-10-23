@@ -1,12 +1,4 @@
-"""Banco de regresión con ~300 preguntas reales y paráfrasis (RF-03, RF-05, RF-12, RF-13, RF-S4).
-
-Dos niveles:
-* **Invariantes** sobre todas las preguntas: estado válido, frase canónica exacta sin fuentes,
-  respuestas exitosas citadas, ningún valor restringido y determinismo.
-* **Foto** (``banco_esperado.json``): estado, fuentes y texto de la respuesta de cada pregunta. Un cambio del motor que
-  altere alguna respuesta hace fallar la prueba y obliga a revisarlo; si el cambio es intencional,
-  se regenera con ``ACTUALIZAR_BANCO=1 python3 -m pytest tests/backend/test_banco.py``.
-"""
+"""Banco de regresión: invariantes y foto de ~300 preguntas (RF-03, RF-05, RF-12, RF-13, RF-S4)."""
 from __future__ import annotations
 
 import json
@@ -77,6 +69,7 @@ def test_el_banco_coincide_con_la_foto(respuestas: dict[str, dict]):
         p: {"estado": r["estado"], "fuentes": r["fuentes"], "respuesta": r["respuesta"]}
         for p, r in respuestas.items()
     }
+    # Si el cambio del motor es intencional, se regenera la foto con ACTUALIZAR_BANCO=1.
     if os.getenv("ACTUALIZAR_BANCO") == "1":
         ESPERADO.write_text(json.dumps(foto, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     esperado = json.loads(ESPERADO.read_text(encoding="utf-8"))

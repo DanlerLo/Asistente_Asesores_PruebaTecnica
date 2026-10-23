@@ -1,9 +1,3 @@
-"""Configuración del asistente, leída desde variables de entorno.
-
-Toda la configuración es explícita y tiene valores por defecto seguros para
-ejecución 100 % local: sin LLM, base documental en ``Data/`` y SQLite en
-``storage/consultas.db``.
-"""
 from __future__ import annotations
 
 import os
@@ -11,7 +5,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-# src/backend/asistente/config.py -> parents[3] es la raíz del repositorio.
 RAIZ_PROYECTO = Path(__file__).resolve().parents[3]
 
 PROVEEDORES_LLM = ("none", "groq")
@@ -28,8 +21,6 @@ def _numero[N: (int, float)](variable: str, por_defecto: str, tipo: Callable[[st
 
 @dataclass(frozen=True)
 class Configuracion:
-    """Parámetros de ejecución. Inmutable para evitar cambios accidentales."""
-
     data_dir: Path = RAIZ_PROYECTO / "Data"
     db_path: Path = RAIZ_PROYECTO / "storage" / "consultas.db"
     max_longitud_pregunta: int = 1000
@@ -47,7 +38,7 @@ class Configuracion:
     log_level: str = "INFO"
 
     def __post_init__(self) -> None:
-        """RF-19: un valor fuera de rango falla al arrancar con un mensaje claro, no en la primera consulta."""
+        """RF-19: un valor fuera de rango falla al arrancar, no en la primera consulta."""
         if self.max_longitud_pregunta < 1:
             raise ValueError("MAX_LONGITUD_PREGUNTA debe ser un entero mayor que 0.")
         if self.top_k < 1:
@@ -63,7 +54,6 @@ class Configuracion:
 
     @classmethod
     def desde_entorno(cls) -> Configuracion:
-        """Construye la configuración a partir de variables de entorno."""
         restringidos = tuple(
             nombre.strip()
             for nombre in os.getenv("ARCHIVOS_RESTRINGIDOS", "Información restringida.md").split(";")

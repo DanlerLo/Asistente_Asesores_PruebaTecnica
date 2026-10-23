@@ -1,8 +1,3 @@
-"""Logging estructurado (JSON por línea) para trazabilidad y monitoreo.
-
-Cada registro emitido mientras se atiende una solicitud lleva su ``request_id`` (RF-17): el middleware
-lo fija en ``id_solicitud`` y la fábrica de registros lo copia, así no hay que pasarlo a mano por las capas.
-"""
 from __future__ import annotations
 
 import json
@@ -51,8 +46,7 @@ class FormateadorJSON(logging.Formatter):
 
 def configurar_logging(nivel: str = "INFO") -> None:
     instalar_id_de_solicitud()
-    # uvicorn instala sus manejadores de texto antes de importar la app: se redirigen a la raíz para que
-    # todo salga en un solo formato (JSON) y una sola línea por evento.
+    # uvicorn instala sus manejadores antes de importar la app: se redirigen a la raíz para salir en JSON.
     for nombre in ("uvicorn", "uvicorn.error", "uvicorn.access"):
         registrador = logging.getLogger(nombre)
         registrador.handlers = []
@@ -64,5 +58,5 @@ def configurar_logging(nivel: str = "INFO") -> None:
     manejador.setFormatter(FormateadorJSON())
     raiz.handlers = [manejador]
     raiz.setLevel(nivel.upper())
-    # httpx registra cada URL solicitada en INFO: se silencia para no llenar los logs ni filtrar datos de la URL.
+    # httpx registra cada URL en INFO: ruido y posible fuga de datos de la URL.
     logging.getLogger("httpx").setLevel(logging.WARNING)

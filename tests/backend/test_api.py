@@ -9,7 +9,8 @@ CAMPOS_RESPUESTA = {"id", "respuesta", "fuentes", "estado", "fecha_hora", "laten
 
 
 def test_consulta_valida(cliente):
-    r = cliente.post("/api/consultar", json={"pregunta": "¿Cuál es el monto máximo del Crédito Productivo Impulso?"})
+    pregunta = "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+    r = cliente.post("/api/consultar", json={"pregunta": pregunta})
     assert r.status_code == 200
     datos = r.json()
     assert set(datos) == CAMPOS_RESPUESTA  # contrato exacto (RF-01, RF-O8)
@@ -56,7 +57,8 @@ def test_pregunta_demasiado_larga(cliente):
 
 
 def test_caracteres_especiales(cliente):
-    r = cliente.post("/api/consultar", json={"pregunta": "¿Cuál es la edad máxima de Vida Protegida? 🚀 <b>&</b> \"'"})
+    pregunta = "¿Cuál es la edad máxima de Vida Protegida? 🚀 <b>&</b> \"'"
+    r = cliente.post("/api/consultar", json={"pregunta": pregunta})
     assert r.status_code == 200
     assert "70 años" in r.json()["respuesta"]
     r = cliente.post("/api/consultar", json={"pregunta": "hola\x00mundo"})

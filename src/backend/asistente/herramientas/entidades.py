@@ -1,17 +1,10 @@
-"""Reglas sobre las entidades del corpus (productos y secciones de nivel 2), compartidas por la recuperación,
-el motor extractivo, el contexto de conversación y los agentes.
-
-* Una pregunta **nombra** una entidad si contiene su nombre completo o casi completo.
-* Una entidad es **transversal** si aplica a todo su documento («Exclusiones generales», «Reclamaciones»,
-  «Pago de primas», «Condiciones generales de los créditos»): cuando la pregunta nombra un producto, sus
-  secciones transversales también pueden responder («¿qué exclusiones tiene Vida Protegida?»).
-* Los títulos con forma de pregunta (preguntas frecuentes) no son entidades: no nombran un producto ni
-  deben acaparar la búsqueda.
-"""
 from __future__ import annotations
 
+from collections.abc import Sequence
+from pathlib import Path
+
 from .corpus import Fragmento
-from .texto import raices_unicas
+from .texto import normalizar, raices_unicas
 
 MAX_RAICES_ENTIDAD = 5
 _RAICES_TRANSVERSALES = frozenset(raices_unicas("general generales reclamaciones pago exclusiones"))
@@ -36,6 +29,10 @@ def es_transversal(fragmento: Fragmento) -> bool:
 
 
 def es_producto(fragmento: Fragmento) -> bool:
-    """Un crédito o un microseguro con ficha (lo marca ``corpus._marcar_productos``), no una sección general,
-    un procedimiento, una política ni una pregunta frecuente."""
+    """Crédito o microseguro con ficha, no una sección general, procedimiento ni pregunta frecuente."""
     return fragmento.producto and not es_transversal(fragmento)
+
+
+def pertenece_a(archivo: str, documentos: Sequence[str]) -> bool:
+    """Compara el nombre del archivo con los documentos sin tildes ni mayúsculas."""
+    return normalizar(Path(archivo).stem) in {normalizar(d) for d in documentos}

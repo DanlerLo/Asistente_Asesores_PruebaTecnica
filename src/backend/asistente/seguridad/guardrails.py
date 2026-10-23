@@ -1,18 +1,3 @@
-"""Guardrails: validación de entrada, bloqueo por seguridad y filtro de salida.
-
-Tres capas independientes (defensa en profundidad):
-
-1. ``validar_pregunta``: forma de la entrada (tipo, vacía, longitud, caracteres
-   de control). Un fallo aquí es un error de solicitud (HTTP 400), no una
-   consulta.
-2. ``evaluar_entrada``: intención de la pregunta. Bloquea solicitudes de
-   credenciales, configuraciones internas, información restringida, datos de
-   otros clientes e intentos de inyección de prompt. Estado "Bloqueada por
-   seguridad".
-3. ``filtrar_salida``: última línea de defensa sobre la respuesta generada
-   (especialmente relevante con LLM): si contiene un valor sensible conocido o
-   algo con forma de credencial, la respuesta se reemplaza por el bloqueo.
-"""
 from __future__ import annotations
 
 import re
@@ -40,11 +25,9 @@ _RE_CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 
 
 def validar_pregunta(valor: object, max_longitud: int) -> str:
-    """Devuelve la pregunta saneada o lanza ``ErrorValidacion``."""
     if not isinstance(valor, str):
         raise ErrorValidacion("TIPO_INVALIDO", "El campo 'pregunta' debe ser un texto.")
-    # RF-S9: sin caracteres invisibles de formato (espacio de ancho cero, guion suave…), que solo sirven
-    # para partir palabras y evadir las reglas; tampoco se guardan ni viajan al LLM.
+    # RF-S9: fuera invisibles de formato (ancho cero, guion suave), que parten palabras para evadir reglas.
     pregunta = _sin_invisibles(valor).strip()
     if not pregunta:
         raise ErrorValidacion("PREGUNTA_VACIA", "La pregunta no puede estar vacía.")
@@ -64,7 +47,6 @@ MAX_ELEMENTOS_CONTEXTO = 3
 
 
 def validar_contexto(valor: object, max_longitud: int) -> list[str]:
-    """Preguntas anteriores de la conversación (opcional): hasta las 3 más recientes, validadas como preguntas."""
     if valor is None:
         return []
     if not isinstance(valor, list):
@@ -88,9 +70,7 @@ _HOMOGLIFOS = str.maketrans(
      "к": "k", "м": "m", "т": "t", "в": "b", "н": "h", "ο": "o", "α": "a", "ε": "e", "ι": "i", "κ": "k",
      "ν": "v", "ρ": "p", "τ": "t", "υ": "u", "χ": "x"}
 )
-# Dígitos usados como letras, solo dentro de palabras que mezclan letras y dígitos («t0ken», «c1ave»):
-# los montos («$50.000.000») y cantidades («10 meses») no se tocan.
-# El «1» se lee como «i» («adm1n») o como «l» («c1ave»): se prueban ambas lecturas.
+# Dígitos como letras solo en palabras mixtas («t0ken»), no en montos; el «1» se prueba como «i» y como «l».
 _LEET = (str.maketrans("013457", "oieast"), str.maketrans("013457", "oleast"))
 _RE_PALABRA_MIXTA = re.compile(r"\b(?=[a-z0-9]*[a-z])(?=[a-z0-9]*[0-9])[a-z0-9]+\b")
 
@@ -122,8 +102,7 @@ _DATO_DE_PERSONA = (
     r"movimientos)"
 )
 _DATO_PERSONAL_ESTRICTO = r"(saldo|cedula|telefono|celular|direccion|deuda|movimientos|correo)"
-# Preguntas sobre la propia política («¿qué hago si…?», «¿puedo…?», «¿qué se considera…?»): las responde
-# el Manual. Solo eximen de las categorías de abajo y nunca si además traen una orden de entrega.
+# «¿Qué hago si…?», «¿puedo…?»: las responde el Manual, salvo que además traigan una orden de entrega.
 _PREGUNTA_DE_POLITICA = re.compile(
     r"^\W*(que (hago|debo hacer|se hace|hacer|se considera|es|significa)|"
     r"como (debo |se debe |puedo |se )?(actuar|responder|manejar|proceder|proteger|tratar|protege|maneja)|"
@@ -157,7 +136,7 @@ REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
             "informacion_restringida",
             r"\binformacion (restringida|confidencial|reservada|interna|secreta)\b|"
             r"\b(documentos?|archivos?|datos?) (restringid[ao]s?|confidencial(es)?|reservad[ao]s?)\b|"
-            # RF-S14: «restringido»/«confidencial» sueltos ya no bloquean («actividades restringidas»).
+            # RF-S14: «restringido» suelto no bloquea («actividades restringidas»).
             r"\b(todo )?lo (restringido|confidencial|reservado)\b",
         ),
         (
@@ -174,8 +153,7 @@ REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
         ),
         (
             "datos_de_terceros",
-            # RF-S14: intención de obtener un dato de una persona concreta, no la mención de «datos de un
-            # cliente» («¿cada cuánto se actualizan los datos de un cliente?» es una pregunta de procedimiento).
+            # RF-S14: pedir el dato de una persona concreta, no mencionar «datos de un cliente».
             _ORDEN_DE_ENTREGA + r".{0,40}\b" + _DATO_DE_PERSONA + r"\b.{0,25}\b(del?|de la|de los|de las) "
             r"(un |una |este |ese |esta |esa |otro |otra |otros |otras )?"
             r"(cliente|clientes|senor|senora|persona|personas|usuario|usuarios|asociado|asociada)\b|"
@@ -211,9 +189,7 @@ def evaluar_entrada(pregunta: str) -> EvaluacionEntrada:
     return EvaluacionEntrada(True)
 
 
-# Patrones con forma de credencial/identificador técnico en la salida.
-# (patrón, requiere_digito): los códigos tipo "ABC-123" deben tener un dígito para no
-# confundirse con siglas; las claves de API y los usuarios admin se bloquean siempre.
+# (patrón, requiere_digito): los códigos con guion exigen un dígito para no confundirse con siglas.
 PATRONES_SALIDA: tuple[tuple[re.Pattern[str], bool], ...] = (
     (re.compile(r"\b[A-Z]{2,6}(?:-[A-Z0-9]+){1,4}\b"), True),  # p. ej. ABC-1234-XYZ-99, TMP-123456
     (re.compile(r"\badmin_[A-Za-z0-9_]+\b|\b[A-Za-z0-9_]+_admin\b"), False),
@@ -239,9 +215,7 @@ def filtrar_salida(texto: str, secretos: frozenset[str] | set[str] = frozenset()
     return EvaluacionSalida(True)
 
 
-# ----------------------------------------------------------------------------
-# Enmascarado antes de persistir (RF-S13)
-# ----------------------------------------------------------------------------
+# Enmascarado antes de persistir (RF-S13).
 
 _DATO_OCULTO = "[DATO OCULTO]"
 _RE_CORREO = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
@@ -266,12 +240,7 @@ def _ocultar_si_largo(coincidencia: re.Match[str]) -> str:
 
 
 def enmascarar(texto: str, secretos: frozenset[str] | set[str] = frozenset(), *, bloqueada: bool = False) -> str:
-    """Versión de ``texto`` apta para guardarse en el historial compartido (RF-S13).
-
-    Oculta valores del documento restringido, correos, tokens con forma de credencial, números de
-    tarjeta y números que siguen a «cédula», «cuenta», «celular»… Conserva montos («$10.000.000»),
-    plazos y nombres de producto. En una consulta bloqueada oculta además cualquier número largo.
-    """
+    """Oculta datos sensibles conservando montos y plazos; si está bloqueada, también números largos."""
     for secreto in sorted(secretos, key=len, reverse=True):
         texto = re.sub(re.escape(secreto), "[OCULTO]", texto, flags=re.IGNORECASE)
     texto = _RE_CORREO.sub("[CORREO OCULTO]", texto)

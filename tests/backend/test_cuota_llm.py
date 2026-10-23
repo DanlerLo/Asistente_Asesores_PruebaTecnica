@@ -1,4 +1,4 @@
-"""Cuota de la API gratuita y modo sin conexión (especificación 005). Sin red: ``ClienteHttpLLM.post`` se reemplaza."""
+"""Cuota de la API gratuita y modo sin conexión (especificación 005), sin red."""
 from __future__ import annotations
 
 import pytest

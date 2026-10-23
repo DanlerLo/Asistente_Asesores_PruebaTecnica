@@ -1,19 +1,3 @@
-"""API HTTP del asistente (FastAPI).
-
-Endpoints (``api/rutas.py``):
-* ``POST /api/consultar``   -> {"respuesta", "fuentes", "estado", ...}; ``contexto`` opcional (006)
-* ``GET  /api/historial``   -> últimas consultas registradas
-* ``GET  /api/estadisticas``-> conteo por estado y latencias
-* ``GET  /api/salud``       -> estado del corpus y modo de operación
-* ``GET  /api/consultas/{id}`` -> una consulta guardada (pregunta, fecha, respuesta, fuentes, estado)
-* ``GET  /api/llm``         -> proveedor LLM, si está activo, llamadas y cuota de la API gratuita
-* ``PUT  /api/llm``         -> {"activo": bool}: modo sin conexión o reactivar el LLM configurado
-
-``crear_app`` es la raíz de composición: arma el corpus, el repositorio y el proveedor LLM, y
-registra el middleware y el manejo de errores. Es una fábrica para poder construir la aplicación
-con configuración y repositorio propios en las pruebas; la instancia que sirve uvicorn se crea en
-``asistente.main``.
-"""
 from __future__ import annotations
 
 import logging
@@ -116,6 +100,6 @@ def _registrar_errores(app: FastAPI) -> None:
         ident = getattr(request.state, "id", "")
         log.exception("error interno", extra={"request_id": ident})
         respuesta = error_json(500, "ERROR_INTERNO", MENSAJE_ERROR_INTERNO)
-        if ident:  # el 500 no pasa por el middleware: se agrega aquí para poder rastrearlo
+        if ident:  # el 500 no pasa por el middleware
             respuesta.headers["x-request-id"] = ident
         return respuesta

@@ -32,8 +32,7 @@ export default function App() {
   const [ayudaSinConexion, setAyudaSinConexion] = useState(false);
   const [maxLongitud, setMaxLongitud] = useState(MAX_LONGITUD_PREGUNTA);
   const siguienteId = useRef(1);
-  // Cada lectura o cambio del estado del LLM recibe un número; solo se aplica la respuesta más reciente,
-  // para que un GET lento no pise el modo que el asesor acaba de cambiar.
+  // Solo se aplica la respuesta más reciente del LLM: un GET lento no debe pisar el modo recién cambiado.
   const versionLlm = useRef(0);
   const procesando = turnos.some((turno) => !turno.resultado);
 

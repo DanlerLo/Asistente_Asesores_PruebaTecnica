@@ -1,8 +1,3 @@
-"""Endpoints de la API. Cada uno delega en el orquestador que el ciclo de vida deja en ``app.state``.
-
-Los que tocan SQLite (consultar, historial, estadísticas, consulta por id) son ``def``: FastAPI los
-ejecuta en el threadpool, así el candado de la base ni una llamada lenta al LLM bloquean el bucle.
-"""
 from __future__ import annotations
 
 import re
@@ -11,9 +6,10 @@ from fastapi import APIRouter, Query, Request
 
 from .esquemas import MENSAJE_MODO_INVALIDO, ConsultaRequest, ConsultaResponse, ModoLlmRequest, error_json
 
-# RF-18: solo dígitos ASCII; «²» o «٣» pasan ``str.isdigit`` y rompían ``int``.
+# RF-18: solo dígitos ASCII; «²» o «٣» pasan ``str.isdigit`` pero rompen ``int``.
 _RE_ID_CONSULTA = re.compile(r"[1-9][0-9]{0,17}")
 
+# Las rutas que tocan SQLite o el LLM son ``def``: corren en el threadpool y no bloquean el bucle.
 rutas = APIRouter(prefix="/api")
 
 

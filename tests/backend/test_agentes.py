@@ -39,7 +39,9 @@ def test_fuera_de_dominio_responde_frase_canonica_sin_llm(orquestador: Orquestad
 
 
 def test_agente_de_dominio_usa_el_llm_configurado(orquestador: Orquestador):
-    proveedor = ProveedorFalso("Cobertura máxima: $20.000.000\nFuente: Portafolio de Microseguros.md › Vida Protegida")
+    proveedor = ProveedorFalso(
+        "Cobertura máxima: $20.000.000\nFuente: Portafolio de Microseguros.md › Vida Protegida"
+    )
     orquestador.proveedor_llm = proveedor
     resultado = orquestador.consultar("¿Cuál es la cobertura máxima de Vida Protegida?")
     assert resultado.agente == "microseguros" and resultado.modo == "falso"

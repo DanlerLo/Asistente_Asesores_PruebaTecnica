@@ -1,4 +1,3 @@
-"""Contrato HTTP: modelos de entrada y salida, mensajes y forma de los errores."""
 from __future__ import annotations
 
 from typing import Any
@@ -13,8 +12,7 @@ MENSAJE_ERROR_INTERNO = "Ocurrió un error interno. Intenta de nuevo o escala el
 
 
 class ConsultaRequest(BaseModel):
-    # ``Any`` a propósito: un tipo inválido debe responder 400 con el código del contrato (TIPO_INVALIDO,
-    # PREGUNTA_VACIA…), no el 422 genérico de FastAPI. El esquema de OpenAPI sí documenta el contrato real.
+    # ``Any`` a propósito: un tipo inválido debe dar 400 con el código del contrato, no el 422 de FastAPI.
     model_config = ConfigDict(json_schema_extra={"required": ["pregunta"]})
 
     pregunta: Any = Field(
@@ -48,5 +46,4 @@ class ConsultaResponse(BaseModel):
 
 
 def error_json(status: int, codigo: str, mensaje: str) -> JSONResponse:
-    """Forma única de todos los errores: ``{"error", "codigo"}``."""
     return JSONResponse(status_code=status, content={"error": mensaje, "codigo": codigo})

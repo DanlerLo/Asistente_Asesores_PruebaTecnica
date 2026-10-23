@@ -1,17 +1,3 @@
-"""Enrutador determinista: elige qué agente atiende una consulta (RF-O2, RF-O3).
-
-Reglas, en orden:
-1. Base documental vacía → agente de fuera de dominio (``base_vacia``).
-2. La pregunta nombra un producto o atributo inexistente (RF-13, p. ej. «crédito
-   hipotecario») → agente de fuera de dominio (``inexistente``).
-3. Ningún fragmento recuperado (ningún término de la pregunta existe en los
-   documentos) → agente de fuera de dominio (``sin_fragmentos``).
-4. El documento del fragmento mejor puntuado pertenece a un especialista →
-   ese especialista (``documento:<archivo>``).
-5. Documento sin agente asignado → agente por defecto (``por_defecto:<archivo>``).
-
-No usa LLM: misma pregunta y mismo corpus ⇒ mismo agente.
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -49,7 +35,6 @@ class Enrutador:
 
     @property
     def agentes(self) -> list[str]:
-        """Nombres de todos los agentes disponibles, sin repetir."""
         nombres = [a.nombre for a in (*self.especialistas, self.por_defecto, self.fuera_de_dominio)]
         return list(dict.fromkeys(nombres))
 
