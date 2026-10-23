@@ -72,6 +72,9 @@ Los embeddings y el contexto ampliado eliminan las respuestas equivocadas del mo
 | Antes de los cambios | 18 | 7 | 10 | 8/11 |
 | Sin conexión, sin embeddings | 20 | 5 | 10 | 9/11 |
 | Sin conexión, con embeddings (por defecto) | 24 | 5 | 6 | 9/11 |
+| Groq + embeddings | 30 | 3 | 2 | 8/11 |
+
+Un acierto exige las raíces de todas las palabras con significado del dato esperado, igual para todos los modos, porque el LLM redacta con sus palabras. Aun así G16 cuenta como incorrecta con Groq: lista los 4 pasos, pero escribe "Emitir la respuesta" por "Emisión de respuesta".
 
 Se mide con `python tests/backend/medicion.py [--embeddings] [--groq]`.
 

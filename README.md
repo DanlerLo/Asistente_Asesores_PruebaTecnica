@@ -4,7 +4,7 @@ Prueba técnica — Desarrollador de IA · Laboratorio Digital, Vicepresidencia 
 
 ## Descripción
 
-Responde preguntas de los asesores sobre **productos de crédito, microseguros, procedimientos y políticas** usando solo los documentos de `Data/`, cita la fuente y guarda cada consulta con su estado. Es un **RAG**: recupera fragmentos con búsqueda híbrida (BM25 + embeddings locales) y responde solo con ellos. Corre 100 % en local y sin servicios pagos; el LLM (Groq) es opcional.
+Responde preguntas de los asesores sobre **productos de crédito, microseguros, procedimientos y políticas** usando solo los documentos de `Data/`, cita la fuente y guarda cada consulta con su estado. Es un **RAG**: recupera fragmentos con búsqueda híbrida (BM25 + embeddings locales) y responde solo con ellos. Corre en local y sin servicios pagos; solo la primera vez descarga el modelo de embeddings (0,22 GB). El LLM (Groq) es opcional.
 
 | Pregunta | Resultado |
 |----------|-----------|
@@ -15,7 +15,7 @@ Responde preguntas de los asesores sobre **productos de crédito, microseguros, 
 ## Arquitectura
 
 ### Vista general
-Todo corre en la máquina del asesor: el frontend en el navegador y el backend con la base documental, el historial en SQLite y, si se activan, los embeddings. Groq es el único servicio externo. Las líneas punteadas son opcionales y por defecto están apagadas.
+Todo corre en la máquina del asesor: el frontend en el navegador y el backend con la base documental, el historial en SQLite y el modelo de embeddings. Groq es el único servicio externo, y es opcional: las líneas punteadas vienen apagadas por defecto.
 
 ```mermaid
 %%{init: {"flowchart": {"curve": "step"}}}%%
@@ -30,7 +30,7 @@ flowchart LR
         BE["<b>Backend</b><br/>Python 3.12 + FastAPI<br/>orquestador, agentes,<br/>RAG híbrido, guardrails"]
         DATA[("<b>Data/*.md</b><br/>base documental")]
         DB[("<b>SQLite</b><br/>storage/consultas.db")]
-        MOD[("<b>Modelo de embeddings</b><br/>opcional · EMBEDDINGS=local<br/>local, en CPU")]
+        MOD[("<b>Modelo de embeddings</b><br/>local, en CPU<br/>se descarga una vez")]
     end
 
     GROQ["<b>Groq API</b><br/>LLM gratuito<br/>opcional"]
@@ -39,7 +39,7 @@ flowchart LR
     FE -- "HTTP JSON · /api/*" --> BE
     BE -- "lee" --> DATA
     BE -- "guarda" --> DB
-    BE -. "EMBEDDINGS=local" .-> MOD
+    BE -- "embeddings" --> MOD
     BE -. "LLM_PROVIDER=groq" .-> GROQ
 
     classDef externo fill:#fff4e5,stroke:#e8590c,color:#000
@@ -60,7 +60,7 @@ flowchart TD
         PI -- "restringido o confidencial" --> X["Fuera del índice<br/>solo alimenta el filtro de salida"]
         PI -- "público" --> FR["Fragmentos por sección<br/>herramientas/markdown.py"]
         FR --> IB["Índice BM25"]
-        FR -.-> IS["Índice semántico<br/>opcional · EMBEDDINGS=local"]
+        FR --> IS["Índice semántico<br/>embeddings locales"]
     end
 
     REQ(["POST /api/consultar<br/>pregunta + contexto"]) --> VAL{"¿Entrada válida?"}
@@ -74,7 +74,7 @@ flowchart TD
     subgraph REC["Recuperación híbrida · la R del RAG"]
         direction LR
         BM25["BM25<br/>palabras, sinónimos,<br/>frases del asesor"]
-        SEM["Similitud semántica<br/>solo con embeddings"]
+        SEM["Similitud semántica<br/>significado"]
     end
 
     REC --> ENR{"Enrutador<br/>reglas, sin LLM"}
@@ -87,7 +87,11 @@ flowchart TD
     MODO -- "no o falla" --> EXT["Motor extractivo<br/>líneas literales + cita"]
     LIS --> OUT
     LLM --> OUT
-    EXT --> OUT{"Filtro de salida<br/>¿secreto en texto o fuentes?"}
+    EXT -- "con respuesta" --> OUT{"Filtro de salida<br/>¿secreto en texto o fuentes?"}
+    EXT -- "sin respuesta" --> LEC{"¿Una sección es<br/>claramente la más parecida?"}
+    LEC -- "sí" --> SECC["Sección literal completa + cita"]
+    LEC -- "no" --> SIN
+    SECC --> OUT
     OUT -- "sí" --> BLQ
     OUT -- "no" --> OK["Exitosa o<br/>Sin información suficiente"]
     OK --> DB
@@ -135,9 +139,9 @@ sequenceDiagram
 
 **Piezas clave**
 - **Ingesta:** los `.md` se dividen por encabezados. `Información restringida.md`, o cualquier archivo marcado como confidencial, nunca entra al índice; sus valores solo alimentan el filtro de salida.
-- **Recuperación:** BM25 propio con sinónimos y frases del asesor; si la pregunta nombra un producto, solo se buscan sus fragmentos. Con `EMBEDDINGS=local` se suma la búsqueda por significado para las paráfrasis.
+- **Recuperación:** BM25 propio con sinónimos y frases del asesor; si la pregunta nombra un producto, solo se buscan sus fragmentos. Los embeddings locales suman la búsqueda por significado para las paráfrasis.
 - **Enrutador y agentes:** reglas deterministas, sin LLM, eligen el agente de crédito, microseguros, operativo o fuera de dominio.
-- **Respuesta:** por defecto es extractiva: copia las líneas del documento con su cita, así que no puede inventar datos. Con Groq, el LLM redacta solo con los fragmentos recuperados y, si falla, responde el motor extractivo.
+- **Respuesta:** por defecto es extractiva: copia texto del documento con su cita, así que no puede inventar datos. Una lista (requisitos, pasos, canales) nunca se recorta. Si las reglas no encuentran la respuesta y una sección es claramente la más parecida por significado, se devuelve esa sección completa. Con Groq, el LLM redacta solo con los fragmentos recuperados y, si falla, responde el motor extractivo.
 - **Guardrails:** validación, bloqueo por intención (credenciales, accesos, información restringida, inyección de prompt, datos de terceros) y filtro de salida.
 
 El detalle de cada componente está en `especificaciones/*/plan.md`.
@@ -189,14 +193,14 @@ Todo funciona con los valores por defecto de `.env.example`. Las variables que m
 |----------|-------------|----------|
 | `LLM_PROVIDER` | `none` | `groq` activa el LLM. Si está vacío, tiene otro valor o falta la clave, arranca en modo sin conexión |
 | `GROQ_API_KEY` | vacío | Clave de Groq |
-| `EMBEDDINGS` | `none` | `local` activa la búsqueda por significado |
+| `EMBEDDINGS` | `local` | Búsqueda por significado; `none` usa solo BM25 |
 | `DATA_DIR` | `./Data` | Carpeta de documentos |
 | `DB_PATH` | `./storage/consultas.db` | Base SQLite; se crea sola |
 | `MAX_LONGITUD_PREGUNTA` | `1000` | Caracteres máximos por pregunta |
 
 Las demás están en `.env.example`, agrupadas por tema.
 
-**Embeddings.** El `pip install` instala la librería, no el modelo. El modelo (~0,22 GB) se descarga la primera vez que arranca el backend con `EMBEDDINGS=local` y tarda unos 30 s; mientras tanto el backend no responde. Después funciona sin internet y arranca en menos de 2 s.
+**Embeddings.** Vienen activados. El `pip install` instala la librería, no el modelo: el modelo (~0,22 GB) se descarga la primera vez que arranca el backend y tarda unos 30 s, mientras tanto el backend no responde. Después funciona sin internet y arranca en menos de 2 s. Si esa primera vez no hay internet, el backend arranca igual, solo con BM25, y lo advierte en el log.
 
 **Clave de Groq.** No está en el repositorio. Para probar el modo con LLM, pídanmela a **loaizad65@gmail.com**: es solo para esta prueba y estará activa 2 meses. También sirve una clave propia gratuita de [console.groq.com/keys](https://console.groq.com/keys). Todo lo que pide el enunciado se puede evaluar sin clave.
 
@@ -234,7 +238,7 @@ Los errores de entrada devuelven 400 con `{"error", "codigo"}` (por ejemplo `PRE
 ## Pruebas
 
 ```bash
-python -m pytest     # backend: 383 pruebas, sin red
+python -m pytest     # backend: 403 pruebas, sin red
 npm test             # frontend: 37 pruebas
 npm run build        # verificación de tipos y build
 ```
@@ -256,7 +260,7 @@ Además hay un conjunto de evaluación de 97 preguntas con respuesta esperada (`
 
 ## Limitaciones
 
-- **El modo sin conexión entiende palabras, no significado.** Con 40 preguntas nuevas que el sistema nunca vio acierta 19; ante vocabulario nuevo responde "No tengo información suficiente" en lugar de adivinar. Con Groq y embeddings acierta 38 de 40.
+- **El modo sin conexión entiende poco de paráfrasis.** Con 40 preguntas nuevas acierta 21 (19 sin embeddings) y con otras 35 acierta 24; ante vocabulario nuevo responde "No tengo información suficiente" en lugar de adivinar. El modelo de embeddings pequeño reconoce el tema, no si una sección responde, así que solo se usa cuando la elección es clara. Con Groq acierta 38 de 40 y 30 de 35.
 - **No calcula ni razona.** Con Groq, el modelo a veces hace aritmética simple sobre valores citados.
 - **Seguridad por reglas.** Se bloquea por intención; las credenciales son estrictas a propósito, aunque haya falsos positivos.
 - **Sin autenticación**, por eso el historial guarda las preguntas enmascaradas.

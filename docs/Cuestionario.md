@@ -27,15 +27,16 @@
 El ciclo siempre fue el mismo: especificación, yo escribía la prueba que fallaba, la IA implementaba y la suite completa tenía que pasar.
 
 ### Qué sugerencias de la IA rechacé
-- **Que los embeddings respondieran solos en el modo sin conexión.** Lo medí con 40 preguntas nuevas: ganaba entre 1 y 3 aciertos, pero las respuestas equivocadas subían de 4 a entre 6 y 10. El modelo reconoce el tema de una línea, no si la responde. Lo retiré y usé los embeddings para darle más evidencia al LLM.
+- **Que los embeddings eligieran la línea de la respuesta en el modo sin conexión.** Lo medí con 40 preguntas nuevas: ganaba entre 1 y 3 aciertos, pero las respuestas equivocadas subían de 4 a entre 6 y 10. El modelo reconoce el tema de una línea, no si la responde. Lo que sí dejé es que elijan qué **sección** leer, solo cuando una sección es claramente la más parecida, y la respuesta es la sección literal completa.
 - **Una regla del motor que pasaba todas las pruebas y aun así estaba mal.** Al medirla contra el banco de regresión rompía 17 respuestas correctas. Desde entonces ninguna regla entra sin medir el antes y el después.
 - **Sinónimos que "mejoraban" la cobertura** ("plata" por monto, "codeudor" por garantía): hacían que algunas preguntas se respondieran con datos de otro producto. En un banco, un dato equivocado es peor que decir "no tengo información".
 
 ### Cómo validé lo que produjo la IA
-- **Pruebas:** 383 de backend y 37 de frontend, con cobertura del 99 %. Nada entra en rojo.
+- **Pruebas:** 403 de backend y 37 de frontend, con cobertura del 99 %. Nada entra en rojo.
 - **Conjunto de evaluación:** 97 preguntas con respuesta esperada; la precisión pasó de 48,5 % a 100 %.
 - **Banco de regresión:** 293 preguntas que comparan texto, estado y fuentes. Cada respuesta que cambiaba la revisé a mano.
-- **Generalización:** 40 preguntas nuevas que nunca usé para ajustar reglas, para no engañarme con el 100 %.
+- **Generalización:** 40 preguntas nuevas que nunca usé para ajustar reglas, para no engañarme con el 100 %, y otras 35 escritas antes de la última ronda de cambios.
+- **Aciertos, incorrectas y abstenciones por separado** (`tests/backend/medicion.py`), más la completitud de las listas. En un banco, bajar de 4 a 2 respuestas incorrectas vale más que subir 5 aciertos, y una lista con un requisito de menos cuenta como incorrecta.
 - **Seguridad:** pruebas negativas que leen el documento restringido en tiempo de ejecución y comprueban que ningún valor suyo aparece en el índice, en el LLM ni en las respuestas.
 - **Uso real:** consultas con `curl` y recorridos de la interfaz en el navegador.
 
@@ -49,6 +50,8 @@ Usaría los **modelos de OpenAI** para generar, los **embeddings de OpenAI** (`t
 - **Azure AI Search.** Hace búsqueda híbrida (BM25 + vectores) de forma nativa, que es justo el diseño de esta prueba, pero gestionado. Trae un reordenador semántico que decide qué fragmento responde la pregunta, filtros por producto y por el rol del asesor, e indexadores que actualizan el índice cuando cambian los documentos.
 
 **En esta prueba** uso Groq con `openai/gpt-oss-20b`, porque es gratuito y el enunciado no admite herramientas pagas. Es opcional: si falta la clave o `LLM_PROVIDER` tiene otro valor, el backend arranca en modo sin conexión. Si Groq falla, responde el motor extractivo.
+
+Evalué usar un LLM local con Ollama en lugar de Groq. Lo descarté porque Ollama tarda más en ejecutarse en CPU y exige instalar una aplicación aparte en la máquina de quien evalúa, y por el tiempo de la prueba no era procedente.
 
 ### ¿Cómo optimizaría costos?
 - No llamar al LLM cuando no aporta: hoy no se llama en preguntas bloqueadas ni fuera de dominio, y en producción también responderían sin LLM las preguntas con un dato exacto de tabla.

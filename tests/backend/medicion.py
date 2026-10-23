@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from dataclasses import dataclass, field, replace
@@ -16,8 +17,22 @@ sys.path.insert(0, str(RAIZ / "src" / "backend"))
 
 from asistente.config import Configuracion  # noqa: E402
 from asistente.dominio import ESTADO_BLOQUEADA, ESTADO_EXITOSA, ESTADO_SIN_INFO  # noqa: E402
+from asistente.herramientas.texto import normalizar, raiz  # noqa: E402
 
 CONJUNTOS = ("robustez.json", "generalizacion.json", "evaluacion.json")
+
+
+_PALABRAS_FUNCIONALES = frozenset({"a", "al", "de", "del", "el", "la", "las", "los", "en", "y", "o", "un", "una"})
+
+
+def _raices(texto: str) -> set[str]:
+    # Sin quitar palabras con significado: «otros clientes» no es «el cliente».
+    return {raiz(p) for p in re.findall(r"\w+", normalizar(texto)) if p not in _PALABRAS_FUNCIONALES}
+
+
+def contiene(respuesta: str, esperado: str) -> bool:
+    """Por raíces, igual para todos los modos: el LLM redacta «validar la documentación» por «validación documental»."""
+    return _raices(esperado) <= _raices(respuesta)
 
 
 def clasificar(caso: dict, estado: str, respuesta: str) -> str:
@@ -34,13 +49,14 @@ def clasificar(caso: dict, estado: str, respuesta: str) -> str:
         return "acierto" if estado == ESTADO_SIN_INFO else "incorrecta"
     if estado == ESTADO_SIN_INFO:
         return "abstencion"
-    return "acierto" if estado == ESTADO_EXITOSA and all(t in respuesta for t in caso["contiene"]) else "incorrecta"
+    completa = all(contiene(respuesta, t) for t in caso["contiene"])
+    return "acierto" if estado == ESTADO_EXITOSA and completa else "incorrecta"
 
 
 def completitud(caso: dict, respuesta: str) -> float | None:
     if not caso.get("lista"):
         return None
-    return sum(t in respuesta for t in caso["contiene"]) / len(caso["contiene"])
+    return sum(contiene(respuesta, t) for t in caso["contiene"]) / len(caso["contiene"])
 
 
 @dataclass
