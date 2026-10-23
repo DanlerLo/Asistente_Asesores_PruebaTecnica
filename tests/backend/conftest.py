@@ -19,6 +19,12 @@ DATA_DIR = RAIZ_PROYECTO / "Data"
 _RESTRINGIDO = DATA_DIR / "Información restringida.md"
 
 
+@pytest.fixture(autouse=True)
+def sin_modelo_de_embeddings(monkeypatch: pytest.MonkeyPatch) -> None:
+    """RNF-E2: al arrancar, EMBEDDINGS vale ``local``; las pruebas nunca descargan ni cargan el modelo."""
+    monkeypatch.setenv("EMBEDDINGS", "none")
+
+
 def valores_restringidos() -> list[str]:
     valores = []
     for linea in _RESTRINGIDO.read_text(encoding="utf-8").splitlines():

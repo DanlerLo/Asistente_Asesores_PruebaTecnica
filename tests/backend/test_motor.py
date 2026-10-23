@@ -230,3 +230,32 @@ def test_sin_producto_nombrado_no_responde_con_otro_producto(indice: IndiceBM25)
 def test_cobrar_interes_no_se_confunde_con_el_costo_del_estudio(indice: IndiceBM25):
     r = responder(indice, "¿Qué interés cobra el Crédito Productivo Impulso?")
     assert "24,5 %" in r.texto
+
+
+# --------------------------------------------------------------------------- listas completas (RF-23)
+
+def test_una_lista_se_devuelve_completa_aunque_un_elemento_no_coincida(indice: IndiceBM25):
+    """«Certificado de tradición…» no comparte palabras con la pregunta, pero es uno de los requisitos."""
+    r = responder(indice, "¿Qué documentos necesito para el crédito agropecuario?")
+    assert r.estado == ESTADO_EXITOSA
+    for requisito in ("Documento de identidad", "Certificado de tradición y libertad", "Plan de inversión"):
+        assert requisito in r.texto
+
+
+def test_seleccionar_lineas_no_recorta_una_lista(corpus: Corpus):
+    from asistente.generacion.extractivo import seleccionar_lineas
+    from asistente.herramientas.texto import raices_unicas
+
+    requisitos = next(f for f in corpus.fragmentos if f.ruta_seccion == "Crédito Agro Crece > Requisitos")
+    assert requisitos.es_lista
+    lineas = seleccionar_lineas(requisitos, raices_unicas("documentos agropecuario"))
+    assert lineas == list(requisitos.lineas)
+
+
+def test_una_tabla_de_atributos_si_se_filtra_por_linea(corpus: Corpus):
+    from asistente.generacion.extractivo import seleccionar_lineas
+    from asistente.herramientas.texto import raices_unicas
+
+    condiciones = next(f for f in corpus.fragmentos if f.ruta_seccion == "Crédito Agro Crece > Condiciones")
+    assert not condiciones.es_lista
+    assert seleccionar_lineas(condiciones, raices_unicas("plazo maximo")) == ["Plazo máximo: 84 meses"]

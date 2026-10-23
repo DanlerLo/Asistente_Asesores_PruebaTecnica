@@ -12,7 +12,7 @@ import pytest
 from asistente.config import Configuracion
 from asistente.dominio import ESTADO_BLOQUEADA, ESTADO_EXITOSA, FRASE_SIN_INFO
 from asistente.herramientas.corpus import Corpus
-from asistente.herramientas.semantica import IndiceSemantico, construir_embebedor
+from asistente.herramientas.semantica import ContextoSemantico, IndiceSemantico, LineaSimilar, construir_embebedor
 from asistente.herramientas.texto import STOPWORDS, normalizar
 from asistente.infraestructura.persistencia import RepositorioConsultas
 from asistente.orquestador import Orquestador
@@ -66,12 +66,35 @@ def test_el_indice_no_contiene_lineas_restringidas(corpus: Corpus):
 
 # --------------------------------------------------------------------------- uso de la similitud (RF-E3, RF-E4, RF-E6)
 
-def test_el_modo_extractivo_no_responde_por_similitud(cfg, corpus):
-    """RF-E4 / ADR-25: medido, responder por parecido aumentaba las respuestas equivocadas."""
+def test_sin_embeddings_la_parafrasis_no_se_responde(cfg, corpus):
     pregunta = "¿Qué riesgos cubre el seguro para negocios?"
-    sin_embeddings = Orquestador(cfg, corpus, RepositorioConsultas(":memory:")).consultar(pregunta)
-    con_embeddings = _orquestador(cfg, corpus, umbral_semantico=0.01).consultar(pregunta)
-    assert con_embeddings.respuesta == sin_embeddings.respuesta == FRASE_SIN_INFO
+    assert Orquestador(cfg, corpus, RepositorioConsultas(":memory:")).consultar(pregunta).respuesta == FRASE_SIN_INFO
+
+
+def test_con_similitud_clara_se_lee_la_seccion_completa(cfg, corpus):
+    """RF-E4 / ADR-27: la similitud elige qué sección leer; la respuesta es la sección literal, con su cita."""
+    resultado = _orquestador(cfg, corpus).consultar("¿Qué riesgos cubre el seguro para negocios?")
+    assert resultado.estado == ESTADO_EXITOSA
+    assert "Coberturas: Incendio; Inundación; Daños accidentales." in resultado.respuesta
+    assert [f["seccion"] for f in resultado.fuentes] == ["Negocio Seguro"]
+
+
+def test_seccion_clara_exige_umbral_y_margen(corpus):
+    """Dos secciones casi igual de parecidas: elegir una sería adivinar (ADR-27)."""
+    a, b = corpus.fragmentos[0], corpus.fragmentos[1]
+
+    def contexto(*pares):
+        return ContextoSemantico(tuple(LineaSimilar(f, f.lineas[0], s) for f, s in pares), 0.6, 12)
+
+    assert contexto((a, 0.80), (a, 0.79), (b, 0.70)).seccion_clara(0.65, 0.06) == a  # misma sección no compite
+    assert contexto((a, 0.80), (b, 0.77)).seccion_clara(0.65, 0.06) is None  # margen insuficiente
+    assert contexto((a, 0.60), (b, 0.40)).seccion_clara(0.65, 0.06) is None  # bajo el umbral
+
+
+def test_un_producto_nombrado_sin_el_dato_no_se_rescata_por_similitud(cfg, corpus):
+    """Si la pregunta nombra el producto y no tiene ese dato, mostrar su ficha parecería una respuesta."""
+    resultado = _orquestador(cfg, corpus).consultar("¿Qué edad máxima tiene Negocio Seguro?")
+    assert resultado.respuesta == FRASE_SIN_INFO
 
 
 def test_sin_resultados_lexicos_enruta_por_similitud(cfg, corpus):
@@ -116,9 +139,17 @@ def test_si_el_modelo_falla_sigue_con_recuperacion_lexica(cfg, corpus, caplog: p
     assert "$50.000.000" in resultado.respuesta
 
 
-def test_embeddings_desactivados_por_defecto(tmp_path):
+def test_embeddings_activados_por_defecto_al_arrancar(monkeypatch: pytest.MonkeyPatch, tmp_path):
+    """RF-E1: el servicio arranca con embeddings; en código y en pruebas el valor por defecto no carga modelos."""
+    monkeypatch.delenv("EMBEDDINGS", raising=False)
+    assert Configuracion.desde_entorno().embeddings == "local"
     assert Configuracion().embeddings == "none"
     assert construir_embebedor("none", "cualquiera", tmp_path) is None
+
+
+def test_la_suite_nunca_carga_el_modelo_real():
+    """RNF-E2: el fixture automático de conftest fija EMBEDDINGS=none para toda la suite."""
+    assert Configuracion.desde_entorno().embeddings == "none"
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,305 @@
+{
+ "descripcion": "Preguntas para medir robustez (revisión del evaluador). G01-G06 son las que reportó el evaluador; G07-G35 se escribieron antes de cambiar el motor y no se usan para ajustar reglas. Cada respuesta se clasifica como acierto, incorrecta o abstención; en las listas se mide además cuántos elementos aparecen.",
+ "preguntas": [
+  {
+   "id": "G01",
+   "grupo": "evaluador",
+   "pregunta": "¿Cuál es la tasa del crédito para estudiantes?",
+   "contiene": [
+    "15,6 %"
+   ]
+  },
+  {
+   "id": "G02",
+   "grupo": "evaluador",
+   "pregunta": "¿Un cliente de 72 años puede tomar Vida Protegida?",
+   "contiene": [
+    "70 años"
+   ]
+  },
+  {
+   "id": "G03",
+   "grupo": "evaluador",
+   "pregunta": "¿Cuánto se demora en llegar la plata después de aprobado?",
+   "contiene": [
+    "2 días hábiles"
+   ]
+  },
+  {
+   "id": "G04",
+   "grupo": "evaluador",
+   "pregunta": "Un cliente se queja, ¿en cuánto le responden?",
+   "contiene": [
+    "5 días hábiles"
+   ]
+  },
+  {
+   "id": "G05",
+   "grupo": "evaluador",
+   "pregunta": "¿Qué hago si un cliente me pide información de otro cliente?",
+   "contiene": [
+    "Información de otros clientes"
+   ]
+  },
+  {
+   "id": "G06",
+   "grupo": "evaluador",
+   "pregunta": "¿Qué documentos necesito para el crédito agropecuario?",
+   "contiene": [
+    "Documento de identidad",
+    "Certificado de tradición y libertad",
+    "Plan de inversión"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G07",
+   "grupo": "nueva",
+   "pregunta": "¿Qué papeles pide el crédito para mujeres?",
+   "contiene": [
+    "Documento de identidad",
+    "mínimo 6 meses",
+    "Carta de intención"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G08",
+   "grupo": "nueva",
+   "pregunta": "¿Qué cubre el seguro de salud para la familia?",
+   "contiene": [
+    "Hospitalización por enfermedad",
+    "Urgencias",
+    "Auxilio por maternidad"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G09",
+   "grupo": "nueva",
+   "pregunta": "¿Hasta qué edad se puede asegurar a alguien en Salud Básica Familiar?",
+   "contiene": [
+    "65 años"
+   ]
+  },
+  {
+   "id": "G10",
+   "grupo": "nueva",
+   "pregunta": "¿Cuánto vale al mes el seguro contra accidentes?",
+   "contiene": [
+    "$7.500"
+   ]
+  },
+  {
+   "id": "G11",
+   "grupo": "nueva",
+   "pregunta": "¿Qué se puede financiar con el crédito del campo?",
+   "contiene": [
+    "Siembra",
+    "Compra de maquinaria",
+    "Sistemas de riego",
+    "Infraestructura rural"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G12",
+   "grupo": "nueva",
+   "pregunta": "¿Cuál es el préstamo más grande que da el Productivo Impulso?",
+   "contiene": [
+    "$50.000.000"
+   ]
+  },
+  {
+   "id": "G13",
+   "grupo": "nueva",
+   "pregunta": "Si el cliente pide $20.000.000 en el Productivo Impulso, ¿qué garantía necesita?",
+   "contiene": [
+    "codeudor o garantía mobiliaria"
+   ]
+  },
+  {
+   "id": "G14",
+   "grupo": "nueva",
+   "pregunta": "¿Por dónde puede pagar el cliente la prima del seguro?",
+   "contiene": [
+    "Descuento en cuota del crédito",
+    "Corresponsales bancarios",
+    "Pago en oficinas"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G15",
+   "grupo": "nueva",
+   "pregunta": "¿Qué no cubren los microseguros?",
+   "contiene": [
+    "Enfermedades preexistentes",
+    "Actos intencionales",
+    "actividades ilícitas"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G16",
+   "grupo": "nueva",
+   "pregunta": "¿Cuáles son los pasos para que un cliente reclame un seguro?",
+   "contiene": [
+    "Reportar evento",
+    "Presentar soportes",
+    "Validación documental",
+    "Emisión de respuesta"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G17",
+   "grupo": "nueva",
+   "pregunta": "¿A qué hora abren las oficinas el sábado?",
+   "contiene": [
+    "sábados de 8:00 a.m. a 12:00 m"
+   ]
+  },
+  {
+   "id": "G18",
+   "grupo": "nueva",
+   "pregunta": "¿Hasta qué hora contesta la línea telefónica?",
+   "contiene": [
+    "7:00 p.m."
+   ]
+  },
+  {
+   "id": "G19",
+   "grupo": "nueva",
+   "pregunta": "¿Cada cuánto el cliente debe poner al día sus datos?",
+   "contiene": [
+    "12 meses"
+   ]
+  },
+  {
+   "id": "G20",
+   "grupo": "nueva",
+   "pregunta": "¿Qué documentos sirven para actualizar los datos de un cliente?",
+   "contiene": [
+    "Documento de identidad",
+    "Certificado laboral",
+    "Declaración de renta"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G21",
+   "grupo": "nueva",
+   "pregunta": "¿Cómo le entregan el dinero del crédito al cliente?",
+   "contiene": [
+    "Abono a cuenta bancaria",
+    "Giro en oficina"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G22",
+   "grupo": "nueva",
+   "pregunta": "¿Qué beneficios trae el crédito para emprendedoras?",
+   "contiene": [
+    "Formación financiera",
+    "Mentoría empresarial",
+    "ferias comerciales"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G23",
+   "grupo": "nueva",
+   "pregunta": "¿El cliente puede pagar la deuda antes sin multa?",
+   "contiene": [
+    "sin penalidad"
+   ]
+  },
+  {
+   "id": "G24",
+   "grupo": "nueva",
+   "pregunta": "¿Cuánto se demoran en estudiar una solicitud de crédito?",
+   "contiene": [
+    "3 días hábiles"
+   ]
+  },
+  {
+   "id": "G25",
+   "grupo": "nueva",
+   "pregunta": "¿Qué debo hacer cuando no estoy seguro de la respuesta?",
+   "contiene": [
+    "Escalar caso"
+   ]
+  },
+  {
+   "id": "G26",
+   "grupo": "nueva",
+   "pregunta": "¿El seguro de vida paga el funeral?",
+   "contiene": [
+    "Auxilio funerario"
+   ]
+  },
+  {
+   "id": "G27",
+   "grupo": "nueva",
+   "pregunta": "¿Cuánto tiempo después de graduarse empieza a pagar el crédito educativo?",
+   "contiene": [
+    "12 meses después de terminar los estudios"
+   ]
+  },
+  {
+   "id": "G28",
+   "grupo": "nueva",
+   "pregunta": "¿Dónde puede radicar el cliente una queja?",
+   "contiene": [
+    "Oficinas",
+    "Línea telefónica de atención",
+    "Formulario en el sitio web"
+   ],
+   "lista": true
+  },
+  {
+   "id": "G29",
+   "grupo": "nueva",
+   "pregunta": "¿Se requiere clave para el formulario web de PQR?",
+   "no_bloqueada": true
+  },
+  {
+   "id": "G30",
+   "grupo": "nueva",
+   "pregunta": "¿Qué clave uso para entrar al sistema de créditos?",
+   "bloqueada": true
+  },
+  {
+   "id": "G31",
+   "grupo": "nueva",
+   "pregunta": "¿Tienen crédito para comprar carro?",
+   "sin_informacion": true
+  },
+  {
+   "id": "G32",
+   "grupo": "nueva",
+   "pregunta": "¿Cuánto cuesta el seguro para mascotas?",
+   "sin_informacion": true
+  },
+  {
+   "id": "G33",
+   "grupo": "nueva",
+   "pregunta": "¿Cuál es la cuota de manejo de la tarjeta débito?",
+   "sin_informacion": true
+  },
+  {
+   "id": "G34",
+   "grupo": "nueva",
+   "pregunta": "¿El Agro Crece trae seguro de vida incluido?",
+   "sin_informacion": true
+  },
+  {
+   "id": "G35",
+   "grupo": "nueva",
+   "pregunta": "¿Cuál es la tasa de mora del crédito educativo?",
+   "sin_informacion": true
+  }
+ ]
+}
