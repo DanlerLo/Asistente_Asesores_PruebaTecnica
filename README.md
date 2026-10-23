@@ -391,7 +391,18 @@ python -m ruff check src/backend tests/backend && python -m mypy   # lint y tipo
 
 **Integración continua:** GitHub Actions (`.github/workflows/ci.yml`) ejecuta en cada push y pull request ruff, mypy, pytest con cobertura, Vitest y el build. Sin secretos ni red: el LLM queda desactivado en CI.
 
-Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo inválido · base documental vacía/inexistente · caracteres especiales y de control · documentos duplicados · consultas extensas (dentro y fuera del límite) · atributo inexistente para el producto nombrado · comparación entre productos · bloqueo por credenciales, accesos admin, configuración interna, información restringida, inyección de prompt (español e inglés) y datos de terceros · instrucción embebida en un documento · fuga de secreto desde documento público y desde un LLM · fallback del LLM · persistencia, historial y estadísticas · error interno sin detalles · productos y atributos inexistentes («crédito hipotecario») · preguntas de seguimiento con contexto · banco de regresión de 293 preguntas con foto de respuestas esperadas (`test_banco.py`) · enrutamiento a agentes por dominio y fuera de dominio sin LLM · nombres de archivo en NFD (macOS) · dependencias entre capas (prueba de arquitectura).
+**Casos mínimos de la prueba.** Cada uno se escribió antes que el código que lo hace pasar:
+
+| Caso | Backend | Frontend |
+|------|---------|----------|
+| Consulta válida | `test_api.py::test_consulta_valida` (contrato exacto, respuesta y fuente), `test_orquestador.py::test_consulta_valida_es_exitosa_y_queda_registrada` (persistencia) | `App.test.tsx`: «muestra el estado de procesamiento, la respuesta, el estado y las fuentes» |
+| Pregunta vacía | `test_api.py::test_pregunta_vacia` (HTTP 400 `PREGUNTA_VACIA`), `test_guardrails.py::test_pregunta_vacia_es_rechazada` (`""`, espacios, saltos de línea), `test_orquestador.py::test_validacion_rechaza_entradas_invalidas_sin_persistir` | `App.test.tsx`: «rechaza una pregunta vacía sin llamar al backend» |
+| Base documental vacía | `test_orquestador.py::test_base_documental_vacia` (responde la frase canónica, no falla), `test_corpus.py::test_base_documental_vacia_o_inexistente`, `test_agentes.py::test_base_vacia_va_a_fuera_de_dominio` | — |
+| Caracteres especiales | `test_api.py::test_caracteres_especiales` (emoji, HTML, comillas; `\x00` → 400), `test_orquestador.py::test_caracteres_especiales_no_rompen_el_flujo` (inyección SQL inofensiva), `test_guardrails.py::test_caracteres_especiales_legitimos_se_aceptan` | `App.test.tsx`: «muestra caracteres especiales como texto literal, sin interpretarlos como HTML» |
+| Documentos duplicados | `test_corpus.py::test_documentos_duplicados_se_indexan_una_sola_vez`, `test_orquestador.py::test_documentos_duplicados_no_duplican_fuentes` | — |
+| Consultas extensas | `test_orquestador.py::test_consulta_extensa_dentro_del_limite_se_procesa` (más de 700 caracteres, responde), `test_api.py::test_pregunta_demasiado_larga` (1001 → 400) | `App.test.tsx`: «rechaza una pregunta de más de 1000 caracteres sin llamar al backend» |
+
+Otros casos cubiertos (ver `tests/`): cuerpo inválido · caracteres de control · atributo inexistente para el producto nombrado · comparación entre productos · bloqueo por credenciales, accesos admin, configuración interna, información restringida, inyección de prompt (español e inglés) y datos de terceros · instrucción embebida en un documento · fuga de secreto desde documento público y desde un LLM · fallback del LLM · persistencia, historial y estadísticas · error interno sin detalles · productos y atributos inexistentes («crédito hipotecario») · preguntas de seguimiento con contexto · banco de regresión de 293 preguntas con foto de respuestas esperadas (`test_banco.py`) · enrutamiento a agentes por dominio y fuera de dominio sin LLM · nombres de archivo en NFD (macOS) · dependencias entre capas (prueba de arquitectura).
 
 ## Limitaciones
 

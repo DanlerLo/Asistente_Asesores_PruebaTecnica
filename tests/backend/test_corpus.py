@@ -109,7 +109,7 @@ def test_documentos_duplicados_se_indexan_una_sola_vez(tmp_path):
         tmp_path / "data", {"original.md": contenido, "copia.md": contenido, "copia (2).md": contenido + "\n\n"}
     )
     corpus = cargar_corpus_seguro(data_dir)
-    assert corpus.documentos == ["copia (2).md"] or len(corpus.documentos) == 1
+    assert corpus.documentos == ["copia (2).md"]  # se conserva el primero en orden alfabético
     assert len(corpus.duplicados) == 2
     assert len({f.archivo for f in corpus.fragmentos}) == 1
 
