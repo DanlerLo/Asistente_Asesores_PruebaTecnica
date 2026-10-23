@@ -26,7 +26,7 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-08 | Con la base documental vacía o inexistente el servicio arranca, registra una advertencia y responde RF-05 a toda pregunta. |
 | RF-09 | Cada consulta atendida se persiste con pregunta, fecha y hora (UTC ISO 8601), respuesta, fuentes (JSON), estado, latencia y modo. |
 | RF-10 | `GET /api/historial`, `GET /api/estadisticas` y `GET /api/salud` exponen las consultas recientes, conteos por estado/latencias y el estado del corpus. |
-| RF-11 | Con `LLM_PROVIDER=groq` (único proveedor; cualquier otro valor se rechaza con un mensaje claro), el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo (red, cuota, respuesta vacía) se degrada al motor extractivo. El modo por defecto sigue siendo `none` (sin red). |
+| RF-11 | Con `LLM_PROVIDER=groq` (único proveedor) y `GROQ_API_KEY` configurada, el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo (red, cuota, respuesta vacía) se degrada al motor extractivo. El modo por defecto sigue siendo `none` (sin red). Si `LLM_PROVIDER` está vacío, tiene un valor desconocido o es `groq` sin clave, el backend arranca en modo sin conexión y registra una advertencia que nombra la variable. |
 | RF-12 | Si el fragmento mejor puntuado trata lo que nombra la pregunta (p. ej. «Gestión de PQR») pero no responde el atributo pedido, el motor extractivo no recurre a otro fragmento que no mencione ninguno de los términos de esa sección (los títulos con forma de pregunta y las palabras de categoría no cuentan). La regla nunca descarta el fragmento principal. Ante la duda responde RF-05. |
 | RF-13 | Si la pregunta nombra un producto que no existe en la base («crédito hipotecario», «Seguro Exequial Plus», «microseguro de mascotas») o pide un atributo inexistente de un documento («salario del asesor»), responde RF-05 en lugar de contestar con datos de otro producto. Se detecta con el vocabulario indexado: una palabra desconocida justo después de «crédito/seguro/microseguro/póliza/préstamo» (salvo tras «qué/cuál», donde sigue un verbo), o preguntas cuyas únicas palabras conocidas son el nombre de un documento. |
 | RF-14 | El vocabulario del asesor se traduce al de los documentos en preguntas y documentos por igual («cubre/incluye/ampara» → cobertura, «cuesta/vale/mensualidad» → prima, «carencia» → gracia, «queja/petición» → PQR, «papeles» → requisitos, «más bajo/menor» → mínimo, «más alto/largo» → máximo…); los errores de tipeo leves se corrigen contra el vocabulario del corpus (misma longitud ± 1, similitud ≥ 0,84, nunca conjugaciones ni palabras de categoría). |
@@ -34,7 +34,7 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-16 | Sin producto nombrado, el motor no elige uno al azar: si otro producto responde lo mismo, no responde con ninguno (el agente de dominio lista por producto, RF-O9). Una pregunta frecuente solo responde si su título comparte 2+ términos con la pregunta, y con un único término útil solo responde la sección que ese término nombra (no «abonos a capital» para «la capital de Francia»). |
 | RF-17 | Cada respuesta lleva `x-request-id`: se respeta el recibido si cumple `[A-Za-z0-9._-]{1,64}`; si no, se genera uno. Todos los logs emitidos al atender la solicitud incluyen `request_id`, también los errores 500. |
 | RF-18 | `GET /api/consultas/{id}` acepta solo dígitos ASCII (`²` o `٣` → 400 `ID_INVALIDO`, nunca 500); `GET /api/historial?limite=` fuera de 1..200 o no numérico → 400 `SOLICITUD_INVALIDA` con un mensaje que nombra el parámetro. |
-| RF-19 | Una configuración fuera de rango (`TOP_K` < 1, `MAX_LONGITUD_PREGUNTA` < 1, `UMBRAL_COBERTURA` fuera de (0, 1], `LLM_TIMEOUT_SEGUNDOS` ≤ 0, proveedor desconocido o un valor no numérico) impide arrancar con un mensaje que nombra la variable. |
+| RF-19 | Una configuración fuera de rango (`TOP_K` < 1, `MAX_LONGITUD_PREGUNTA` < 1, `UMBRAL_COBERTURA` fuera de (0, 1], `LLM_TIMEOUT_SEGUNDOS` ≤ 0 o un valor no numérico) impide arrancar con un mensaje que nombra la variable. |
 | RF-20 | El parser de Markdown tolera BOM al inicio del archivo, conserva los comparadores `<`/`>` (solo elimina etiquetas HTML reales), reconoce etiquetas que contienen «:» («Atención en oficinas (8:00 a 17:00):») y, en tablas de 3 o más columnas, nombra cada valor con su cabecera («Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses»). |
 | RF-21 | Una consulta bloqueada cita las políticas que respaldan el bloqueo (*Manual › Información Sensible*, *Políticas › Escalamiento*) **solo si existen en el corpus**; si no, `fuentes` es `[]` y el texto no cita archivos. `LOG_LEVEL` es parte de la configuración validada. El esquema OpenAPI documenta `pregunta` como texto obligatorio. |
 | RF-22 | Frases del asesor y preguntas frecuentes: (a) frases coloquiales se traducen al término del documento («hasta cuánta plata prestan» → monto máximo, «cuánto hay que pagar al mes» → prima, «tiempo para pagar» → plazo, «entregan el dinero» → desembolso, «cada cuánto» → periodicidad, días de la semana → horario); (b) «cliente» es contexto del asesor, no un atributo pedido; (c) una pregunta frecuente cuyo título completo está en la pregunta responde primero y entera, y un título de pregunta frecuente nunca se considera nombrado a medias; (d) una subsección corta (≤ 3 líneas) de un producto nombrado responde entera si menciona lo pedido. |
@@ -158,7 +158,20 @@ Característica: Consulta documental con citación de fuentes
   Escenario: Proveedor Groq sin clave
     Dado LLM_PROVIDER=groq y GROQ_API_KEY vacía
     Cuando arranca el backend
-    Entonces falla con un mensaje que pide configurar GROQ_API_KEY
+    Entonces arranca en modo sin conexión
+    Y registra una advertencia que pide configurar GROQ_API_KEY
+
+  @RF-11
+  Esquema del escenario: LLM_PROVIDER vacío o desconocido
+    Dado LLM_PROVIDER="<valor>"
+    Cuando arranca el backend
+    Entonces arranca en modo sin conexión
+    Y registra una advertencia que nombra LLM_PROVIDER
+
+    Ejemplos:
+      | valor  |
+      |        |
+      | openai |
 
   @RF-12
   Escenario: Paráfrasis no responde con datos de otro tema
@@ -250,4 +263,52 @@ Característica: Consulta documental con citación de fuentes
     Cuando envío la pregunta "¿Qué pasa si un cliente no actualiza sus datos y pide un nuevo crédito?"
     Entonces la primera fuente es "¿Qué pasa si un cliente no actualiza sus datos?"
     Y la respuesta contiene "no es posible tramitar"
+
+  @RF-10
+  Escenario: Historial, estadísticas y salud
+    Dado que se respondió la pregunta "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+    Cuando consulto GET /api/historial?limite=5
+    Entonces la lista incluye esa consulta con su estado
+    Y GET /api/estadisticas la cuenta en el estado "Exitosa"
+    Y GET /api/salud informa los documentos indexados y excluidos
+
+  @RF-16
+  Escenario: Atributo pedido sin nombrar un producto
+    Cuando envío la pregunta "¿Cuál crédito tiene la tasa más baja?"
+    Entonces la respuesta lista la tasa de cada crédito con su fuente
+    Y no presenta un único producto como si fuera la respuesta
+
+  @RF-17
+  Escenario: Identificador de solicitud
+    Cuando envío una consulta con la cabecera x-request-id "traza-42"
+    Entonces la respuesta trae la cabecera x-request-id "traza-42"
+    Y los logs de esa consulta incluyen request_id "traza-42"
+    Y si la cabecera recibida es "<script>" se genera un identificador nuevo
+
+  @RF-18
+  Escenario: Parámetros inválidos en la URL
+    Cuando consulto GET /api/consultas/²
+    Entonces el código HTTP es 400 con codigo "ID_INVALIDO"
+    Y GET /api/historial?limite=abc responde 400 con un mensaje que nombra "limite"
+
+  @RF-19
+  Escenario: Configuración fuera de rango
+    Dado que la variable TOP_K vale 0
+    Cuando arranca el servicio
+    Entonces no arranca y el error nombra la variable TOP_K
+
+  @RF-20
+  Escenario: Markdown con BOM, tablas de tres columnas y comparadores
+    Dado un documento con BOM, una tabla "| Producto | Plazo mínimo | Plazo máximo |" y la línea "Montos < $2.000.000: firma personal"
+    Cuando se carga la base documental
+    Entonces el título del documento no se indexa como texto
+    Y la fila queda "Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses"
+    Y el comparador "<" se conserva
+
+  @RF-21
+  Escenario: El bloqueo solo cita políticas que existen
+    Dado que la base documental no contiene el Manual del Asesor ni las Políticas de Atención
+    Cuando envío la pregunta "¿Cuál es el token interno?"
+    Entonces el estado es "Bloqueada por seguridad"
+    Y la lista de fuentes está vacía
 ```

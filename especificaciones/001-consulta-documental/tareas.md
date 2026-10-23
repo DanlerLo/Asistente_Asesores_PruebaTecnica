@@ -82,3 +82,4 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 ## Fase J — Calidad y entrega
 - [x] T-058 ruff, mypy y cobertura en el CI; `requires-python` en `pyproject.toml`.
 - [x] T-059 Prueba de latencia p95 del modo extractivo sobre el banco (RNF-02).
+- [x] T-060 `LLM_PROVIDER` vacío, desconocido o `groq` sin clave arranca en modo sin conexión con una advertencia, en vez de impedir el arranque (RF-11).

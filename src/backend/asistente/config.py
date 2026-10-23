@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -12,6 +13,8 @@ PROVEEDORES_EMBEDDINGS = ("none", "local")
 MODELO_EMBEDDINGS_POR_DEFECTO = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 NIVELES_LOG = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
 
+log = logging.getLogger("asistente.config")
+
 def _numero[N: (int, float)](variable: str, por_defecto: str, tipo: Callable[[str], N]) -> N:
     """Lee un número del entorno; si no lo es, el error nombra la variable."""
     valor = os.getenv(variable, por_defecto).strip()
@@ -19,6 +22,17 @@ def _numero[N: (int, float)](variable: str, por_defecto: str, tipo: Callable[[st
         return tipo(valor)
     except ValueError:
         raise ValueError(f"{variable} debe ser un número; se recibió '{valor}'.") from None
+
+
+def _proveedor_llm(proveedor: str, clave: str) -> str:
+    """Un LLM mal configurado no impide arrancar: el servicio queda en modo sin conexión y lo advierte."""
+    if proveedor not in PROVEEDORES_LLM:
+        log.warning(f"LLM_PROVIDER inválido ('{proveedor}'); se arranca en modo sin conexión ({PROVEEDORES_LLM}).")
+        return "none"
+    if proveedor == "groq" and not clave:
+        log.warning("LLM_PROVIDER=groq sin GROQ_API_KEY; se arranca en modo sin conexión hasta configurar la clave.")
+        return "none"
+    return proveedor
 
 
 @dataclass(frozen=True)
@@ -79,7 +93,8 @@ class Configuracion:
             ).split(";")
             if origen.strip()
         )
-        proveedor = os.getenv("LLM_PROVIDER", "none").strip().lower()
+        clave = os.getenv("GROQ_API_KEY", "").strip()
+        proveedor = _proveedor_llm(os.getenv("LLM_PROVIDER", "none").strip().lower(), clave)
         return cls(
             data_dir=Path(os.getenv("DATA_DIR", str(RAIZ_PROYECTO / "Data"))),
             db_path=Path(os.getenv("DB_PATH", str(RAIZ_PROYECTO / "storage" / "consultas.db"))),
@@ -90,7 +105,7 @@ class Configuracion:
             cors_origenes=origenes,
             llm_provider=proveedor,
             llm_model=os.getenv("LLM_MODEL", "").strip(),
-            groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
+            groq_api_key=clave,
             llm_timeout_segundos=_numero("LLM_TIMEOUT_SEGUNDOS", "30", float),
             log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
             embeddings=os.getenv("EMBEDDINGS", "none").strip().lower(),
