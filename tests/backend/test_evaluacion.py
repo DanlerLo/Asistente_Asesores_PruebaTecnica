@@ -11,7 +11,7 @@ from asistente.infraestructura.persistencia import RepositorioConsultas
 from asistente.orquestador import Orquestador
 
 EVALUACION = Path(__file__).with_name("evaluacion.json")
-PRECISION_MINIMA = 0.83  # trinquete: solo se sube cuando el motor mejora
+PRECISION_MINIMA = 1.0  # trinquete: solo se sube cuando el motor mejora
 
 
 def _acierta(caso: dict, estado: str, respuesta: str) -> bool:

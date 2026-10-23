@@ -182,3 +182,51 @@ def test_producto_o_atributo_inexistente_no_responde_con_otro(orquestador, pregu
 def test_palabras_desconocidas_que_no_nombran_producto_siguen_respondiendo(orquestador, pregunta: str):
     """RF-13 no debe tomarlas por productos inexistentes (si responden bien lo mide test_evaluacion.py)."""
     assert orquestador.consultar(pregunta).motivo_ruta != "inexistente"
+
+
+# ------------------------------------------------------- vocabulario y preguntas frecuentes (RF-14, RF-22)
+
+@pytest.mark.parametrize(
+    "pregunta, esperado",
+    [
+        ("¿Hasta cuánta plata prestan en el Agro Crece?", "$80.000.000"),
+        ("¿Cuánto hay que pagar al mes por Vida Protegida?", "$9.900"),
+        ("¿Cuánto tiempo tengo para pagar el Crédito Productivo Impulso?", "60 meses"),
+        ("¿Cuándo me entregan el dinero del crédito?", "2 días hábiles"),
+        ("¿Los domingos atiende la línea telefónica?", "Lunes a sábado"),
+        ("¿Quién puede ver los datos de los clientes?", "personal autorizado"),
+        ("¿Qué pasos sigue el banco para aprobar un crédito?", "Validación de identidad"),
+        ("¿Cada cuánto debe un cliente actualizar su información?", "12 meses"),
+    ],
+)
+def test_frases_del_asesor_llegan_al_termino_del_documento(indice: IndiceBM25, pregunta: str, esperado: str):
+    r = responder(indice, pregunta)
+    assert r.estado == ESTADO_EXITOSA and esperado in r.texto, r.texto
+
+
+def test_pregunta_frecuente_contenida_completa_responde_primero(indice: IndiceBM25):
+    r = responder(indice, "¿Qué pasa si un cliente no actualiza sus datos y pide un nuevo crédito?")
+    assert r.fuentes[0].seccion == "¿Qué pasa si un cliente no actualiza sus datos?"
+    assert "no es posible tramitar" in r.texto
+
+
+def test_titulo_de_pregunta_frecuente_no_se_nombra_a_medias(indice: IndiceBM25):
+    """«tiempo» y «crédito» no bastan para traer «¿Se puede pagar un crédito antes de tiempo?»."""
+    r = responder(indice, "¿Cuál es el tiempo de respuesta de la solicitud de crédito?")
+    assert [f.seccion for f in r.fuentes] == ["Solicitud de Crédito"]
+    assert "3 días hábiles" in r.texto and "pago anticipado" not in r.texto
+
+
+def test_subseccion_corta_del_producto_nombrado_responde_entera(indice: IndiceBM25):
+    r = responder(indice, "¿Un crédito de 10 millones en el Impulso necesita codeudor?")
+    assert "firma personal" in r.texto and "codeudor" in r.texto
+
+
+def test_sin_producto_nombrado_no_responde_con_otro_producto(indice: IndiceBM25):
+    pregunta = "Hola, tengo un cliente comerciante que quiere un crédito de 20 millones, ¿qué garantía le piden?"
+    assert "Educativo" not in responder(indice, pregunta).texto
+
+
+def test_cobrar_interes_no_se_confunde_con_el_costo_del_estudio(indice: IndiceBM25):
+    r = responder(indice, "¿Qué interés cobra el Crédito Productivo Impulso?")
+    assert "24,5 %" in r.texto
