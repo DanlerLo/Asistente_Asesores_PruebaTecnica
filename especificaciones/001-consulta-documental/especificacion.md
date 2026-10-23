@@ -38,6 +38,7 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-20 | El parser de Markdown tolera BOM al inicio del archivo, conserva los comparadores `<`/`>` (solo elimina etiquetas HTML reales), reconoce etiquetas que contienen «:» («Atención en oficinas (8:00 a 17:00):») y, en tablas de 3 o más columnas, nombra cada valor con su cabecera («Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses»). |
 | RF-21 | Una consulta bloqueada cita las políticas que respaldan el bloqueo (*Manual › Información Sensible*, *Políticas › Escalamiento*) **solo si existen en el corpus**; si no, `fuentes` es `[]` y el texto no cita archivos. `LOG_LEVEL` es parte de la configuración validada. El esquema OpenAPI documenta `pregunta` como texto obligatorio. |
 | RF-22 | Frases del asesor y preguntas frecuentes: (a) frases coloquiales se traducen al término del documento («hasta cuánta plata prestan» - monto máximo, «cuánto hay que pagar al mes» - prima, «tiempo para pagar» - plazo, «entregan el dinero» - desembolso, «cada cuánto» - periodicidad, días de la semana - horario); (b) «cliente» es contexto del asesor, no un atributo pedido; (c) una pregunta frecuente cuyo título completo está en la pregunta responde primero y entera, y un título de pregunta frecuente nunca se considera nombrado a medias; (d) una subsección corta (≤ 3 líneas) de un producto nombrado responde entera si menciona lo pedido. |
+| RF-23 | Una sección que es una lista (requisitos, pasos, canales, coberturas) se responde completa: si alguno de sus elementos responde la pregunta, se devuelven todos. Solo las tablas de atributos (monto, plazo, tasa) se filtran por línea. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -263,4 +264,9 @@ Característica: Consulta documental con citación de fuentes
     Cuando envío la pregunta "¿Qué pasa si un cliente no actualiza sus datos y pide un nuevo crédito?"
     Entonces la primera fuente es "¿Qué pasa si un cliente no actualiza sus datos?"
     Y la respuesta contiene "no es posible tramitar"
+
+  @RF-23
+  Escenario: Una lista de requisitos no se recorta
+    Cuando envío la pregunta "¿Qué documentos necesito para el crédito agropecuario?"
+    Entonces la respuesta contiene "Documento de identidad", "Certificado de tradición y libertad" y "Plan de inversión"
 ```

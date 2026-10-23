@@ -5,11 +5,21 @@ import time
 from dataclasses import dataclass, field
 
 from ..config import Configuracion
-from ..dominio import ESTADO_BLOQUEADA, Fuente, RespuestaGenerada, respuesta_bloqueada, respuesta_sin_informacion
+from ..dominio import (
+    ESTADO_BLOQUEADA,
+    ESTADO_SIN_INFO,
+    Fuente,
+    RespuestaGenerada,
+    respuesta_bloqueada,
+    respuesta_sin_informacion,
+)
+from ..generacion.extractivo import responder_con_seccion
 from ..generacion.llm import ProveedorLLM
 from ..herramientas.corpus import Corpus
+from ..herramientas.entidades import nombra_entidad
 from ..herramientas.recuperacion import IndiceBM25, Resultado
 from ..herramientas.semantica import ContextoSemantico, Embebedor, IndiceSemantico
+from ..herramientas.texto import RAICES_GENERICAS, raices_unicas
 from ..infraestructura.persistencia import RegistroConsulta, RepositorioConsultas, ahora_iso
 from ..seguridad.guardrails import (
     CITAS_BLOQUEO,
@@ -72,6 +82,12 @@ def _indice_semantico(corpus: Corpus, embebedor: Embebedor | None) -> IndiceSema
         return None
 
 
+def _raices_de_atributos(corpus: Corpus) -> frozenset[str]:
+    """Etiquetas de ficha («Edad máxima», «Periodicidad de pago»): lo que un producto tiene o no tiene."""
+    etiquetas = (linea.split(":", 1)[0] for f in corpus.fragmentos for linea in f.lineas if ":" in linea)
+    return frozenset().union(*(raices_unicas(etiqueta) for etiqueta in etiquetas))
+
+
 class Orquestador:
     def __init__(
         self,
@@ -93,6 +109,7 @@ class Orquestador:
         # Citas del bloqueo resueltas contra el corpus: sin esas secciones, no se citan archivos inexistentes.
         self.fuentes_bloqueo = _citas_de_bloqueo(corpus)
         self.semantico = _indice_semantico(corpus, embebedor)
+        self.raices_de_atributos = _raices_de_atributos(corpus)
 
     def consultar(self, pregunta_cruda: object, contexto: object = None) -> ResultadoConsulta:
         """Lanza ``ErrorValidacion`` si la pregunta o el contexto no son válidos."""
@@ -183,7 +200,29 @@ class Orquestador:
             fragmentos=self.corpus.fragmentos,
             semantico=semantico,
         )
+        if generada.estado == ESTADO_SIN_INFO and generada.modo == "extractivo" and not inexistente:
+            leida = self._leer_seccion(pregunta, semantico)
+            if leida is not None:
+                return leida
         return generada, ruta.agente.nombre, ruta.motivo
+
+    def _leer_seccion(self, pregunta: str, semantico: ContextoSemantico) -> tuple[RespuestaGenerada, str, str] | None:
+        """RF-E4 / ADR-27: sin respuesta léxica, la similitud puede elegir qué sección leer completa."""
+        fragmento = semantico.seccion_clara(self.cfg.umbral_lectura_semantica, self.cfg.margen_lectura_semantica)
+        if fragmento is None:
+            return None
+        raices = raices_unicas(pregunta)
+        nombradas = [e for e in self.entidades if nombra_entidad(e.raices, raices)]
+        if nombradas:
+            # Con un producto nombrado, la sección debe ser suya y tener todo lo que se pide de él;
+            # si no, mostrar su ficha parecería una respuesta («¿qué edad máxima tiene Negocio Seguro?»).
+            pedidos = (raices & self.raices_de_atributos) - RAICES_GENERICAS
+            pedidos -= frozenset().union(*(e.raices for e in nombradas))
+            propia = any(e.nombre == fragmento.entidad for e in nombradas)
+            if not propia or not pedidos <= raices_unicas(fragmento.texto_indexable):
+                return None
+        ruta = self.enrutador.elegir([Resultado(fragmento, 0.0, frozenset(), 0.0)])
+        return responder_con_seccion(fragmento), ruta.agente.nombre, "lectura_semantica"
 
     def estado_llm(self) -> dict:
         configurado = self._proveedor_configurado

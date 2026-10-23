@@ -83,3 +83,5 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-058 ruff, mypy y cobertura en el CI; `requires-python` en `pyproject.toml`.
 - [x] T-059 Prueba de latencia p95 del modo extractivo sobre el banco (RNF-02).
 - [x] T-060 `LLM_PROVIDER` vacío, desconocido o `groq` sin clave arranca en modo sin conexión con una advertencia, en vez de impedir el arranque (RF-11).
+- [x] T-061 Pruebas: una lista se devuelve completa aunque un elemento no coincida con la pregunta; una tabla de atributos sí se filtra (RF-23).
+- [x] T-062 `Fragmento.es_lista` y regla de lista completa en `seleccionar_lineas`; revisar a mano las 25 respuestas del banco que cambiaron.

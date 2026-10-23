@@ -33,6 +33,17 @@ La recuperación es la R del RAG y tiene dos vías: BM25 encuentra lo que usa la
   | 0,70 / 0,06 | 20/40 | 6 | 96/97 |
 
   Gana 1 a 3 aciertos a cambio de 2 a 6 respuestas equivocadas: el modelo reconoce el tema de una línea, no si la responde. En un banco, un dato equivocado es peor que «no tengo información», así que el respaldo se retiró. La similitud se usa para enrutar y para el contexto del LLM, que sí decide si los fragmentos responden.
+- **ADR-27 La similitud elige qué sección leer; la respuesta es la sección literal.** Tras la revisión del evaluador se midió una variante distinta de ADR-25: cuando las reglas léxicas no responden, la sección (no la línea) más parecida se devuelve completa, con su cita. Medido sobre 172 preguntas (las 35 nuevas de `robustez.json`, las 40 de generalización y las 97 de evaluación):
+
+  | Regla | Aciertos nuevos | Incorrectas nuevas |
+  |---|---|---|
+  | Cualquier sección con similitud ≥ 0,5 (solo sobre las 75 nuevas) | +11 | +14 |
+  | Umbral 0,65 y margen 0,06 sobre la segunda | +7 | +2 (B5, B7) |
+  | Además, si la pregunta nombra un producto, la sección debe ser suya y tener los atributos de ficha pedidos | +6 | 0 |
+  | Además, vetar respuestas léxicas que discrepan del embedding | +7 a +8 | +3 a +8 |
+
+  Se adoptó la tercera fila; el veto se descartó porque rompía la evaluación. Los atributos de ficha son las etiquetas «X:» de los documentos («Edad máxima», «Periodicidad de pago»): salen de la estructura, no de las preguntas. Conclusión honesta: con este modelo pequeño la ganancia es modesta; responder bien paráfrasis sin aumentar errores sigue necesitando un LLM (con Groq, 38/40).
+- **ADR-28 Embeddings activados por defecto.** `Configuracion.desde_entorno()` usa `EMBEDDINGS=local`; `Configuracion()` en código sigue en `none` y un fixture automático fija `EMBEDDINGS=none` en la suite, así ninguna prueba descarga el modelo. Sin internet en el primer arranque se degrada a BM25 (RF-E7).
 - **ADR-26 Más contexto para Groq, con tope.** El corpus es pequeño: los fragmentos del documento del agente caben en el prompt. El tope evita agotar la cuota de tokens del plan gratuito.
 
 ## Estrategia de pruebas
@@ -49,18 +60,28 @@ Medidos con las 40 preguntas de `generalizacion.json`, que el sistema nunca vio 
 | Configuración | Aciertos | Respuestas equivocadas | «No tengo información» |
 |---|---|---|---|
 | Sin conexión (BM25 + reglas) | 19/40 (48 %) | 4 | 17 |
+| Sin conexión + embeddings y lectura por sección (ADR-27) | 21/40 (53 %) | 4 | 15 |
 | Groq con el contexto anterior (solo BM25) | 33/40 (82 %) | 5 | 2 |
 | **Groq + embeddings + contexto ampliado** | **38/40 (95 %)** | **0** | 2 |
 
 Los embeddings y el contexto ampliado eliminan las respuestas equivocadas del modo conexión («¿Cuál de los créditos se puede pagar en más tiempo?» ahora responde *Agro Crece, 84 meses*). Las dos que quedan sin respuesta: «¿Cuánto paga Vida Protegida si el asegurado fallece?» y «¿Cuál microseguro sale más económico?».
 
+### Conjunto `robustez.json` (35 preguntas, revisión del evaluador)
+| Configuración | Aciertos | Incorrectas | Abstenciones | Listas completas |
+|---|---|---|---|---|
+| Antes de los cambios | 18 | 7 | 10 | 8/11 |
+| Sin conexión, sin embeddings | 20 | 5 | 10 | 9/11 |
+| Sin conexión, con embeddings (por defecto) | 24 | 5 | 6 | 9/11 |
+
+Se mide con `python tests/backend/medicion.py [--embeddings] [--groq]`.
+
 ## Trazabilidad
 | RF | Pruebas |
 |----|---------|
-| RF-E1 | `test_semantica.py::test_embeddings_desactivados_por_defecto`, `test_configuracion_de_embeddings_invalida` |
+| RF-E1 | `test_semantica.py::test_embeddings_activados_por_defecto_al_arrancar`, `test_la_suite_nunca_carga_el_modelo_real`, `test_configuracion_de_embeddings_invalida` |
 | RF-E2 | `test_semantica.py::test_el_indice_tiene_una_entrada_por_linea`, `test_el_indice_no_contiene_lineas_restringidas` |
 | RF-E3 | `test_semantica.py::test_sin_resultados_lexicos_enruta_por_similitud`, `test_con_groq_lo_parecido_llega_al_llm` |
-| RF-E4 | `test_semantica.py::test_el_modo_extractivo_no_responde_por_similitud` |
+| RF-E4 | `test_semantica.py::test_con_similitud_clara_se_lee_la_seccion_completa`, `test_seccion_clara_exige_umbral_y_margen`, `test_un_producto_nombrado_sin_el_dato_no_se_rescata_por_similitud` |
 | RF-E5 | `test_semantica.py::test_el_llm_recibe_contexto_ampliado_con_tope`, `test_con_groq_lo_parecido_llega_al_llm` |
 | RF-E6 | `test_semantica.py::test_la_similitud_no_rescata_bloqueos_ni_inexistentes` |
 | RF-E7 | `test_semantica.py::test_si_el_modelo_falla_sigue_con_recuperacion_lexica` |

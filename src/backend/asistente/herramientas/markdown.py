@@ -15,6 +15,7 @@ _RE_MARCAS_MD = re.compile(r"(\*\*|__|`|~~)")
 # Solo etiquetas HTML reales: «< $2.000.000 … >» es un comparador y no debe borrarse.
 _RE_HTML = re.compile(r"</?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>]*)?/?>")
 _MINIMO_ETIQUETAS_COMUNES = 2
+_RE_ITEM_FORMATEADO = re.compile(r"^(\d+\.|-)\s")  # como quedan tras ``_formatear_lista``
 
 
 @dataclass(frozen=True)
@@ -36,6 +37,11 @@ class Fragmento:
     @property
     def texto_indexable(self) -> str:
         return f"{self.documento} {self.ruta_seccion} {self.contenido}"
+
+    @property
+    def es_lista(self) -> bool:
+        """Requisitos, pasos, canales: cada elemento cuenta, así que la respuesta nunca la recorta (RF-23)."""
+        return bool(self.lineas) and all(_RE_ITEM_FORMATEADO.match(linea) for linea in self.lineas)
 
 
 # --- Líneas ---

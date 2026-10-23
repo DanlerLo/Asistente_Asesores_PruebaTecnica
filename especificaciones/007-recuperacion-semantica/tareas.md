@@ -24,3 +24,10 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-613 Retirar ese respaldo: aumentaba las respuestas equivocadas (ADR-25); la prueba `test_el_modo_extractivo_no_responde_por_similitud` lo fija.
 - [x] T-614 Medir la generalización con Groq: contexto de antes frente a contexto ampliado con embeddings; registrar resultados en el plan.
 - [x] T-615 Documentar la recuperación híbrida como parte central de la arquitectura: README, plan 001 (ADR-1), `AGENTS.md`, `.env.example`, `requirements.txt` y Cuestionario.
+
+## Fase E — Revisión del evaluador
+- [x] T-616 Escribir `robustez.json`: las 6 preguntas que falló el evaluador y 29 nuevas, antes de cambiar el motor.
+- [x] T-617 `medicion.py`: aciertos, incorrectas, abstenciones y completitud de listas por separado.
+- [x] T-618 Pruebas: con similitud clara se lee la sección completa; umbral y margen; un producto nombrado sin el dato no se rescata (RF-E4).
+- [x] T-619 `ContextoSemantico.seccion_clara`, `responder_con_seccion` y `Orquestador._leer_seccion`; medir las variantes de ADR-27 y adoptar la que no agrega incorrectas.
+- [x] T-620 Embeddings activados por defecto al arrancar y fijados en `none` para la suite (RF-E1, ADR-28).

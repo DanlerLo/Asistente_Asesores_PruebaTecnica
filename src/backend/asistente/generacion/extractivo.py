@@ -25,6 +25,20 @@ def seleccionar_lineas(
     parcial: bool = False,
 ) -> list[str] | None:
     """Líneas del fragmento que responden a la pregunta, o ``None`` si el fragmento no la responde."""
+    lineas = _filtrar_lineas(fragmento, consulta, raices_nombradas, desconocidas, cubiertos, parcial)
+    if lineas and fragmento.es_lista:
+        return list(fragmento.lineas)  # RF-23: omitir un requisito es peor que mostrar uno de más
+    return lineas
+
+
+def _filtrar_lineas(
+    fragmento: Fragmento,
+    consulta: set[str] | frozenset[str],
+    raices_nombradas: frozenset[str],
+    desconocidas: frozenset[str],
+    cubiertos: frozenset[str],
+    parcial: bool,
+) -> list[str] | None:
     if fragmento.ruta_seccion == "Índice":
         return list(fragmento.lineas[:MAX_LINEAS_POR_FRAGMENTO])
     # Una pregunta frecuente cuyo título completo está en la pregunta la responde entera.
@@ -169,6 +183,19 @@ def _terminos_distintivos(principal: Fragmento, consulta: frozenset[str]) -> fro
         if not parte.strip().endswith("?"):
             titulos |= raices_unicas(parte)
     return frozenset((consulta & titulos) - RAICES_GENERICAS)
+
+
+def responder_con_seccion(fragmento: Fragmento) -> RespuestaGenerada:
+    """La sección literal y completa, con su cita: la eligió la similitud, pero el texto es del documento."""
+    lineas = list(fragmento.lineas[:MAX_LINEAS_POR_FRAGMENTO])
+    fuente = Fuente(
+        documento=fragmento.documento,
+        archivo=fragmento.archivo,
+        seccion=fragmento.ruta_seccion or "documento completo",
+        puntaje=1.0,
+        extracto=" ".join(lineas)[:500],
+    )
+    return RespuestaGenerada(texto=_componer_texto([(fragmento, lineas)]), estado=ESTADO_EXITOSA, fuentes=[fuente])
 
 
 def responder_extractivo(pregunta: str, resultados: list[Resultado], umbral_cobertura: float) -> RespuestaGenerada:

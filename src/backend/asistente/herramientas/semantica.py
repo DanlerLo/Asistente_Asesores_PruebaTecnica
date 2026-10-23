@@ -54,6 +54,20 @@ class ContextoSemantico:
                 break
         return list(vistos.values())
 
+    def seccion_clara(self, umbral: float, margen: float) -> Fragmento | None:
+        """La sección más parecida, solo si supera el umbral y le saca margen a la segunda (ADR-27)."""
+        mejores: dict[str, tuple[float, Fragmento]] = {}
+        for similar in self.similares:
+            actual = mejores.get(similar.fragmento.id)
+            if actual is None or similar.similitud > actual[0]:
+                mejores[similar.fragmento.id] = (similar.similitud, similar.fragmento)
+        orden = sorted(mejores.values(), key=lambda par: -par[0])
+        if not orden or orden[0][0] < umbral:
+            return None
+        if len(orden) > 1 and orden[0][0] - orden[1][0] < margen:
+            return None
+        return orden[0][1]
+
 
 def _normalizar_filas(matriz: Any) -> Any:
     normas = np.linalg.norm(matriz, axis=1, keepdims=True)

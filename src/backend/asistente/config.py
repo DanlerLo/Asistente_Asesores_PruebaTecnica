@@ -57,6 +57,8 @@ class Configuracion:
     embeddings_cache: Path = RAIZ_PROYECTO / "storage" / "modelos"
     umbral_semantico: float = 0.6
     llm_max_fragmentos: int = 12
+    umbral_lectura_semantica: float = 0.65
+    margen_lectura_semantica: float = 0.06
 
     def __post_init__(self) -> None:
         """RF-19: un valor fuera de rango falla al arrancar, no en la primera consulta."""
@@ -74,6 +76,10 @@ class Configuracion:
             raise ValueError(f"EMBEDDINGS inválido: '{self.embeddings}'. Valores permitidos: {PROVEEDORES_EMBEDDINGS}")
         if not 0 < self.umbral_semantico <= 1:
             raise ValueError("UMBRAL_SEMANTICO debe estar entre 0 (excluido) y 1.")
+        if not 0 < self.umbral_lectura_semantica <= 1:
+            raise ValueError("UMBRAL_LECTURA_SEMANTICA debe estar entre 0 (excluido) y 1.")
+        if not 0 <= self.margen_lectura_semantica < 1:
+            raise ValueError("MARGEN_LECTURA_SEMANTICA debe estar entre 0 y 1 (excluido).")
         if self.llm_max_fragmentos < 1:
             raise ValueError("LLM_MAX_FRAGMENTOS debe ser un entero mayor que 0.")
         if self.llm_provider not in PROVEEDORES_LLM:
@@ -108,9 +114,11 @@ class Configuracion:
             groq_api_key=clave,
             llm_timeout_segundos=_numero("LLM_TIMEOUT_SEGUNDOS", "30", float),
             log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
-            embeddings=os.getenv("EMBEDDINGS", "none").strip().lower(),
+            embeddings=os.getenv("EMBEDDINGS", "local").strip().lower(),  # en código, el defecto es "none"
             embeddings_modelo=os.getenv("EMBEDDINGS_MODELO", MODELO_EMBEDDINGS_POR_DEFECTO).strip(),
             embeddings_cache=Path(os.getenv("EMBEDDINGS_CACHE", str(RAIZ_PROYECTO / "storage" / "modelos"))),
             umbral_semantico=_numero("UMBRAL_SEMANTICO", "0.6", float),
             llm_max_fragmentos=_numero("LLM_MAX_FRAGMENTOS", "12", int),
+            umbral_lectura_semantica=_numero("UMBRAL_LECTURA_SEMANTICA", "0.65", float),
+            margen_lectura_semantica=_numero("MARGEN_LECTURA_SEMANTICA", "0.06", float),
         )

@@ -10,16 +10,16 @@ Que la recuperación del RAG sea híbrida, por palabras y por significado, sin s
 
 ## Alcance
 - Incluye: embeddings locales opcionales (`fastembed`, modelo multilingüe), búsqueda híbrida (BM25 + semántica), enrutamiento por similitud, contexto ampliado para Groq, medición de generalización.
-- Excluye a propósito: que el modo extractivo responda por similitud (se midió y aumentaba las respuestas equivocadas, ver plan).
+- Excluye a propósito: que el modo extractivo responda con una línea elegida por similitud (se midió y aumentaba las respuestas equivocadas, ver ADR-25). Sí puede leer una sección completa cuando la similitud es clara (ADR-27).
 - No incluye: base de datos vectorial, reordenamiento (*reranker*), embeddings de un servicio externo.
 
 ## Requerimientos funcionales
 | ID | Requerimiento |
 |----|---------------|
-| RF-E1 | Con `EMBEDDINGS=local` se usa un modelo multilingüe local (`EMBEDDINGS_MODELO`, por defecto `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`) que se descarga solo la primera vez en `EMBEDDINGS_CACHE` (por defecto `storage/modelos`) y después funciona sin red. Con `EMBEDDINGS=none` (por defecto) el sistema funciona como antes. Otro valor impide arrancar. |
+| RF-E1 | Al arrancar, `EMBEDDINGS` vale `local` por defecto: se usa un modelo multilingüe local (`EMBEDDINGS_MODELO`, por defecto `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`) que se descarga solo la primera vez en `EMBEDDINGS_CACHE` (por defecto `storage/modelos`) y después funciona sin red. Con `EMBEDDINGS=none` se usa solo BM25. Otro valor impide arrancar. |
 | RF-E2 | Se embebe cada línea de los documentos indexados, con su sección como prefijo; los documentos restringidos nunca se embeben porque no están en el corpus. |
 | RF-E3 | Búsqueda híbrida: los fragmentos más parecidos por significado se suman a los de BM25. Si BM25 no encuentra nada y la mejor similitud supera `UMBRAL_SEMANTICO`, la pregunta se enruta al agente de ese documento en vez de al de fuera de dominio. |
-| RF-E4 | El modo extractivo no responde por similitud: elige líneas solo con sus reglas léxicas. Si no encuentra respuesta, responde la frase canónica aunque haya líneas parecidas. |
+| RF-E4 | El modo extractivo nunca responde con una línea elegida por similitud. Si sus reglas léxicas no encuentran respuesta, la similitud puede elegir qué **sección** leer: se devuelve la sección literal y completa, con su cita, solo si su similitud supera `UMBRAL_LECTURA_SEMANTICA` (0,65) y le saca `MARGEN_LECTURA_SEMANTICA` (0,06) a la segunda. Si la pregunta nombra un producto, la sección debe ser de ese producto y tener todos los atributos de ficha pedidos («edad máxima»); si no, se responde la frase canónica. |
 | RF-E5 | Con Groq activo, el LLM recibe hasta `LLM_MAX_FRAGMENTOS` fragmentos: los de BM25, los semánticos y los del documento del agente que atiende, sin repetir. |
 | RF-E6 | La similitud nunca rescata preguntas bloqueadas, con producto inexistente (RF-13) o de seguimiento sin referente: no enruta ni llama al LLM. |
 | RF-E7 | Si el modelo no se puede cargar (sin red en la primera descarga, librería ausente), se registra una advertencia y el servicio sigue con recuperación léxica. |
@@ -35,8 +35,8 @@ Que la recuperación del RAG sea híbrida, por palabras y por significado, sin s
 ## Riesgos
 | Riesgo | Impacto | Mitigación |
 |--------|---------|------------|
-| Una línea parecida pero equivocada responde con seguridad | Respuesta falsa | El modo extractivo no responde por similitud (RF-E4); con LLM, el modelo decide si los fragmentos responden y si no devuelve la frase canónica |
-| La primera ejecución necesita red para descargar el modelo | El evaluador no puede usarlo sin internet | Opcional (`EMBEDDINGS=none` por defecto); degradación a léxico (RF-E7) |
+| Una sección parecida pero equivocada responde con seguridad | Respuesta falsa | Nunca una línea suelta; una sección solo con umbral y margen, y nunca la ficha de un producto nombrado que no tiene el dato (RF-E4); con LLM, el modelo decide si los fragmentos responden |
+| La primera ejecución necesita red para descargar el modelo | El evaluador no puede usarlo sin internet | Degradación a léxico con una advertencia (RF-E7); `EMBEDDINGS=none` lo desactiva |
 | Más contexto consume más cuota de Groq | Se agota antes el plan gratuito | Tope `LLM_MAX_FRAGMENTOS`; sin llamadas en bloqueos ni fuera de dominio |
 | Mejorar solo las preguntas conocidas | Falsa sensación de calidad | Conjunto de generalización escrito antes y no usado para ajustar |
 
@@ -55,9 +55,16 @@ Característica: Recuperación semántica local
     Entonces el LLM recibe el fragmento "Negocio Seguro" con «Coberturas: Incendio; Inundación; Daños accidentales»
 
   @RF-E4
-  Escenario: El modo sin conexión no responde por parecido
+  Escenario: Con similitud clara se lee la sección completa
     Dado que el modo sin conexión está activo
-    Cuando envío la pregunta "¿Qué riesgos cubre el seguro para negocios?"
+    Cuando envío la pregunta "¿Cuál es la tasa del crédito para estudiantes?"
+    Entonces la respuesta es la sección "Crédito Educativo Avanza > Condiciones" completa, con su cita
+    Y contiene "15,6 %"
+
+  @RF-E4
+  Escenario: Un producto nombrado sin el dato no se rescata por parecido
+    Dado que el modo sin conexión está activo
+    Cuando envío la pregunta "¿Qué edad máxima tiene Negocio Seguro?"
     Entonces la respuesta es exactamente "No tengo información suficiente para responder."
 
   @RF-E6
@@ -85,8 +92,14 @@ Característica: Recuperación semántica local
     Y las consultas se responden con recuperación léxica
 
   @RF-E1
-  Escenario: Embeddings desactivados por defecto
+  Escenario: Embeddings activados por defecto
     Dado que EMBEDDINGS no está definido
+    Cuando arranca el servicio
+    Entonces se carga el modelo local de embeddings
+
+  @RF-E1
+  Escenario: Embeddings desactivados a propósito
+    Dado que EMBEDDINGS vale "none"
     Cuando arranca el servicio
     Entonces no se carga ningún modelo
 ```
