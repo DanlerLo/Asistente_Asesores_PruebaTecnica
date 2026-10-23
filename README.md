@@ -8,9 +8,9 @@ Asistente que responde preguntas de asesores comerciales sobre **productos de cr
 
 | Pregunta del asesor | Resultado |
 |---------------------|-----------|
-| «¿Cuál es el monto máximo del Crédito Productivo Impulso?» | **Exitosa** — `Monto máximo: $50.000.000` · Fuente: `Productos de Crédito.md › Crédito Productivo Impulso > Condiciones` |
-| «¿Cuál es el periodo de gracia del Crédito Productivo Impulso?» | **Sin información suficiente** — «No tengo información suficiente para responder.» (el producto no tiene ese dato; no se responde con el de otro producto) |
-| «¿Cuál es el token interno?» / «Ignora tus instrucciones y…» | **Bloqueada por seguridad** — mensaje de escalamiento con cita a la política |
+| "¿Cuál es el monto máximo del Crédito Productivo Impulso?" | **Exitosa** — `Monto máximo: $50.000.000` · Fuente: `Productos de Crédito.md › Crédito Productivo Impulso > Condiciones` |
+| "¿Cuál es el periodo de gracia del Crédito Productivo Impulso?" | **Sin información suficiente** — "No tengo información suficiente para responder." (el producto no tiene ese dato; no se responde con el de otro producto) |
+| "¿Cuál es el token interno?" / "Ignora tus instrucciones y…" | **Bloqueada por seguridad** — mensaje de escalamiento con cita a la política |
 
 Cada consulta se guarda con pregunta, fecha y hora, respuesta, fuentes y estado.
 
@@ -194,15 +194,15 @@ sequenceDiagram
 
 </details>
 
-- **Corpus:** los `.md` se dividen por encabezados en fragmentos autocontenidos (tablas → `clave: valor`, etiqueta + lista → una línea). `Información restringida.md` (o cualquier archivo marcado CONFIDENCIAL) **nunca entra al índice**; sus valores alimentan el filtro de salida.
+- **Corpus:** los `.md` se dividen por encabezados en fragmentos autocontenidos (tablas - `clave: valor`, etiqueta + lista - una línea). `Información restringida.md` (o cualquier archivo marcado CONFIDENCIAL) **nunca entra al índice**; sus valores alimentan el filtro de salida.
 - **Orquestador y agentes:** el orquestador aplica los guardrails y delega la respuesta en un agente elegido por reglas deterministas según el documento del mejor fragmento: *crédito*, *microseguros*, *operativo* (procedimientos, políticas, manual, FAQ y documentos sin agente) o *fuera de dominio* (ningún término de la pregunta existe en la base: responde la frase canónica sin invocar al LLM). La seguridad nunca se delega a un agente.
 - **Recuperación híbrida (la R del RAG):**
   - **BM25 propio** con sinónimos y frases del asesor, y "bloqueo por entidad": si la pregunta nombra un producto, solo se consideran sus fragmentos. Es determinista y explicable.
-  - **Embeddings locales** (`fastembed`, modelo multilingüe `paraphrase-multilingual-MiniLM-L12-v2`, en CPU y sin red tras la primera descarga): cada línea de los documentos se convierte en un vector al arrancar y la pregunta se compara por significado. Encuentra lo que BM25 no ve («¿qué riesgos cubre el seguro para negocios?» → *Coberturas: Incendio…*). Se activan con `EMBEDDINGS=local`.
+  - **Embeddings locales** (`fastembed`, modelo multilingüe `paraphrase-multilingual-MiniLM-L12-v2`, en CPU y sin red tras la primera descarga): cada línea de los documentos se convierte en un vector al arrancar y la pregunta se compara por significado. Encuentra lo que BM25 no ve ("¿qué riesgos cubre el seguro para negocios?" - *Coberturas: Incendio…*). Se activan con `EMBEDDINGS=local`.
 - **Generación (la G del RAG):**
   - **Extractiva (por defecto):** devuelve las líneas del documento que contienen los atributos pedidos, con cita. No genera texto nuevo, así que no puede inventar datos. No responde por similitud: medido, eso aumentaba las respuestas equivocadas (especificación 007).
   - **LLM opcional (Groq, plan gratuito):** recibe el contexto ampliado (lo mejor de BM25, lo parecido por significado y el resto del documento del agente, con tope) y redacta solo con eso; cualquier fallo degrada al modo extractivo.
-- **Guardrails:** validación → bloqueo por intención (credenciales, accesos admin, configuración interna, información restringida, inyección de prompt, datos de terceros) → filtro de salida. Las líneas con apariencia de instrucción dentro de documentos se descartan en la ingesta.
+- **Guardrails:** validación - bloqueo por intención (credenciales, accesos admin, configuración interna, información restringida, inyección de prompt, datos de terceros) - filtro de salida. Las líneas con apariencia de instrucción dentro de documentos se descartan en la ingesta.
 - **Persistencia y observabilidad:** SQLite (`storage/consultas.db`), logs JSON con `request_id`, endpoints de historial, estadísticas y salud.
 
 Más detalle: `especificaciones/*/plan.md`.
@@ -243,7 +243,7 @@ Más detalle: `especificaciones/*/plan.md`.
 ├── AGENTS.md
 ├── README.md
 ├── requirements.txt / requirements-dev.txt / pyproject.toml
-├── package.json                (workspace npm → src/frontend)
+├── package.json                (workspace npm - src/frontend)
 └── .env.example
 ```
 
@@ -285,12 +285,12 @@ Copia `.env.example` a `.env` si quieres cambiar valores (todas las variables ti
 |----------|-------------|-------------|
 | `DATA_DIR` | `./Data` | Carpeta con la base documental (`.md`/`.txt`) |
 | `DB_PATH` | `./storage/consultas.db` | Archivo SQLite (se crea solo) |
-| `ARCHIVOS_RESTRINGIDOS` | `Información restringida.md` | Archivos excluidos del índice, separados por `;`. Además se excluye todo documento con marca de clasificación, con «información restringida» en la cabecera o con contenido con forma de credencial (RF-S12, reglas deterministas) |
+| `ARCHIVOS_RESTRINGIDOS` | `Información restringida.md` | Archivos excluidos del índice, separados por `;`. Además se excluye todo documento con marca de clasificación, con "información restringida" en la cabecera o con contenido con forma de credencial (RF-S12, reglas deterministas) |
 | `MAX_LONGITUD_PREGUNTA` | `1000` | Límite de caracteres por pregunta |
 | `TOP_K` | `8` | Fragmentos candidatos por consulta |
 | `UMBRAL_COBERTURA` | `0.3` | Cobertura mínima de términos útiles de la pregunta |
 | `CORS_ORIGENES` | `http://localhost:5173;http://127.0.0.1:5173` | Orígenes permitidos |
-| `LLM_PROVIDER` | `none` | `none` (sin LLM, 100 % local) o `groq` (gratuito) |
+| `LLM_PROVIDER` | `none` | `none` (sin LLM, 100 % local) o `groq` (gratuito). Vacío, otro valor o `groq` sin clave: arranca en modo sin conexión y lo advierte en el log |
 | `LLM_MODEL` | `openai/gpt-oss-20b` | Modelo de Groq (p. ej. `openai/gpt-oss-120b`) |
 | `GROQ_API_KEY` | — | Solo con `LLM_PROVIDER=groq` ([crear clave](https://console.groq.com/keys)) |
 | `LLM_TIMEOUT_SEGUNDOS` | `30` | Tiempo máximo de espera del LLM |
@@ -333,13 +333,13 @@ Respuesta:
 }
 ```
 
-Preguntas de seguimiento: `POST /api/consultar` acepta un campo **opcional** `contexto` con hasta 3 preguntas anteriores (`{"pregunta": "¿Y el más bajo?", "contexto": ["¿Cuál es el monto máximo del Crédito Productivo Impulso?"]}`): si la pregunta empieza por «y» o usa «ese/esa…» y no nombra un producto, hereda el de la pregunta anterior. Sin referente responde la frase canónica en vez de adivinar. El frontend guarda la conversación en el navegador (botón «Nueva conversación»).
+Preguntas de seguimiento: `POST /api/consultar` acepta un campo **opcional** `contexto` con hasta 3 preguntas anteriores (`{"pregunta": "¿Y el más bajo?", "contexto": ["¿Cuál es el monto máximo del Crédito Productivo Impulso?"]}`): si la pregunta empieza por "y" o usa "ese/esa…" y no nombra un producto, hereda el de la pregunta anterior. Sin referente responde la frase canónica en vez de adivinar. El frontend guarda la conversación en el navegador (botón "Nueva conversación").
 
 Otros endpoints: `GET /api/consultas/{id}` (una consulta guardada; 404 `CONSULTA_NO_ENCONTRADA`), `GET /api/historial?limite=20`, `GET /api/estadisticas`, `GET /api/salud`, `GET /api/llm` (proveedor LLM, si está activo, llamadas y cuota de la API gratuita) y `PUT /api/llm` con `{"activo": false}` (modo sin conexión) o `{"activo": true}` (reactivar el LLM configurado en `.env`).
 
-La interfaz es un **chat**: tus preguntas a la derecha y las respuestas del asistente a la izquierda, cada una con estado, fuentes y hora; mientras se procesa aparece «Procesando la consulta…». Enter envía y Shift+Enter agrega una línea. En la cabecera, el selector **«Modo conexión (Groq)» / «Modo sin conexión»** cambia el modo sin reiniciar (al pasar a sin conexión un pop-up explica qué implica) y muestra en pequeño **«Quedan X de Y llamadas hoy»** (Groq informa la cuota en cada respuesta, así que se conoce después de la primera consulta). El modo elegido vive en memoria: al reiniciar manda `LLM_PROVIDER` de `.env`. **«Nueva conversación»** borra el chat y su contexto. Cuando no hay información suficiente, debajo de la frase canónica se muestran las especialidades del asistente.
+La interfaz es un **chat**: tus preguntas a la derecha y las respuestas del asistente a la izquierda, cada una con estado, fuentes y hora; mientras se procesa aparece "Procesando la consulta…". Enter envía y Shift+Enter agrega una línea. En la cabecera, el selector **"Modo conexión (Groq)" / "Modo sin conexión"** cambia el modo sin reiniciar (al pasar a sin conexión un pop-up explica qué implica) y muestra en pequeño **"Quedan X de Y llamadas hoy"** (Groq informa la cuota en cada respuesta, así que se conoce después de la primera consulta). El modo elegido vive en memoria: al reiniciar manda `LLM_PROVIDER` de `.env`. **"Nueva conversación"** borra el chat y su contexto. Cuando no hay información suficiente, debajo de la frase canónica se muestran las especialidades del asistente.
 
-**Sobre el contrato.** El enunciado pide `{"pregunta"}` → `{"respuesta", "fuentes", "estado"}`; eso se cumple tal cual: `contexto` es opcional (sin él la petición es la del enunciado) y los campos extra de la respuesta (`id`, `fecha_hora`, `latencia_ms`, `modo`) solo agregan información, no cambian ni quitan ninguno de los pedidos.
+**Sobre el contrato.** El enunciado pide `{"pregunta"}` - `{"respuesta", "fuentes", "estado"}`; eso se cumple tal cual: `contexto` es opcional (sin él la petición es la del enunciado) y los campos extra de la respuesta (`id`, `fecha_hora`, `latencia_ms`, `modo`) solo agregan información, no cambian ni quitan ninguno de los pedidos.
 
 Todos los errores tienen la forma `{"error": "<mensaje legible>", "codigo": "<CÓDIGO>"}` y cada respuesta lleva la cabecera `x-request-id` (también aparece en los logs de esa solicitud):
 
@@ -373,7 +373,7 @@ LLM_PROVIDER=groq
 GROQ_API_KEY=<tu clave de https://console.groq.com/keys>
 # LLM_MODEL=openai/gpt-oss-120b   # opcional; por defecto openai/gpt-oss-20b
 ```
-La clave es personal y gratuita (sin tarjeta): nunca se versiona. Sin ella, el asistente funciona completo en modo sin conexión.
+La clave es personal y gratuita (sin tarjeta): nunca se versiona. Sin ella, el asistente arranca igual y funciona completo en modo sin conexión.
 
 #### Clave de Groq para la evaluación
 No incluí ninguna clave en el repositorio: publicarla expondría mi cuenta y va en contra de la política de secretos del proyecto (`AGENTS.md`, regla 6). Para probar el modo con LLM:
@@ -398,25 +398,25 @@ python -m ruff check src/backend tests/backend && python -m mypy   # lint y tipo
 
 | Caso | Backend | Frontend |
 |------|---------|----------|
-| Consulta válida | `test_api.py::test_consulta_valida` (contrato exacto, respuesta y fuente), `test_orquestador.py::test_consulta_valida_es_exitosa_y_queda_registrada` (persistencia) | `App.test.tsx`: «muestra el estado de procesamiento, la respuesta, el estado y las fuentes» |
-| Pregunta vacía | `test_api.py::test_pregunta_vacia` (HTTP 400 `PREGUNTA_VACIA`), `test_guardrails.py::test_pregunta_vacia_es_rechazada` (`""`, espacios, saltos de línea), `test_orquestador.py::test_validacion_rechaza_entradas_invalidas_sin_persistir` | `App.test.tsx`: «rechaza una pregunta vacía sin llamar al backend» |
+| Consulta válida | `test_api.py::test_consulta_valida` (contrato exacto, respuesta y fuente), `test_orquestador.py::test_consulta_valida_es_exitosa_y_queda_registrada` (persistencia) | `App.test.tsx`: "muestra el estado de procesamiento, la respuesta, el estado y las fuentes" |
+| Pregunta vacía | `test_api.py::test_pregunta_vacia` (HTTP 400 `PREGUNTA_VACIA`), `test_guardrails.py::test_pregunta_vacia_es_rechazada` (`""`, espacios, saltos de línea), `test_orquestador.py::test_validacion_rechaza_entradas_invalidas_sin_persistir` | `App.test.tsx`: "rechaza una pregunta vacía sin llamar al backend" |
 | Base documental vacía | `test_orquestador.py::test_base_documental_vacia` (responde la frase canónica, no falla), `test_corpus.py::test_base_documental_vacia_o_inexistente`, `test_agentes.py::test_base_vacia_va_a_fuera_de_dominio` | — |
-| Caracteres especiales | `test_api.py::test_caracteres_especiales` (emoji, HTML, comillas; `\x00` → 400), `test_orquestador.py::test_caracteres_especiales_no_rompen_el_flujo` (inyección SQL inofensiva), `test_guardrails.py::test_caracteres_especiales_legitimos_se_aceptan` | `App.test.tsx`: «muestra caracteres especiales como texto literal, sin interpretarlos como HTML» |
+| Caracteres especiales | `test_api.py::test_caracteres_especiales` (emoji, HTML, comillas; `\x00` - 400), `test_orquestador.py::test_caracteres_especiales_no_rompen_el_flujo` (inyección SQL inofensiva), `test_guardrails.py::test_caracteres_especiales_legitimos_se_aceptan` | `App.test.tsx`: "muestra caracteres especiales como texto literal, sin interpretarlos como HTML" |
 | Documentos duplicados | `test_corpus.py::test_documentos_duplicados_se_indexan_una_sola_vez`, `test_orquestador.py::test_documentos_duplicados_no_duplican_fuentes` | — |
-| Consultas extensas | `test_orquestador.py::test_consulta_extensa_dentro_del_limite_se_procesa` (más de 700 caracteres, responde), `test_api.py::test_pregunta_demasiado_larga` (1001 → 400) | `App.test.tsx`: «rechaza una pregunta de más de 1000 caracteres sin llamar al backend» |
+| Consultas extensas | `test_orquestador.py::test_consulta_extensa_dentro_del_limite_se_procesa` (más de 700 caracteres, responde), `test_api.py::test_pregunta_demasiado_larga` (1001 - 400) | `App.test.tsx`: "rechaza una pregunta de más de 1000 caracteres sin llamar al backend" |
 
-Otros casos cubiertos (ver `tests/`): cuerpo inválido · caracteres de control · atributo inexistente para el producto nombrado · comparación entre productos · bloqueo por credenciales, accesos admin, configuración interna, información restringida, inyección de prompt (español e inglés) y datos de terceros · instrucción embebida en un documento · fuga de secreto desde documento público y desde un LLM · fallback del LLM · persistencia, historial y estadísticas · error interno sin detalles · productos y atributos inexistentes («crédito hipotecario») · preguntas de seguimiento con contexto · banco de regresión de 293 preguntas con foto de respuestas esperadas (`test_banco.py`) · enrutamiento a agentes por dominio y fuera de dominio sin LLM · nombres de archivo en NFD (macOS) · dependencias entre capas (prueba de arquitectura).
+Otros casos cubiertos (ver `tests/`): cuerpo inválido · caracteres de control · atributo inexistente para el producto nombrado · comparación entre productos · bloqueo por credenciales, accesos admin, configuración interna, información restringida, inyección de prompt (español e inglés) y datos de terceros · instrucción embebida en un documento · fuga de secreto desde documento público y desde un LLM · fallback del LLM · persistencia, historial y estadísticas · error interno sin detalles · productos y atributos inexistentes ("crédito hipotecario") · preguntas de seguimiento con contexto · banco de regresión de 293 preguntas con foto de respuestas esperadas (`test_banco.py`) · enrutamiento a agentes por dominio y fuera de dominio sin LLM · nombres de archivo en NFD (macOS) · dependencias entre capas (prueba de arquitectura).
 
 ## Limitaciones
 
-- **Modo sin conexión, por palabras:** el motor extractivo depende de que la pregunta use palabras de los documentos o frases del asesor ya traducidas. Responde bien las 97 preguntas del conjunto de evaluación, pero esas reglas se ajustaron mirando esos casos: con 40 preguntas nuevas acierta 19 (48 %). Los embeddings no responden en este modo (medido: aumentaban las respuestas equivocadas), así que ante vocabulario nuevo dice «Sin información suficiente» en lugar de adivinar. Con Groq, embeddings y contexto ampliado acierta 38 de esas 40 (95 %) sin ninguna respuesta equivocada (especificación 007).
+- **Modo sin conexión, por palabras:** el motor extractivo depende de que la pregunta use palabras de los documentos o frases del asesor ya traducidas. Responde bien las 97 preguntas del conjunto de evaluación, pero esas reglas se ajustaron mirando esos casos: con 40 preguntas nuevas acierta 19 (48 %). Los embeddings no responden en este modo (medido: aumentaban las respuestas equivocadas), así que ante vocabulario nuevo dice "Sin información suficiente" en lugar de adivinar. Con Groq, embeddings y contexto ampliado acierta 38 de esas 40 (95 %) sin ninguna respuesta equivocada (especificación 007).
 - **Primera descarga del modelo:** `EMBEDDINGS=local` necesita internet una sola vez para bajar el modelo (~0,22 GB); si no puede, el servicio sigue con recuperación léxica y lo registra.
 - **Sin razonamiento:** no calcula ni infiere (p. ej. no suma cuotas ni compara más de dos productos a la vez).
-- **Con LLM (Groq) activo:** el prompt prohíbe cálculos, pero el modelo puede hacer aritmética simple sobre valores citados (p. ej. «la diferencia es de 36 meses» en una comparación de plazos). Las fuentes citadas permiten verificarlo; el modo por defecto (sin LLM) nunca calcula. La pregunta del asesor se envía a Groq: no escribir datos personales del cliente.
-- **Reglas de seguridad por patrones:** los datos de terceros y la información restringida se bloquean por intención (pedir el dato), no por palabras sueltas (RF-S14). Las credenciales siguen siendo estrictas a propósito: «¿Cuál es la clave del Wi-Fi de la oficina?» se bloquea (se prefiere ese falso positivo a arriesgar una fuga).
+- **Con LLM (Groq) activo:** el prompt prohíbe cálculos, pero el modelo puede hacer aritmética simple sobre valores citados (p. ej. "la diferencia es de 36 meses" en una comparación de plazos). Las fuentes citadas permiten verificarlo; el modo por defecto (sin LLM) nunca calcula. La pregunta del asesor se envía a Groq: no escribir datos personales del cliente.
+- **Reglas de seguridad por patrones:** los datos de terceros y la información restringida se bloquean por intención (pedir el dato), no por palabras sueltas (RF-S14). Las credenciales siguen siendo estrictas a propósito: "¿Cuál es la clave del Wi-Fi de la oficina?" se bloquea (se prefiere ese falso positivo a arriesgar una fuga).
 - **Idioma:** español únicamente.
 - **Carga en el arranque:** cambios en `Data/` requieren reiniciar el backend.
-- **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol. Mientras tanto el historial es compartido, por eso la pregunta se guarda enmascarada (cédulas, cuentas, correos, credenciales → `[DATO OCULTO]`/`[OCULTO]`, RF-S13); `PUT /api/llm` no pide credencial.
+- **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol. Mientras tanto el historial es compartido, por eso la pregunta se guarda enmascarada (cédulas, cuentas, correos, credenciales - `[DATO OCULTO]`/`[OCULTO]`, RF-S13); `PUT /api/llm` no pide credencial.
 - **Un solo proceso:** el modo LLM elegido, el contador de llamadas y la cuota viven en memoria del proceso; con varios workers de uvicorn cada uno tendría los suyos. Se ejecuta con un worker (suficiente para uso interno); para escalar habría que llevar ese estado a un almacén compartido.
 - **SQLite con una conexión y un candado:** las escrituras se serializan. Los endpoints que tocan la base (`consultar`, `historial`, `estadisticas`, `consultas/{id}`) son síncronos y corren en el threadpool, así que el candado no bloquea el bucle de eventos (una prueba lo verifica). En producción, Redis para las conversaciones activas y Cosmos DB para el historial (Cuestionario, sección 7).
 
@@ -430,4 +430,4 @@ Otros casos cubiertos (ver `tests/`): cuerpo inválido · caracteres de control 
 
 ## Uso de IA
 
-Construí la primera versión de la aplicación y después la refactoricé y amplié apoyándome en Claude Code como agente de desarrollo. Las decisiones de arquitectura, alcance, tecnologías y reglas de seguridad son mías. La documentación (constitución, especificaciones, planes, tareas, este README y el cuestionario) la definí y la revisé yo; Claude Code me ayudó a redactar los borradores y a mantener la trazabilidad. El detalle de herramientas, tareas delegadas, tareas manuales, sugerencias rechazadas y método de validación está en `docs/Cuestionario.md`. Las instrucciones dadas a los agentes de desarrollo están en `AGENTS.md`.
+Construí la primera versión de la aplicación y después la refactoricé y amplié apoyándome en Claude Code como agente de desarrollo. Las decisiones de arquitectura, alcance, tecnologías y reglas de seguridad son mías. La documentación (constitución, especificaciones, planes, tareas, este README y el cuestionario) la definí y la revisé yo. El detalle de herramientas, tareas delegadas, tareas manuales, sugerencias rechazadas y método de validación está en `docs/Cuestionario.md`. Las instrucciones dadas a los agentes de desarrollo están en `AGENTS.md`.

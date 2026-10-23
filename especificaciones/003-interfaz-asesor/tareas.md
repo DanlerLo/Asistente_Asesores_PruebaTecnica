@@ -27,7 +27,7 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-216 Paleta del banco con contraste WCAG AA verificado en texto, botones y foco; los estados conservan colores semánticos.
 
 ## Fase E — Robustez (RF-U12, RF-U13)
-- [x] T-217 Pruebas de `api.ts`: tiempo agotado → `TIEMPO_AGOTADO`; 200 sin JSON o sin forma válida → `RESPUESTA_INVALIDA`.
+- [x] T-217 Pruebas de `api.ts`: tiempo agotado - `TIEMPO_AGOTADO`; 200 sin JSON o sin forma válida - `RESPUESTA_INVALIDA`.
 - [x] T-218 Implementar el `AbortController` de 45 s y la validación de la forma de la respuesta.
 - [x] T-219 Pruebas: error de pintado con aviso, historial deshabilitado mientras se procesa sin pisar el borrador, foco de vuelta a la caja de texto.
 - [x] T-220 Implementar `LimiteErrores`, el historial deshabilitado y el foco en `Compositor`.

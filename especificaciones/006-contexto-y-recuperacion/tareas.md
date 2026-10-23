@@ -3,7 +3,7 @@
 Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]` = completada.
 
 ## Fase A — Backend
-- [x] T-501 Pruebas unitarias: `es_seguimiento`, `entidades_nombradas`, `resolver_pregunta` y comparativos («más bajo» → mínimo).
+- [x] T-501 Pruebas unitarias: `es_seguimiento`, `entidades_nombradas`, `resolver_pregunta` y comparativos («más bajo» - mínimo).
 - [x] T-502 Pruebas del orquestador y de la API: escenarios Gherkin, contexto inválido y malicioso, pregunta persistida, LLM con la pregunta efectiva, `GET /api/consultas/{id}`.
 - [x] T-503 Ejecutar y confirmar el fallo.
 - [x] T-504 Implementar `orquestador/contexto.py`, los comparativos en `texto.py` y `validar_contexto`.

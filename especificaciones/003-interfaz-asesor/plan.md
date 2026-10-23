@@ -27,7 +27,7 @@ Archivos:
 ```
 src/frontend/
 ├── index.html
-├── vite.config.ts        (proxy /api → backend; Vitest con jsdom; pruebas en tests/frontend)
+├── vite.config.ts        (proxy /api - backend; Vitest con jsdom; pruebas en tests/frontend)
 └── src/
     ├── main.tsx          (montaje)
     ├── App.tsx           (estado: turnos de la conversación, texto, error, historial, modo del LLM)
@@ -51,13 +51,13 @@ src/frontend/
 | `BurbujaAsistente` | Texto íntegro, badge, fuentes, especialidades (sin información), metadatos y hora |
 | `Compositor` | Caja de texto con contador; Enter envía, Shift+Enter salto de línea; botón «Consultar» con estado de carga |
 | `SelectorModo` | «Modo conexión (Groq)» / «Modo sin conexión» (`aria-pressed`), cuota en pequeño y pop-up del modo sin conexión |
-| `EstadoBadge` | Mapeo estado → clase de color |
+| `EstadoBadge` | Mapeo estado - clase de color |
 | `Fuentes` | Lista ordenada con archivo › sección y extracto; aviso de "Sin fuentes" |
 | `Historial` | Últimas consultas; repetir con un clic |
 
 ## Decisiones
 - **ADR-U1 Sin librería de componentes ni gestor de estado**: el flujo es lineal y `useState` basta; menos dependencias y menor tiempo de instalación para el evaluador.
-- **ADR-U2 Proxy de Vite en desarrollo** (`/api` → `http://localhost:8000`): evita configurar CORS/URLs en local; `VITE_API_URL` permite apuntar a otro host.
+- **ADR-U2 Proxy de Vite en desarrollo** (`/api` - `http://localhost:8000`): evita configurar CORS/URLs en local; `VITE_API_URL` permite apuntar a otro host.
 - **ADR-U3 Pruebas en `tests/frontend/`** para respetar la estructura pedida; el workspace npm en la raíz permite que resuelvan `node_modules`.
 - **ADR-U4 Respuesta en `<pre>` con `pre-wrap`**: conserva el formato del motor extractivo (listas y cita final) sin interpretar HTML.
 

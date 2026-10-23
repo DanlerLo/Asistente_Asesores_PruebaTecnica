@@ -21,7 +21,7 @@ POST /api/consultar ──►  │ Orquestador.consultar()                      
                        generacion/ (extractivo · llm · plantillas · prompts/*.j2)
 ```
 
-Dependencias permitidas (de arriba hacia abajo): `api → orquestador → agentes → generacion → herramientas`; `seguridad`, `infraestructura`, `dominio` y `config` son transversales y no dependen de capas superiores.
+Dependencias permitidas (de arriba hacia abajo): `api - orquestador - agentes - generacion - herramientas`; `seguridad`, `infraestructura`, `dominio` y `config` son transversales y no dependen de capas superiores.
 
 ## Componentes
 | Paquete / módulo | Responsabilidad |

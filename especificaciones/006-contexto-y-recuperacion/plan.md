@@ -8,22 +8,22 @@
      ▼
  Orquestador.consultar(pregunta, contexto)
    1. validar_pregunta(pregunta)  +  validar cada elemento del contexto (RF-C6)
-   2. evaluar_entrada(pregunta)   →  bloqueo (sin cambios)
+   2. evaluar_entrada(pregunta)   -  bloqueo (sin cambios)
    3. contexto.resolver_pregunta(pregunta, contexto_permitido, entidades_del_corpus)
-        ├─ no es seguimiento o nombra su entidad → pregunta original
-        ├─ seguimiento + referente en el contexto → "pregunta (Entidad)"
-        └─ seguimiento sin referente           → Sin información (RF-C5)
-   4. recuperar → enrutar → agente → filtrar salida   (con la pregunta efectiva)
+        ├─ no es seguimiento o nombra su entidad - pregunta original
+        ├─ seguimiento + referente en el contexto - "pregunta (Entidad)"
+        └─ seguimiento sin referente           - Sin información (RF-C5)
+   4. recuperar - enrutar - agente - filtrar salida   (con la pregunta efectiva)
    5. persistir la pregunta ORIGINAL; log con pregunta_efectiva y referente
 
- GET /api/consultas/{id} → RepositorioConsultas.obtener(id)   (ya existía)
+ GET /api/consultas/{id} - RepositorioConsultas.obtener(id)   (ya existía)
 ```
 
 ## Componentes
 | Componente | Responsabilidad |
 |------------|-----------------|
 | `orquestador/contexto.py` | `Entidad`, `entidades_del_corpus`, `es_seguimiento`, `entidades_nombradas`, `resolver_pregunta` (puro y determinista) |
-| `herramientas/texto.py` | Comparativos «más bajo/menor» → mínimo, «más alto/mayor» → máximo (RF-C8) |
+| `herramientas/texto.py` | Comparativos «más bajo/menor» - mínimo, «más alto/mayor» - máximo (RF-C8) |
 | `seguridad/guardrails.py` | `validar_contexto` (RF-C6) |
 | `orquestador/orquestador.py` | Recibe `contexto`, resuelve la pregunta efectiva, persiste la original |
 | `api/app.py` | Campo `contexto`; `GET /api/consultas/{id}` |

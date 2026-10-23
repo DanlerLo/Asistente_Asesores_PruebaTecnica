@@ -23,7 +23,7 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 ## Fase D — Filtro de salida (RF-S4)
 - [x] T-113 Pruebas de `filtrar_salida`: secreto conocido, patrones `ABC-123`, `admin_*`, `sk-…`; textos normales permitidos.
 - [x] T-114 Implementar `filtrar_salida()` con lista de denegación y patrones con `requiere_digito`.
-- [x] T-115 Pruebas: fuga desde un documento público → *Bloqueada*; LLM que revela un secreto → *Bloqueada*.
+- [x] T-115 Pruebas: fuga desde un documento público - *Bloqueada*; LLM que revela un secreto - *Bloqueada*.
 
 ## Fase E — Trazabilidad y errores (RF-S6, RF-S7)
 - [x] T-116 Registrar la categoría del bloqueo en el log y persistir el estado.

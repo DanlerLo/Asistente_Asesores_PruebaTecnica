@@ -7,7 +7,7 @@ Asistente interno para asesores comerciales. Responde preguntas sobre productos 
 
 - Backend: Python 3.12, FastAPI, SQLite — `src/backend/asistente/`.
 - Frontend: React 19 + TypeScript + Vite — `src/frontend/`.
-- Backend en capas: `api/` → `orquestador/` → `agentes/` → `generacion/` → `herramientas/`; transversales: `seguridad/`, `infraestructura/`, `dominio.py`, `config.py`. Las capas no importan hacia arriba (`tests/backend/test_arquitectura.py`).
+- Backend en capas: `api/` - `orquestador/` - `agentes/` - `generacion/` - `herramientas/`; transversales: `seguridad/`, `infraestructura/`, `dominio.py`, `config.py`. Las capas no importan hacia arriba (`tests/backend/test_arquitectura.py`).
 - Pruebas: `tests/backend` (pytest) y `tests/frontend` (Vitest).
 - Especificaciones: `especificaciones/<nnn>-<caracteristica>/{especificacion,plan,tareas}.md`.
 
@@ -32,7 +32,7 @@ Asistente interno para asesores comerciales. Responde preguntas sobre productos 
 ## 4. Convenciones
 - Código, comentarios, mensajes y documentación en **español**; identificadores en español sin tildes (`respuesta_sin_informacion`, `cargarHistorial`).
 - Módulos pequeños con una sola responsabilidad; no agregues frameworks o librerías sin justificar en `plan.md` (ADR).
-- Frases canónicas: sin evidencia → `No tengo información suficiente para responder.` (constante `FRASE_SIN_INFO`); no las reescribas.
+- Frases canónicas: sin evidencia - `No tengo información suficiente para responder.` (constante `FRASE_SIN_INFO`); no las reescribas.
 - Los errores de entrada devuelven HTTP 400 con `{"error", "codigo"}`; los internos, 500 con mensaje genérico. No cambies el contrato de `POST /api/consultar` sin actualizar `especificacion.md`, las pruebas y el frontend.
 - Determinismo: el motor extractivo no debe depender de aleatoriedad ni de tiempo.
 - Formato: líneas ≤ 120 caracteres en Python; `pre-wrap` y texto plano en el frontend (nunca `dangerouslySetInnerHTML`).

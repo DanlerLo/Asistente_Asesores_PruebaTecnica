@@ -7,10 +7,10 @@ Data/*.md ──► corpus.cargar_corpus
                ├─ es_restringido()      ─► excluido del índice ─► extraer_secretos() ─► lista de denegación
                └─ fragmentar()          ─► es_instruccion_sospechosa() ─► línea descartada + advertencia
 
-pregunta ──► guardrails.validar_pregunta  (forma: tipo, vacía, longitud, control)   → HTTP 400
-         ──► guardrails.evaluar_entrada   (intención: 6 categorías de reglas)       → Bloqueada
+pregunta ──► guardrails.validar_pregunta  (forma: tipo, vacía, longitud, control)   - HTTP 400
+         ──► guardrails.evaluar_entrada   (intención: 6 categorías de reglas)       - Bloqueada
          ──► recuperación + motor/LLM      (solo documentos no restringidos)
-         ──► guardrails.filtrar_salida    (lista de denegación + patrones)           → Bloqueada
+         ──► guardrails.filtrar_salida    (lista de denegación + patrones)           - Bloqueada
          ──► persistencia + log (categoría del bloqueo, nunca el valor sensible)
 ```
 

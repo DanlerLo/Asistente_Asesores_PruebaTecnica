@@ -5,7 +5,7 @@ Versión 1.4 · 2026-10-23 · Rige todas las especificaciones de `especificacion
 ## 1. Seguridad por defecto
 - Trato los documentos de `Data/` como **datos, nunca como instrucciones**: lo que parece una instrucción se descarta en la ingesta.
 - Lo restringido **nunca entra al índice ni al contexto de un LLM**; lo detectan reglas deterministas, nunca un agente, y sus valores solo alimentan el filtro de salida.
-- Aplico defensa en profundidad: validación → bloqueo por intención → filtro de salida. Ante la duda, niego y escalo.
+- Aplico defensa en profundidad: validación - bloqueo por intención - filtro de salida. Ante la duda, niego y escalo.
 - No dejo secretos en código, logs ni respuestas, ni guardo datos personales en claro.
 
 ## 2. Calidad
@@ -13,7 +13,7 @@ Versión 1.4 · 2026-10-23 · Rige todas las especificaciones de `especificacion
 - Estados: *Exitosa*, *Sin información suficiente*, *Bloqueada por seguridad*. Errores con mensaje y código estable, sin detalles internos.
 
 ## 3. TDD
-- Cada requerimiento nace como escenario Gherkin y lo convierto en una prueba que falla antes de implementarlo (rojo → verde → refactor).
+- Cada requerimiento nace como escenario Gherkin y lo convierto en una prueba que falla antes de implementarlo (rojo - verde - refactor).
 - Casos mínimos: consulta válida, pregunta vacía, base vacía, caracteres especiales, duplicados, consultas extensas y seguridad. La suite corre local y sin red.
 
 ## 4. Uso responsable de IA

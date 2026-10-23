@@ -4,7 +4,7 @@
 ```
 pregunta ─► guardrails ─► recuperación híbrida ─────────────► enrutador ─► agente
                           ├─ BM25 (palabras, determinista)        │            │
-                          └─ índice semántico (significado)       │            ├─ sin conexión: reglas léxicas → líneas con cita
+                          └─ índice semántico (significado)       │            ├─ sin conexión: reglas léxicas - líneas con cita
                              líneas embebidas al arrancar         │            │  (la similitud no elige líneas)
                              en CPU, sin red                      │            └─ con Groq: contexto = BM25 + semántico
                                                                   │               + documento del agente (con tope)

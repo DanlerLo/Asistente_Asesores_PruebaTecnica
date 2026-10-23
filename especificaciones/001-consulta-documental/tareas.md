@@ -10,7 +10,7 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 ## Fase B — Texto y corpus (RF-02, RF-07, RF-08)
 - [x] T-004 Pruebas de `normalizar`, `raiz` y `tokenizar`: tildes, plurales, género, stopwords y sinónimos.
 - [x] T-005 Implementar `texto.py` hasta poner T-004 en verde.
-- [x] T-006 Pruebas de `fragmentar`: tablas → `clave: valor`, etiqueta + valor, etiqueta + lista, fragmento «Índice», ruta de sección y entidad.
+- [x] T-006 Pruebas de `fragmentar`: tablas - `clave: valor`, etiqueta + valor, etiqueta + lista, fragmento «Índice», ruta de sección y entidad.
 - [x] T-007 Implementar `fragmentar()` con un clasificador de líneas con *lookahead*.
 - [x] T-008 Pruebas de `cargar_corpus`: duplicados por hash, directorio vacío o inexistente, archivos no soportados, nombres en NFD (macOS).
 - [x] T-009 Implementar `cargar_corpus()` con deduplicación, advertencias y normalización de nombres a NFC.
@@ -19,7 +19,7 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-010 Pruebas de `IndiceBM25.buscar`: sección correcta primero, bloqueo por entidad, consulta sin términos, índice vacío.
 - [x] T-011 Implementar BM25 propio (`k1=1.5`, `b=0.75`), cobertura sobre términos conocidos, bloqueo por entidad y prioridad del índice.
 - [x] T-012 Pruebas parametrizadas del motor extractivo con respuestas esperadas y frase canónica.
-- [x] T-013 Implementar `seleccionar_lineas` (subsección nombrada → entidad sola → líneas por atributo → `None`) y `responder_extractivo`.
+- [x] T-013 Implementar `seleccionar_lineas` (subsección nombrada - entidad sola - líneas por atributo - `None`) y `responder_extractivo`.
 - [x] T-014 Pruebas de no responder con datos de otro producto y de comparación entre productos; ajustar reglas hasta verde.
 
 ## Fase D — Persistencia y flujo de la consulta (RF-09)
@@ -59,20 +59,20 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-040 Vocabulario del asesor: sinónimos y corrección ortográfica contra el corpus (RF-14).
 - [x] T-041 Secciones generales con producto nombrado y comparaciones entre productos (RF-15).
 - [x] T-042 Sin producto nombrado, no elegir uno al azar: regla de ambigüedad y catálogo por agente (RF-16, RF-O9).
-- [x] T-043 Revisar a mano las 87 respuestas del banco que cambiaron antes de actualizar la foto (precisión 48,5 % → 83,5 %).
+- [x] T-043 Revisar a mano las 87 respuestas del banco que cambiaron antes de actualizar la foto (precisión 48,5 % - 83,5 %).
 
 ## Fase H2 — Respuestas equivocadas y frases del asesor (RF-22)
 - [x] T-044 Clasificar los 16 fallos de la evaluación: 8 respuestas equivocadas (una línea real que no contesta) y 8 «sin información» con el dato disponible.
 - [x] T-045 Pruebas en `test_motor.py` con las frases del asesor, la pregunta frecuente completa, el título de pregunta frecuente a medias y la subsección corta; confirmar que fallan con el motor anterior.
-- [x] T-046 Frases del asesor → término del documento (monto, prima, plazo, desembolso, periodicidad, horario, costo del estudio) y palabras de relleno («banco», «sigue», «sirve»).
+- [x] T-046 Frases del asesor - término del documento (monto, prima, plazo, desembolso, periodicidad, horario, costo del estudio) y palabras de relleno («banco», «sigue», «sirve»).
 - [x] T-047 Preguntas frecuentes: la contenida completa responde primero; un título nunca se nombra a medias.
 - [x] T-048 Subsección corta de un producto nombrado responde entera; «cliente» como contexto y no como atributo.
-- [x] T-049 Revisar a mano las 35 respuestas del banco que cambiaron y descartar las reglas que movían respuestas correctas (participios, «codeudor» global); precisión 83,5 % → 100 %.
+- [x] T-049 Revisar a mano las 35 respuestas del banco que cambiaron y descartar las reglas que movían respuestas correctas (participios, «codeudor» global); precisión 83,5 % - 100 %.
 
 ## Fase I — Robustez del servicio (RF-17 a RF-21)
 - [x] T-050 Pruebas de `x-request-id`: valor válido respetado, inválido reemplazado, presente en los logs y en el 500.
 - [x] T-051 Implementar el `ContextVar`, la fábrica de registros y la validación en el middleware.
-- [x] T-052 Pruebas e implementación: ids con dígitos no ASCII → 400 y `limite` inválido con mensaje propio (RF-18).
+- [x] T-052 Pruebas e implementación: ids con dígitos no ASCII - 400 y `limite` inválido con mensaje propio (RF-18).
 - [x] T-053 Pruebas e implementación: configuración fuera de rango rechazada nombrando la variable (RF-19).
 - [x] T-054 Pruebas e implementación del parser: BOM, comparadores `<`/`>`, etiquetas con horas y tablas de 3 columnas (RF-20).
 - [x] T-055 Citar en el bloqueo solo las políticas que existen en el corpus (RF-21).

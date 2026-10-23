@@ -16,8 +16,8 @@ Reorganizar el backend en capas con una responsabilidad cada una y resolver las 
 ## Requerimientos funcionales
 | ID | Requerimiento |
 |----|---------------|
-| RF-O1 | El **orquestador** ejecuta el flujo: validar → guardrail de entrada → recuperar (herramienta) → enrutar → agente responde → guardrail de salida → persistir. Los guardrails nunca se delegan a un agente. |
-| RF-O2 | El **enrutador** elige el agente de forma determinista según el documento del fragmento mejor puntuado: `Productos de Crédito` → *crédito*; `Portafolio de Microseguros` → *microseguros*; cualquier otro documento → *operativo*. |
+| RF-O1 | El **orquestador** ejecuta el flujo: validar - guardrail de entrada - recuperar (herramienta) - enrutar - agente responde - guardrail de salida - persistir. Los guardrails nunca se delegan a un agente. |
+| RF-O2 | El **enrutador** elige el agente de forma determinista según el documento del fragmento mejor puntuado: `Productos de Crédito` - *crédito*; `Portafolio de Microseguros` - *microseguros*; cualquier otro documento - *operativo*. |
 | RF-O3 | Si la recuperación no encuentra ningún fragmento (ningún término de la pregunta existe en la base documental) o la base está vacía, la consulta va al **agente de fuera de dominio**. |
 | RF-O4 | El agente de fuera de dominio responde exactamente «No tengo información suficiente para responder.», con `fuentes: []`, estado *Sin información suficiente*, y **nunca** invoca un LLM. |
 | RF-O5 | Los agentes de dominio responden únicamente con los fragmentos recuperados (motor extractivo o, si está configurado, LLM con *fallback*), conservando el comportamiento de RF-03, RF-04, RF-05 y RF-11. |
