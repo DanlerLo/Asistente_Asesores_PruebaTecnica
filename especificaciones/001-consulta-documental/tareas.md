@@ -61,16 +61,24 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-042 Sin producto nombrado, no elegir uno al azar: regla de ambigüedad y catálogo por agente (RF-16, RF-O9).
 - [x] T-043 Revisar a mano las 87 respuestas del banco que cambiaron antes de actualizar la foto (precisión 48,5 % → 83,5 %).
 
+## Fase H2 — Respuestas equivocadas y frases del asesor (RF-22)
+- [x] T-044 Clasificar los 16 fallos de la evaluación: 8 respuestas equivocadas (una línea real que no contesta) y 8 «sin información» con el dato disponible.
+- [x] T-045 Pruebas en `test_motor.py` con las frases del asesor, la pregunta frecuente completa, el título de pregunta frecuente a medias y la subsección corta; confirmar que fallan con el motor anterior.
+- [x] T-046 Frases del asesor → término del documento (monto, prima, plazo, desembolso, periodicidad, horario, costo del estudio) y palabras de relleno («banco», «sigue», «sirve»).
+- [x] T-047 Preguntas frecuentes: la contenida completa responde primero; un título nunca se nombra a medias.
+- [x] T-048 Subsección corta de un producto nombrado responde entera; «cliente» como contexto y no como atributo.
+- [x] T-049 Revisar a mano las 35 respuestas del banco que cambiaron y descartar las reglas que movían respuestas correctas (participios, «codeudor» global); precisión 83,5 % → 100 %.
+
 ## Fase I — Robustez del servicio (RF-17 a RF-21)
-- [x] T-044 Pruebas de `x-request-id`: valor válido respetado, inválido reemplazado, presente en los logs y en el 500.
-- [x] T-045 Implementar el `ContextVar`, la fábrica de registros y la validación en el middleware.
-- [x] T-046 Pruebas e implementación: ids con dígitos no ASCII → 400 y `limite` inválido con mensaje propio (RF-18).
-- [x] T-047 Pruebas e implementación: configuración fuera de rango rechazada nombrando la variable (RF-19).
-- [x] T-048 Pruebas e implementación del parser: BOM, comparadores `<`/`>`, etiquetas con horas y tablas de 3 columnas (RF-20).
-- [x] T-049 Citar en el bloqueo solo las políticas que existen en el corpus (RF-21).
-- [x] T-050 `log_level` en `Configuracion`, esquema OpenAPI de `pregunta` y endpoints con SQLite síncronos.
-- [x] T-051 Logs de uvicorn en el mismo formato JSON.
+- [x] T-050 Pruebas de `x-request-id`: valor válido respetado, inválido reemplazado, presente en los logs y en el 500.
+- [x] T-051 Implementar el `ContextVar`, la fábrica de registros y la validación en el middleware.
+- [x] T-052 Pruebas e implementación: ids con dígitos no ASCII → 400 y `limite` inválido con mensaje propio (RF-18).
+- [x] T-053 Pruebas e implementación: configuración fuera de rango rechazada nombrando la variable (RF-19).
+- [x] T-054 Pruebas e implementación del parser: BOM, comparadores `<`/`>`, etiquetas con horas y tablas de 3 columnas (RF-20).
+- [x] T-055 Citar en el bloqueo solo las políticas que existen en el corpus (RF-21).
+- [x] T-056 `log_level` en `Configuracion`, esquema OpenAPI de `pregunta` y endpoints con SQLite síncronos.
+- [x] T-057 Logs de uvicorn en el mismo formato JSON.
 
 ## Fase J — Calidad y entrega
-- [x] T-052 ruff, mypy y cobertura en el CI; `requires-python` en `pyproject.toml`.
-- [x] T-053 Prueba de latencia p95 del modo extractivo sobre el banco (RNF-02).
+- [x] T-058 ruff, mypy y cobertura en el CI; `requires-python` en `pyproject.toml`.
+- [x] T-059 Prueba de latencia p95 del modo extractivo sobre el banco (RNF-02).

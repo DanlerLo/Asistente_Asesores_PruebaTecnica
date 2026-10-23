@@ -66,7 +66,7 @@ Más detalle: `especificaciones/*/plan.md`.
 │   │   └── infraestructura/    (persistencia SQLite, observabilidad)
 │   └── frontend/               (Vite + React + TypeScript)
 ├── tests/
-│   ├── backend/                (pytest, 352 pruebas)
+│   ├── backend/                (pytest, 366 pruebas)
 │   └── frontend/               (Vitest, 37 pruebas)
 ├── Data/                       (base documental; incluye el archivo restringido de ejemplo)
 ├── docs/Cuestionario.md
@@ -204,7 +204,7 @@ En ambos casos: `cp .env.example .env`, completar `LLM_PROVIDER=groq` y `GROQ_AP
 ## Pruebas
 
 ```bash
-python -m pytest              # backend: 352 pruebas (< 1 s, sin red), con el .venv activado
+python -m pytest              # backend: 366 pruebas (≈ 1,5 s, sin red), con el .venv activado
 npm test                      # frontend: 37 pruebas (Vitest + jsdom)
 npm run build                 # verificación de tipos + build de producción
 python -m ruff check src/backend tests/backend && python -m mypy   # lint y tipos
@@ -216,7 +216,7 @@ Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo in
 
 ## Limitaciones
 
-- **Emparejamiento léxico:** el modo extractivo depende de que la pregunta use palabras presentes en los documentos (hay stemming y un mapa pequeño de sinónimos; p. ej. "cubre" ≈ "cobertura", "cuesta" ≈ "costo"). Preguntas muy coloquiales o con muchos términos ajenos al corpus pueden recibir «Sin información suficiente». Activar el LLM mejora la comprensión.
+- **Emparejamiento léxico:** el modo extractivo depende de que la pregunta use palabras de los documentos o frases del asesor ya traducidas (stemming, sinónimos y frases como «hasta cuánta plata prestan» → monto máximo). Responde bien las 97 preguntas del conjunto de evaluación, pero esas reglas se ajustaron mirando esos casos: una pregunta con vocabulario nuevo puede recibir «Sin información suficiente». Ante la duda no adivina. Activar el LLM mejora la comprensión.
 - **Sin razonamiento:** no calcula ni infiere (p. ej. no suma cuotas ni compara más de dos productos a la vez).
 - **Con LLM (Groq) activo:** el prompt prohíbe cálculos, pero el modelo puede hacer aritmética simple sobre valores citados (p. ej. «la diferencia es de 36 meses» en una comparación de plazos). Las fuentes citadas permiten verificarlo; el modo por defecto (sin LLM) nunca calcula. La pregunta del asesor se envía a Groq: no escribir datos personales del cliente.
 - **Reglas de seguridad por patrones:** los datos de terceros y la información restringida se bloquean por intención (pedir el dato), no por palabras sueltas (RF-S14). Las credenciales siguen siendo estrictas a propósito: «¿Cuál es la clave del Wi-Fi de la oficina?» se bloquea (se prefiere ese falso positivo a arriesgar una fuga).

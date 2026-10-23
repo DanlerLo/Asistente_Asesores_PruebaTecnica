@@ -12,6 +12,7 @@ MAX_LINEAS_POR_FRAGMENTO = 12
 MAX_FRAGMENTOS_EN_RESPUESTA = 2
 RELACION_MINIMA_SEGUNDO_FRAGMENTO = 0.8
 MINIMO_TERMINOS_COINCIDENTES = 2
+MAX_LINEAS_SUBSECCION_CORTA = 3
 _RE_PREFIJO_LISTA = re.compile(r"^(\d+\.|-)\s")
 
 
@@ -21,9 +22,13 @@ def seleccionar_lineas(
     raices_nombradas: frozenset[str] = frozenset(),
     desconocidas: frozenset[str] = frozenset(),
     cubiertos: frozenset[str] = frozenset(),
+    parcial: bool = False,
 ) -> list[str] | None:
     """Líneas del fragmento que responden a la pregunta, o ``None`` si el fragmento no la responde."""
     if fragmento.ruta_seccion == "Índice":
+        return list(fragmento.lineas[:MAX_LINEAS_POR_FRAGMENTO])
+    # Una pregunta frecuente cuyo título completo está en la pregunta la responde entera.
+    if es_titulo_de_pregunta(fragmento) and _faq_completa(fragmento, consulta):
         return list(fragmento.lineas[:MAX_LINEAS_POR_FRAGMENTO])
     atributos = set(consulta) - fragmento.entidad_raices - raices_nombradas - RAICES_GENERICAS
     es_subseccion = fragmento.titulo_propio != fragmento.entidad
@@ -40,8 +45,17 @@ def seleccionar_lineas(
     presentes = atributos & raices_unicas(fragmento.texto_indexable)
     # Lo que responde otra sección nombrada en la pregunta no se exige aquí («…y cómo se paga»).
     faltan = atributos - presentes - cubiertos
-    if not presentes or (len(presentes) < 2 and faltan):
+    if not presentes:
         return None
+    if len(presentes) < 2 and faltan:
+        # Subsección de un producto nombrado: si es corta responde entera; si no, solo completa otra que ya respondió.
+        nombrado = bool(fragmento.entidad_raices) and fragmento.entidad_raices <= raices_nombradas
+        corta = len(fragmento.lineas) <= MAX_LINEAS_SUBSECCION_CORTA
+        if not (es_subseccion and (parcial or (nombrado and corta))):
+            return None
+        if len(fragmento.lineas) <= MAX_LINEAS_SUBSECCION_CORTA:
+            return list(fragmento.lineas)
+        return [linea for linea in fragmento.lineas if raices_unicas(linea) & presentes] or None
     puntuadas = [(raices_unicas(linea) & atributos, linea) for linea in fragmento.lineas]
     maximo = max((len(c) for c, _ in puntuadas), default=0)
     if maximo == 0:  # los atributos están en los encabezados
@@ -73,7 +87,16 @@ def _componer_texto(bloques: list[tuple[Fragmento, list[str]]]) -> str:
 
 
 def _entidad_nombrada(fragmento: Fragmento, consulta: set[str] | frozenset[str]) -> bool:
+    if es_titulo_de_pregunta(fragmento):  # un título de pregunta frecuente solo se «nombra» completo
+        return _faq_completa(fragmento, consulta)
     return nombra_entidad(fragmento.entidad_raices, consulta)
+
+
+def _faq_completa(fragmento: Fragmento, consulta: set[str] | frozenset[str]) -> bool:
+    """La pregunta contiene el título; las palabras genéricas («microseguro») se omiten si quedan 2+ distintivas."""
+    distintivas = fragmento.entidad_raices - RAICES_GENERICAS
+    exigidas = distintivas if len(distintivas) >= 2 else fragmento.entidad_raices
+    return bool(exigidas) and exigidas <= set(consulta)
 
 
 def _raices_nombradas(
@@ -167,8 +190,11 @@ def responder_extractivo(pregunta: str, resultados: list[Resultado], umbral_cobe
         and _entidad_nombrada(r.fragmento, consulta_util)
     ))
     pocos_terminos_utiles = len(consulta_util - RAICES_GENERICAS) < MINIMO_TERMINOS_COINCIDENTES
-    # Lo que la pregunta nombra explícitamente va primero.
-    resultados = sorted(resultados, key=lambda r: not _entidad_nombrada(r.fragmento, consulta_util))
+    # Lo que la pregunta nombra va primero; una pregunta frecuente contenida completa, antes que todo.
+    resultados = sorted(resultados, key=lambda r: (
+        not (es_titulo_de_pregunta(r.fragmento) and _faq_completa(r.fragmento, consulta_util)),
+        not _entidad_nombrada(r.fragmento, consulta_util),
+    ))
     # RF-12: un fragmento de respaldo debe mencionar algún término de la sección principal, no solo palabras comunes.
     exigidos = _terminos_distintivos(resultados[0].fragmento, consulta_util)
 
@@ -176,9 +202,10 @@ def responder_extractivo(pregunta: str, resultados: list[Resultado], umbral_cobe
     fuentes: list[Fuente] = []
     puntaje_principal = 0.0
     for posicion, resultado in enumerate(resultados):
-        if resultado.cobertura < umbral_cobertura:
-            continue
         fragmento = resultado.fragmento
+        faq_completa = es_titulo_de_pregunta(fragmento) and _faq_completa(fragmento, consulta_util)
+        if resultado.cobertura < umbral_cobertura and not faq_completa:
+            continue
         nombrada = _entidad_nombrada(fragmento, consulta_util)
         coincidencias = len(resultado.terminos)
         if es_transversal(fragmento) and fragmento.archivo in documentos_nombrados:
@@ -210,7 +237,8 @@ def responder_extractivo(pregunta: str, resultados: list[Resultado], umbral_cobe
         if not bloques and _producto_ambiguo(fragmento, resultados, consulta_util, productos_nombrados):
             continue
         restar = productos_nombrados if es_producto(fragmento) else nombradas
-        lineas = seleccionar_lineas(fragmento, consulta_util, restar, desconocidas, secciones_nombradas)
+        parcial = bool(bloques) and nombrada and _misma_entidad(bloques[0][0], fragmento)
+        lineas = seleccionar_lineas(fragmento, consulta_util, restar, desconocidas, secciones_nombradas, parcial)
         if not lineas:
             continue
         if not bloques:

@@ -18,6 +18,7 @@ STOPWORDS: frozenset[str] = frozenset(
     podrias puedes seria existe existen cuales dan da dar tarda tardan demora demoran
     dice dicen habla hablan contiene contienen trata tratan ofrece ofrecen debe deben debo deberia
     valor tipo tipos clase clases algun buen buena buenas buenos tardes dias noches saludo saludos cordial
+    banco sigue siguen seguir quiere quieren sirve sirven servir ayer hoy
     """.split()
 )
 
@@ -62,6 +63,11 @@ SINONIMOS: dict[str, str] = {
     "mensualidad": "prim",
     "millon": "mont",  # «¿puedo pedir 100 millones?» pregunta por el monto
     "papel": "requisit",  # «¿qué papeles necesito?»
+    "doming": "horari",
+    "festiv": "horari",
+    "feriad": "horari",
+    "ver": "consult",  # «¿quién puede ver los datos?» ≈ «podrá ser consultada»
+    "consultad": "consult",
 }
 
 # Palabras de categoría: no cuentan como atributo pedido ni como desconocidas, y no se corrigen.
@@ -70,18 +76,44 @@ RAICES_GENERICAS = frozenset(
         "segur", "microsegur", "credit", "product", "servici", "poliz",  # categorías
         "paso", "proces", "procedimient", "etap", "fase",  # meta-palabras de procedimientos
         "diferenci", "compar", "versus", "vs", "diferent",  # meta-palabras de comparación
+        "client",  # «un cliente quiere…» es el contexto del asesor, no lo que pregunta
     }
 )
 
 _RE_TOKEN = re.compile(r"[a-z0-9]+")
-# Comparativos de las preguntas («¿y el más bajo?») -> el atributo que usan los documentos («mínimo»).
-_COMPARATIVOS: tuple[tuple[re.Pattern[str], str], ...] = (
-    (re.compile(r"\bmas\s+(bajo|baja|bajos|bajas|pequeno|pequena)\b|\bmenor(es)?\b"), "minimo"),
-    (re.compile(r"\bmas\s+(alto|alta|altos|altas|grande|grandes)\b|\bmayor(es)?\b"), "maximo"),
-    (re.compile(r"\bmas\s+(largo|larga|largos|largas|extenso|extensa)\b"), "maximo"),
-    (re.compile(r"\bmas\s+(corto|corta|cortos|cortas)\b"), "minimo"),
-    (re.compile(r"\bmas\s+barat[oa]s?\b"), "prima minima"),
-    (re.compile(r"\bmas\s+car[oa]s?\b"), "prima maxima"),
+# Frases del asesor -> término de los documentos (RF-14). Se aplican igual a preguntas y documentos.
+_FRASES_DEL_ASESOR: tuple[tuple[str, str], ...] = (
+    (r"\bhasta\s+cuant[oa]s?\b", "maximo"),
+    (r"\b(cuant[oa]s?\s+)?(plata|dinero)\s+(me\s+|le\s+|les\s+)?(prestan|presta|dan|financian)\b", "monto"),
+    (r"\bcuanto\s+(me\s+|le\s+|les\s+)?(prestan|presta|financian)\b", "monto"),
+    (r"\bnecesit\w*\s+(\d[\d.]*\s*)?(millones|millon)\b", "monto"),
+    (r"\bcuanto\s+(hay\s+que|tengo\s+que|tiene\s+que|debo|toca|se\s+debe)\s+pag\w*", "cuanto prima"),
+    (r"\btiempo\s+(tengo|tiene|hay|dan)?\s*(para\s+)?pagar(lo|la)?\b", "plazo maximo"),
+    (r"\b(entreg\w*|recib\w*|dan|consign\w*)\s+(el\s+|la\s+)?(dinero|plata)\b", "desembolso"),
+    (r"\btiempo\s+(estimado\s+)?de\s+respuesta\b", "tiempo"),
+    (r"\bcada\s+cuanto\b", "periodicidad"),
+    (r"\b(hay\s+que\s+|toca\s+)?(pag|cobr)\w*\s+(por\s+)?(la|el)\s+(solicitud|estudio)\b", "costo del estudio"),
+    (r"\b(estudio|solicitud)\b(\s+\w+){0,4}?\s+(se\s+)?cobr\w*", "costo del estudio"),
+    (r"\b(costo\w*|cuest\w*)\b(\s+\w+){0,3}?\s+solicitud\b", "costo del estudio"),
+    (r"\bsolicitud\b(\s+\w+){0,5}?\s+costo\b", "estudio costo"),
+    (r"\baprobacion\s+de\s+(una|la)\s+solicitud\b", "aprobacion de un credito"),
+    (r"\b(pasos|proceso|etapas)\s+(\w+\s+){0,4}?(aprob\w*|solicit\w*|pedir|tramit\w*)\s+(un\s+|el\s+)?credito\b",
+     "pasos solicitud de credito"),
+    (r"\b(tener|contratar|tomar|comprar)\s+(tambien|ademas|otro|otra|dos|varios|mas\s+de\s+un)\b", "tener varios"),
+    (r"\bactualiz\w*\s+(su|sus|la|los)\s+(informacion|datos)\b", "actualizacion de datos"),
+    (r"\bdatos\s+de\s+(los\s+|un\s+|otros\s+)?clientes?\b", "informacion de clientes"),
+)
+# Comparativos («¿y el más bajo?») -> el atributo que usan los documentos («mínimo»).
+_COMPARATIVOS_DEL_ASESOR: tuple[tuple[str, str], ...] = (
+    (r"\bmas\s+(bajo|baja|bajos|bajas|pequeno|pequena)\b|\bmenor(es)?\b", "minimo"),
+    (r"\bmas\s+(alto|alta|altos|altas|grande|grandes)\b|\bmayor(es)?\b", "maximo"),
+    (r"\bmas\s+(largo|larga|largos|largas|extenso|extensa)\b", "maximo"),
+    (r"\bmas\s+(corto|corta|cortos|cortas)\b", "minimo"),
+    (r"\bmas\s+barat[oa]s?\b", "prima"),
+    (r"\bmas\s+car[oa]s?\b", "prima"),
+)
+_COMPARATIVOS: tuple[tuple[re.Pattern[str], str], ...] = tuple(
+    (re.compile(patron), reemplazo) for patron, reemplazo in _FRASES_DEL_ASESOR + _COMPARATIVOS_DEL_ASESOR
 )
 _VOCALES = "aeiou"
 

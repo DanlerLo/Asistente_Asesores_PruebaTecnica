@@ -37,6 +37,7 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-19 | Una configuración fuera de rango (`TOP_K` < 1, `MAX_LONGITUD_PREGUNTA` < 1, `UMBRAL_COBERTURA` fuera de (0, 1], `LLM_TIMEOUT_SEGUNDOS` ≤ 0, proveedor desconocido o un valor no numérico) impide arrancar con un mensaje que nombra la variable. |
 | RF-20 | El parser de Markdown tolera BOM al inicio del archivo, conserva los comparadores `<`/`>` (solo elimina etiquetas HTML reales), reconoce etiquetas que contienen «:» («Atención en oficinas (8:00 a 17:00):») y, en tablas de 3 o más columnas, nombra cada valor con su cabecera («Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses»). |
 | RF-21 | Una consulta bloqueada cita las políticas que respaldan el bloqueo (*Manual › Información Sensible*, *Políticas › Escalamiento*) **solo si existen en el corpus**; si no, `fuentes` es `[]` y el texto no cita archivos. `LOG_LEVEL` es parte de la configuración validada. El esquema OpenAPI documenta `pregunta` como texto obligatorio. |
+| RF-22 | Frases del asesor y preguntas frecuentes: (a) frases coloquiales se traducen al término del documento («hasta cuánta plata prestan» → monto máximo, «cuánto hay que pagar al mes» → prima, «tiempo para pagar» → plazo, «entregan el dinero» → desembolso, «cada cuánto» → periodicidad, días de la semana → horario); (b) «cliente» es contexto del asesor, no un atributo pedido; (c) una pregunta frecuente cuyo título completo está en la pregunta responde primero y entera, y un título de pregunta frecuente nunca se considera nombrado a medias; (d) una subsección corta (≤ 3 líneas) de un producto nombrado responde entera si menciona lo pedido. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -229,4 +230,24 @@ Característica: Consulta documental con citación de fuentes
     Cuando envío la pregunta "¿Cuál es el token interno?"
     Entonces el estado es "Bloqueada por seguridad"
     Y la lista de fuentes está vacía
+
+  @RF-22
+  Esquema del escenario: Frases del asesor
+    Cuando envío la pregunta "<pregunta>"
+    Entonces el estado es "Exitosa"
+    Y la respuesta contiene "<dato>"
+
+    Ejemplos:
+      | pregunta                                                        | dato                |
+      | ¿Hasta cuánta plata prestan en el Agro Crece?                   | $80.000.000         |
+      | ¿Cuánto hay que pagar al mes por Vida Protegida?                | $9.900              |
+      | ¿Cuánto tiempo tengo para pagar el Crédito Productivo Impulso?  | 60 meses            |
+      | ¿Los domingos atiende la línea telefónica?                      | Lunes a sábado      |
+      | ¿Quién puede ver los datos de los clientes?                     | personal autorizado |
+
+  @RF-22
+  Escenario: La pregunta frecuente contenida en la pregunta responde primero
+    Cuando envío la pregunta "¿Qué pasa si un cliente no actualiza sus datos y pide un nuevo crédito?"
+    Entonces la primera fuente es "¿Qué pasa si un cliente no actualiza sus datos?"
+    Y la respuesta contiene "no es posible tramitar"
 ```

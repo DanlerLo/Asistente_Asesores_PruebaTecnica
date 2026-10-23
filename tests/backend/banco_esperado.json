@@ -29,9 +29,11 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "Mi cliente tiene 68 años, ¿puede tomar Vida Protegida?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Portafolio de Microseguros.md › Vida Protegida"
+  ],
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Vida Protegida):\n- Edad mínima: 18 años.\n- Edad máxima: 70 años.\n\nFuente: Portafolio de Microseguros.md › Vida Protegida"
  },
  "Quiero saber el monto mínimo y máximo del Crédito Mujer Emprende y su plazo máximo": {
   "estado": "Exitosa",
@@ -53,9 +55,12 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "Un cliente quiere saber cuándo le desembolsan el crédito que le aprobaron ayer": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?",
+   "Procedimientos Operativos.md › Desembolso"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nSegún «Procedimientos Operativos» (sección: Desembolso):\n- Plazo: 2 días hábiles después de la aprobación.\n- Canales: Abono a cuenta bancaria; Giro en oficina.\n\nFuentes: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?; Procedimientos Operativos.md › Desembolso"
  },
  "Un cliente radicó una PQR hace 3 días, ¿cuánto tiempo más debe esperar?": {
   "estado": "Exitosa",
@@ -102,24 +107,23 @@
  "¿Cada cuánto debe un cliente actualizar su información?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+   "Procedimientos Operativos.md › Actualización de Datos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n\nFuente: Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Cada cuánto se deben actualizar los datos del cliente?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?",
    "Procedimientos Operativos.md › Actualización de Datos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nSegún «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n- Documentos válidos: Documento de identidad; Certificado laboral; Declaración de renta.\n\nFuentes: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?; Procedimientos Operativos.md › Actualización de Datos"
+  "respuesta": "Según «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n\nFuente: Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Cada cuánto se paga la prima?": {
   "estado": "Exitosa",
   "fuentes": [
    "Portafolio de Microseguros.md › Pago de primas"
   ],
-  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n- Canales de pago: Descuento en cuota del crédito; Corresponsales bancarios; Pago en oficinas.\n\nFuente: Portafolio de Microseguros.md › Pago de primas"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Pago de primas):\n- Periodicidad: Mensual.\n\nFuente: Portafolio de Microseguros.md › Pago de primas"
  },
  "¿Con qué periodicidad se pagan las primas de los microseguros?": {
   "estado": "Exitosa",
@@ -258,10 +262,9 @@
  "¿Cuál es el procedimiento de reclamación de un microseguro?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
    "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuál es el salario de un asesor comercial?": {
   "estado": "Sin información suficiente",
@@ -421,9 +424,10 @@
  "¿Cuál es la tasa de interés y el costo del estudio del Crédito Mujer Emprende?": {
   "estado": "Exitosa",
   "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?",
    "Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Mujer Emprende > Condiciones):\n- Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuente: Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nSegún «Productos de Crédito» (sección: Crédito Mujer Emprende > Condiciones):\n- Tasa de interés: 21,2 % E.A. (tasa de referencia, sujeta a evaluación)\n\nFuentes: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?; Productos de Crédito.md › Crédito Mujer Emprende > Condiciones"
  },
  "¿Cuál es la tasa del Crédito Agro Crece?": {
   "estado": "Exitosa",
@@ -490,16 +494,18 @@
   "respuesta": "Según «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuente: Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿Cuáles son los requisitos y el costo del estudio de crédito?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿Cuánta plata me prestan como máximo en el Productivo Impulso?": {
   "estado": "Exitosa",
   "fuentes": [
    "Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso > Condiciones):\n- Monto máximo: $50.000.000\n- Plazo máximo: 60 meses\n\nFuente: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Productivo Impulso > Condiciones):\n- Monto máximo: $50.000.000\n\nFuente: Productos de Crédito.md › Crédito Productivo Impulso > Condiciones"
  },
  "¿Cuánto cubre el microseguro de mascotas?": {
   "estado": "Sin información suficiente",
@@ -514,9 +520,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿Cuánto cuesta el estudio de la solicitud?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿Cuánto cuesta el seguro de vida?": {
   "estado": "Exitosa",
@@ -540,9 +548,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿Cuánto demora la aprobación de una solicitud?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
  },
  "¿Cuánto es el tiempo de respuesta para la solicitud de un microseguro?": {
   "estado": "Exitosa",
@@ -598,10 +608,9 @@
  "¿Cuánto tarda la aprobación de la solicitud de crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?",
-   "Procedimientos Operativos.md › Solicitud de Crédito"
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?; Procedimientos Operativos.md › Solicitud de Crédito"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
  },
  "¿Cuánto tarda la aprobación de un crédito?": {
   "estado": "Exitosa",
@@ -618,9 +627,9 @@
  "¿Cuánto tarda la aprobación del Crédito Mujer Emprende?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Condiciones generales de los créditos"
+   "Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Todas las tasas son de referencia y se confirman en la evaluación de riesgo.\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n- El estudio de crédito no tiene costo para el solicitante.\n- La aprobación está sujeta a la política de riesgo vigente.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cuánto tarda la aprobación de un crédito?):\n- El tiempo estimado de respuesta es de 3 días hábiles desde la recepción completa de documentos, y el desembolso toma 2 días hábiles adicionales después de la aprobación.\n\nFuente: Preguntas Frecuentes.md › ¿Cuánto tarda la aprobación de un crédito?"
  },
  "¿Cuánto tarda la decisión de crédito?": {
   "estado": "Exitosa",
@@ -704,10 +713,9 @@
  "¿Cuántos días hábiles toma la respuesta a una reclamación de seguro?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
    "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cuántos días hábiles toma validar los documentos de una reclamación?": {
   "estado": "Exitosa",
@@ -752,7 +760,7 @@
   "fuentes": [
    "Manual del Asesor Comercial.md › Buenas Prácticas"
   ],
-  "respuesta": "Según «Manual del Asesor Comercial» (sección: Buenas Prácticas):\n- Proteger información del cliente.\n\nFuente: Manual del Asesor Comercial.md › Buenas Prácticas"
+  "respuesta": "Según «Manual del Asesor Comercial» (sección: Buenas Prácticas):\n- Escuchar activamente.\n- Comunicar con claridad.\n- Utilizar información oficial.\n- Proteger información del cliente.\n\nFuente: Manual del Asesor Comercial.md › Buenas Prácticas"
  },
  "¿Cómo presento una reclamación de Vida Protegida?": {
   "estado": "Exitosa",
@@ -763,9 +771,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cómo radica un cliente una queja?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ],
+  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
  },
  "¿Cómo recibe el cliente el dinero del crédito?": {
   "estado": "Sin información suficiente",
@@ -780,18 +790,16 @@
  "¿Cómo se hace una reclamación de un seguro?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?",
    "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Cómo se paga el Crédito Agro Crece?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Crédito Agro Crece > Condiciones",
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Crédito Agro Crece > Condiciones"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Crédito Agro Crece > Condiciones):\n- Periodicidad de pago: Mensual, trimestral o semestral según ciclo productivo\n\nSegún «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuentes: Productos de Crédito.md › Crédito Agro Crece > Condiciones; Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Crédito Agro Crece > Condiciones):\n- Periodicidad de pago: Mensual, trimestral o semestral según ciclo productivo\n\nFuente: Productos de Crédito.md › Crédito Agro Crece > Condiciones"
  },
  "¿Cómo se paga la prima de Negocio Seguro?": {
   "estado": "Exitosa",
@@ -850,9 +858,9 @@
  "¿El Crédito Educativo Avanza permite pago anticipado sin penalidad?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿El Crédito Educativo Avanza requiere codeudor?": {
   "estado": "Exitosa",
@@ -902,9 +910,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿El estudio del crédito se cobra al cliente?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿El horario de atención en oficinas incluye sábados?": {
   "estado": "Exitosa",
@@ -1009,10 +1019,9 @@
  "¿Hay que pagar por la solicitud del crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?",
-   "Procedimientos Operativos.md › Solicitud de Crédito"
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?; Procedimientos Operativos.md › Solicitud de Crédito"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿La aprobación del crédito depende de la política de riesgo?": {
   "estado": "Sin información suficiente",
@@ -1034,9 +1043,11 @@
   "respuesta": "Según «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuente: Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿La solicitud de un crédito tiene algún costo para el cliente?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿Las condiciones de pago anticipado tienen penalidad?": {
   "estado": "Exitosa",
@@ -1046,9 +1057,11 @@
   "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Las oficinas abren los domingos?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Horarios de atención"
+  ],
+  "respuesta": "Según «Procedimientos Operativos» (sección: Horarios de atención):\n- Oficinas: Lunes a viernes de 8:00 a.m. a 5:00 p.m. y sábados de 8:00 a.m. a 12:00 m.\n\nFuente: Procedimientos Operativos.md › Horarios de atención"
  },
  "¿Las reclamaciones requieren soportes?": {
   "estado": "Sin información suficiente",
@@ -1144,9 +1157,11 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Puede un cliente contratar dos seguros al tiempo?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Un cliente puede tener más de un microseguro?):\n- Sí. Los microseguros son independientes y un cliente puede contratar varios, siempre que cumpla las condiciones de edad de cada producto.\n\nFuente: Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
  },
  "¿Puede un cliente pagar su crédito antes del plazo?": {
   "estado": "Sin información suficiente",
@@ -1178,9 +1193,9 @@
  "¿Puedo pagar antes de tiempo el Crédito Productivo Impulso?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Productos de Crédito.md › Condiciones generales de los créditos"
+   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
   ],
-  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Todas las tasas son de referencia y se confirman en la evaluación de riesgo.\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n- El estudio de crédito no tiene costo para el solicitante.\n- La aprobación está sujeta a la política de riesgo vigente.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
  },
  "¿Puedo pagar la prima con descuento en la cuota del crédito?": {
   "estado": "Exitosa",
@@ -1209,9 +1224,11 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Quién puede consultar la información de clientes?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Políticas de Atención.md › Protección de Información"
+  ],
+  "respuesta": "Según «Políticas de Atención» (sección: Protección de Información):\n- La información de clientes únicamente podrá ser consultada por personal autorizado.\n\nFuente: Políticas de Atención.md › Protección de Información"
  },
  "¿Qué actividades financia Agro Crece?": {
   "estado": "Exitosa",
@@ -1674,16 +1691,19 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nSegún «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n- Documentos válidos: Documento de identidad; Certificado laboral; Declaración de renta.\n\nFuentes: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?; Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Qué pasa si no hago la actualización de datos a tiempo?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
- },
- "¿Qué pasa si un cliente no actualiza sus datos y quiere hacer una solicitud de crédito?": {
   "estado": "Exitosa",
   "fuentes": [
    "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
   ],
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nFuente: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?"
+ },
+ "¿Qué pasa si un cliente no actualiza sus datos y quiere hacer una solicitud de crédito?": {
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?",
+   "Procedimientos Operativos.md › Actualización de Datos"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Qué pasa si un cliente no actualiza sus datos?):\n- La actualización de datos es obligatoria cada 12 meses. Si no se realiza, no es posible tramitar nuevas solicitudes de crédito hasta completarla.\n\nSegún «Procedimientos Operativos» (sección: Actualización de Datos):\n- Periodicidad: 12 meses.\n- Documentos válidos: Documento de identidad; Certificado laboral; Declaración de renta.\n\nFuentes: Preguntas Frecuentes.md › ¿Qué pasa si un cliente no actualiza sus datos?; Procedimientos Operativos.md › Actualización de Datos"
  },
  "¿Qué pasa si un cliente no actualiza sus datos?": {
   "estado": "Exitosa",
@@ -1703,9 +1723,9 @@
  "¿Qué pasos sigue una reclamación de microseguro y cuánto tarda?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+   "Portafolio de Microseguros.md › Reclamaciones"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nFuente: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?"
+  "respuesta": "Según «Portafolio de Microseguros» (sección: Reclamaciones):\n1. Reportar evento.\n2. Presentar soportes.\n3. Validación documental.\n4. Emisión de respuesta.\n- Tiempo estimado: 10 a 15 días hábiles.\n\nFuente: Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Qué periodicidad tiene la actualización de datos?": {
   "estado": "Exitosa",
@@ -1816,9 +1836,11 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Cómo se presenta una reclamación de microseguro?):\n- Se reporta el evento, se presentan los soportes, se realiza la validación documental y se emite la respuesta en 10 a 15 días hábiles.\n\nSegún «Portafolio de Microseguros» (sección: Reclamaciones):\n2. Presentar soportes.\n\nFuentes: Preguntas Frecuentes.md › ¿Cómo se presenta una reclamación de microseguro?; Portafolio de Microseguros.md › Reclamaciones"
  },
  "¿Qué tiempo de respuesta tiene una petición?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Procedimientos Operativos.md › Gestión de PQR"
+  ],
+  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Tiempo objetivo: 5 días hábiles.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
  },
  "¿Qué tiempo de validación tiene una PQR?": {
   "estado": "Sin información suficiente",
@@ -1828,9 +1850,10 @@
  "¿Se cobra el estudio en la solicitud de crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?",
+   "Procedimientos Operativos.md › Solicitud de Crédito"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?; Procedimientos Operativos.md › Solicitud de Crédito"
  },
  "¿Se cobra penalidad por pago anticipado?": {
   "estado": "Exitosa",
@@ -1882,9 +1905,9 @@
  "¿Se puede pagar anticipado el Crédito Agro Crece?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+   "Productos de Crédito.md › Condiciones generales de los créditos"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
+  "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Se puede pagar la prima en corresponsales bancarios?": {
   "estado": "Exitosa",
@@ -1901,11 +1924,9 @@
   "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Se puede pagar un crédito antes de tiempo?):\n- Sí. Todos los créditos permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Preguntas Frecuentes.md › ¿Se puede pagar un crédito antes de tiempo?"
  },
  "¿Se puede radicar una reclamación de seguro en oficinas?": {
-  "estado": "Exitosa",
-  "fuentes": [
-   "Procedimientos Operativos.md › Gestión de PQR"
-  ],
-  "respuesta": "Según «Procedimientos Operativos» (sección: Gestión de PQR):\n- Canales de radicación: Oficinas; Línea telefónica de atención; Formulario en el sitio web.\n\nFuente: Procedimientos Operativos.md › Gestión de PQR"
+  "estado": "Sin información suficiente",
+  "fuentes": [],
+  "respuesta": "No tengo información suficiente para responder."
  },
  "¿Se puede recibir el crédito por giro en oficina?": {
   "estado": "Exitosa",
@@ -1938,10 +1959,9 @@
  "¿Tiene costo la solicitud de crédito?": {
   "estado": "Exitosa",
   "fuentes": [
-   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?",
-   "Procedimientos Operativos.md › Solicitud de Crédito"
+   "Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
   ],
-  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nSegún «Procedimientos Operativos» (sección: Solicitud de Crédito):\n1. Recepción de documentos.\n2. Validación de identidad.\n3. Análisis financiero.\n4. Evaluación de riesgo.\n5. Decisión de crédito.\n6. Desembolso.\n- Tiempo estimado de respuesta: 3 días hábiles desde la recepción completa de documentos.\n\nFuentes: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?; Procedimientos Operativos.md › Solicitud de Crédito"
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿El estudio de crédito tiene costo?):\n- No. El estudio de crédito no tiene costo para el solicitante.\n\nFuente: Preguntas Frecuentes.md › ¿El estudio de crédito tiene costo?"
  },
  "¿Un cliente puede tener Vida Protegida y Salud Básica Familiar al mismo tiempo?": {
   "estado": "Sin información suficiente",
@@ -1949,9 +1969,11 @@
   "respuesta": "No tengo información suficiente para responder."
  },
  "¿Un cliente puede tener más de un microseguro de vida?": {
-  "estado": "Sin información suficiente",
-  "fuentes": [],
-  "respuesta": "No tengo información suficiente para responder."
+  "estado": "Exitosa",
+  "fuentes": [
+   "Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
+  ],
+  "respuesta": "Según «Preguntas Frecuentes» (sección: ¿Un cliente puede tener más de un microseguro?):\n- Sí. Los microseguros son independientes y un cliente puede contratar varios, siempre que cumpla las condiciones de edad de cada producto.\n\nFuente: Preguntas Frecuentes.md › ¿Un cliente puede tener más de un microseguro?"
  },
  "¿Un cliente puede tener más de un microseguro?": {
   "estado": "Exitosa",
