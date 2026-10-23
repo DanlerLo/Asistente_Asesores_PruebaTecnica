@@ -2,7 +2,7 @@
 
 Prueba técnica — Desarrollador de IA · Laboratorio Digital, Vicepresidencia de Innovación y Mercadeo.
 
-Asistente que responde preguntas de asesores comerciales sobre **productos de crédito, microseguros, procedimientos operativos y políticas internas** usando únicamente la documentación oficial de `Data/`, citando las fuentes y registrando cada consulta con su estado. Funciona **100 % en local, sin servicios pagos**; un LLM es opcional.
+Asistente que responde preguntas de asesores comerciales sobre **productos de crédito, microseguros, procedimientos operativos y políticas internas** usando únicamente la documentación oficial de `Data/`, citando las fuentes y registrando cada consulta con su estado. Es un **RAG**: recupera los fragmentos relevantes con **búsqueda híbrida (BM25 + embeddings locales)** y genera la respuesta solo con ellos, de forma extractiva o con un LLM. Funciona **100 % en local, sin servicios pagos**; el LLM es opcional.
 
 ## Descripción
 
@@ -16,25 +16,192 @@ Cada consulta se guarda con pregunta, fecha y hora, respuesta, fuentes y estado.
 
 ## Arquitectura
 
+### Vista general
+Tres piezas que corren en la máquina del asesor: el frontend en el navegador, el backend con su base documental, el historial en SQLite y el modelo de embeddings. Groq es el único servicio externo, y es opcional.
+
+```mermaid
+%%{init: {"flowchart": {"curve": "step"}}}%%
+flowchart LR
+    ASESOR(["👤 Asesor comercial"])
+
+    subgraph NAV["Navegador"]
+        FE["<b>Frontend</b><br/>React 19 + TypeScript + Vite<br/>chat, fuentes, estado,<br/>historial, selector de modo"]
+    end
+
+    subgraph SRV["Servidor local"]
+        BE["<b>Backend</b><br/>Python 3.12 + FastAPI<br/>orquestador, agentes,<br/>RAG híbrido, guardrails"]
+        DATA[("<b>Data/*.md</b><br/>base documental")]
+        DB[("<b>SQLite</b><br/>storage/consultas.db")]
+        MOD[("<b>Modelo de embeddings</b><br/>storage/modelos<br/>local, en CPU")]
+    end
+
+    GROQ["<b>Groq API</b><br/>LLM gratuito<br/>opcional"]
+
+    ASESOR -- "pregunta" --> FE
+    FE -- "HTTP JSON · /api/*" --> BE
+    BE -- "lee" --> DATA
+    BE -- "guarda" --> DB
+    BE -- "embeddings" --> MOD
+    BE -. "modo conexión" .-> GROQ
+
+    classDef externo fill:#fff4e5,stroke:#e8590c,color:#000
+    classDef datos fill:#e7f5ff,stroke:#1c7ed6,color:#000
+    class GROQ externo
+    class DATA,DB,MOD datos
 ```
-                          ┌──────────────── backend (FastAPI) · Orquestador ────────────────┐
- frontend (React) ──HTTP──► POST /api/consultar                                              │
- formulario, estado,      │   1. validar_pregunta        seguridad/      (forma)             │
- respuesta, fuentes,      │   2. evaluar_entrada         seguridad/      (intención)         │
- errores, historial       │   3. IndiceBM25.buscar       herramientas/   (Data/*.md)         │
-                          │   4. Enrutador.elegir        orquestador/    (reglas, sin LLM)   │
-                          │   5. agente.responder        agentes/  ──► generacion/           │
-                          │        credito · microseguros · operativo · fuera_de_dominio     │
-                          │   6. filtrar_salida          seguridad/      (secretos)          │
-                          │   7. RepositorioConsultas    infraestructura/ (SQLite)           │
-                          └──────────────────────────────────────────────────────────────────┘
+
+### Backend
+El **orquestador** recibe cada consulta: la valida con **seguridad**, busca los fragmentos con la **recuperación** híbrida, le pasa todo al **agente** del dominio y guarda el resultado en **SQLite**. El agente arma la respuesta con cita, de forma extractiva o con Groq si está activo.
+
+```mermaid
+%%{init: {"flowchart": {"curve": "step", "nodeSpacing": 30, "rankSpacing": 45}}}%%
+flowchart TB
+    API["API · FastAPI<br/>POST /api/consultar"] --> ORQ["Orquestador"]
+
+    ORQ --> DB[("SQLite<br/>historial")]
+    ORQ --> SEG["Seguridad<br/>entrada y salida"]
+    ORQ --> REC["Recuperación híbrida<br/>BM25 + embeddings"]
+    ORQ --> ENR["Enrutador<br/>elige el agente"]
+
+    REC --> DOCS[("Data/*.md")]
+    REC --> MOD[("Modelo de embeddings<br/>local")]
+
+    ENR --> CRE["Agente<br/>crédito"]
+    ENR --> MIC["Agente<br/>microseguros"]
+    ENR --> OPE["Agente<br/>operativo"]
+    ENR --> FDD["Agente<br/>fuera de dominio"]
+
+    CRE --> GEN["Respuesta con cita"]
+    MIC --> GEN
+    OPE --> GEN
+
+    GEN --> EXT["Motor extractivo<br/>modo sin conexión"]
+    GEN --> LLM["LLM<br/>modo conexión"]
+    LLM -.-> GROQ(["Groq · opcional"])
 ```
+
+### Frontend
+La interfaz no tiene estado propio: `App` concentra el estado y `api.ts` aísla el acceso al backend, convirtiendo toda falla en un error legible.
+
+```mermaid
+%%{init: {"flowchart": {"curve": "step", "wrappingWidth": 520, "nodeSpacing": 40, "rankSpacing": 45}}}%%
+flowchart TB
+    LIM["<b>LimiteErrores</b> (main.tsx)<br/><i>un error de pintado no deja la página en blanco</i>"]
+    VISTA["<b>Interfaz</b> · components/<br/>SelectorModo · Conversacion · BurbujaAsistente · EstadoBadge · Fuentes<br/>Especialidades · Compositor · Historial<br/><i>chat, estado de cada respuesta, fuentes, modo Groq / sin conexión</i>"]
+    APP["<b>Estado</b> · App.tsx<br/><i>conversación (memoria de las últimas 3 preguntas), historial,<br/>modo LLM y cuota, errores, límite de longitud</i>"]
+    API["<b>Acceso al backend</b> · api.ts<br/>consultar · obtenerHistorial · obtenerEstadoLlm · cambiarModoLlm · obtenerMaxLongitud<br/><i>tiempo máximo de 45 s, validación de la forma de cada respuesta, errores legibles</i>"]
+    BACK(["Backend FastAPI · /api/*"])
+
+    LIM --> VISTA
+    VISTA <-- "props y eventos" --> APP
+    APP <-- "funciones tipadas" --> API
+    API <-- "HTTP JSON" --> BACK
+
+    classDef capa fill:#f1f3f5,stroke:#343a40,color:#000
+    classDef red fill:#e7f5ff,stroke:#1c7ed6,color:#000
+    class LIM,VISTA,APP capa
+    class API red
+```
+
+### Flujos
+<details>
+<summary>Recorrido de una consulta en el backend</summary>
+
+```mermaid
+%%{init: {"flowchart": {"curve": "step"}}}%%
+flowchart TD
+    subgraph ARRANQUE["Al arrancar · ingesta"]
+        direction LR
+        D[("Data/*.md")] --> PI{"Política de ingesta<br/>seguridad/ingesta.py"}
+        PI -- "restringido o confidencial" --> X["Fuera del índice<br/>solo alimenta el filtro de salida"]
+        PI -- "público" --> FR["Fragmentos por sección<br/>herramientas/markdown.py"]
+        FR --> IB["Índice BM25"]
+        FR --> IS["Índice semántico<br/>embeddings locales"]
+    end
+
+    REQ(["POST /api/consultar<br/>pregunta + contexto"]) --> VAL{"¿Entrada válida?"}
+    VAL -- "no" --> E400["400 · error + código"]
+    VAL -- "sí" --> INT{"¿Pide algo restringido?<br/>bloqueo por intención"}
+    INT -- "sí" --> BLQ["Bloqueada por seguridad<br/>cita la política"]
+    INT -- "no" --> CTX{"¿Pregunta de seguimiento?<br/>«¿y el más bajo?»"}
+    CTX -- "sin referente" --> SIN["No tengo información suficiente para responder."]
+    CTX -- "resuelta" --> REC
+
+    subgraph REC["Recuperación híbrida · la R del RAG"]
+        direction LR
+        BM25["BM25<br/>palabras, sinónimos,<br/>frases del asesor"]
+        SEM["Similitud semántica<br/>significado"]
+    end
+
+    REC --> ENR{"Enrutador<br/>reglas, sin LLM"}
+    ENR -- "producto inexistente<br/>o nada relevante" --> SIN
+    ENR -- "documento del fragmento" --> AG["Agente de dominio<br/>crédito · microseguros · operativo"]
+    AG --> CAT{"¿Atributo sin<br/>producto nombrado?"}
+    CAT -- "sí" --> LIS["Lista el dato<br/>de cada producto"]
+    CAT -- "no" --> MODO{"¿Modo conexión<br/>Groq?"}
+    MODO -- "sí" --> LLM["LLM con contexto ampliado<br/>BM25 + semántico + documento"]
+    MODO -- "no o falla" --> EXT["Motor extractivo<br/>líneas literales + cita"]
+    LIS --> OUT
+    LLM --> OUT
+    EXT --> OUT{"Filtro de salida<br/>¿secreto en texto o fuentes?"}
+    OUT -- "sí" --> BLQ
+    OUT -- "no" --> OK["Exitosa o<br/>Sin información suficiente"]
+    OK --> DB
+    BLQ --> DB
+    SIN --> DB
+    DB[("SQLite<br/>pregunta enmascarada,<br/>respuesta, fuentes, estado")] --> RES(["JSON<br/>respuesta · fuentes · estado"])
+
+    IB -.-> BM25
+    IS -.-> SEM
+```
+
+</details>
+
+<details>
+<summary>Comunicación entre asesor, frontend, backend y Groq</summary>
+
+```mermaid
+sequenceDiagram
+    actor A as Asesor
+    participant F as Frontend (React)
+    participant B as Backend (FastAPI)
+    participant G as Groq (opcional)
+
+    Note over F,B: Al abrir la aplicación
+    F->>B: GET /api/salud (límite de longitud)
+    F->>B: GET /api/llm (modo y cuota)
+    F->>B: GET /api/historial
+
+    A->>F: Escribe la pregunta y pulsa Enter
+    F->>F: Valida vacía y longitud
+    F->>B: POST /api/consultar {pregunta, contexto}
+    B->>B: Guardrails, recuperación híbrida, agente
+    opt Modo conexión (Groq)
+        B->>G: Instrucciones + fragmentos + pregunta
+        G-->>B: Texto citado + cabeceras de cuota
+    end
+    B->>B: Filtro de salida y registro en SQLite
+    B-->>F: 200 {respuesta, fuentes, estado} + x-request-id
+    F->>A: Burbuja con respuesta, estado y fuentes
+    F->>B: GET /api/historial y GET /api/llm (refresca)
+
+    opt Cambio de modo
+        A->>F: Pulsa «Modo sin conexión»
+        F->>B: PUT /api/llm {activo: false}
+        B-->>F: Nuevo estado
+    end
+```
+
+</details>
 
 - **Corpus:** los `.md` se dividen por encabezados en fragmentos autocontenidos (tablas → `clave: valor`, etiqueta + lista → una línea). `Información restringida.md` (o cualquier archivo marcado CONFIDENCIAL) **nunca entra al índice**; sus valores alimentan el filtro de salida.
 - **Orquestador y agentes:** el orquestador aplica los guardrails y delega la respuesta en un agente elegido por reglas deterministas según el documento del mejor fragmento: *crédito*, *microseguros*, *operativo* (procedimientos, políticas, manual, FAQ y documentos sin agente) o *fuera de dominio* (ningún término de la pregunta existe en la base: responde la frase canónica sin invocar al LLM). La seguridad nunca se delega a un agente.
-- **Recuperación:** BM25 propio con "bloqueo por entidad": si la pregunta nombra un producto, solo se consideran sus fragmentos.
-- **Respuesta extractiva:** se devuelven las líneas del documento que contienen los atributos pedidos, con cita. No se genera texto nuevo, así que no puede inventar datos.
-- **LLM opcional:** con `LLM_PROVIDER=groq` (plan gratuito de GroqCloud) el modelo redacta a partir de los fragmentos; cualquier fallo degrada al modo extractivo.
+- **Recuperación híbrida (la R del RAG):**
+  - **BM25 propio** con sinónimos y frases del asesor, y "bloqueo por entidad": si la pregunta nombra un producto, solo se consideran sus fragmentos. Es determinista y explicable.
+  - **Embeddings locales** (`fastembed`, modelo multilingüe `paraphrase-multilingual-MiniLM-L12-v2`, en CPU y sin red tras la primera descarga): cada línea de los documentos se convierte en un vector al arrancar y la pregunta se compara por significado. Encuentra lo que BM25 no ve («¿qué riesgos cubre el seguro para negocios?» → *Coberturas: Incendio…*). Se activan con `EMBEDDINGS=local`.
+- **Generación (la G del RAG):**
+  - **Extractiva (por defecto):** devuelve las líneas del documento que contienen los atributos pedidos, con cita. No genera texto nuevo, así que no puede inventar datos. No responde por similitud: medido, eso aumentaba las respuestas equivocadas (especificación 007).
+  - **LLM opcional (Groq, plan gratuito):** recibe el contexto ampliado (lo mejor de BM25, lo parecido por significado y el resto del documento del agente, con tope) y redacta solo con eso; cualquier fallo degrada al modo extractivo.
 - **Guardrails:** validación → bloqueo por intención (credenciales, accesos admin, configuración interna, información restringida, inyección de prompt, datos de terceros) → filtro de salida. Las líneas con apariencia de instrucción dentro de documentos se descartan en la ingesta.
 - **Persistencia y observabilidad:** SQLite (`storage/consultas.db`), logs JSON con `request_id`, endpoints de historial, estadísticas y salud.
 
@@ -59,14 +226,14 @@ Más detalle: `especificaciones/*/plan.md`.
 │   │   ├── api/                (FastAPI: app, rutas, esquemas)
 │   │   ├── orquestador/        (flujo de la consulta y enrutador de agentes)
 │   │   ├── agentes/            (credito, microseguros, operativo, fuera_de_dominio)
-│   │   ├── herramientas/       (texto, corpus, markdown, recuperacion BM25)
+│   │   ├── herramientas/       (texto, corpus, markdown, recuperacion BM25, semantica)
 │   │   ├── generacion/         (extractivo, llm, plantillas)
 │   │   │   └── prompts/        (prompts del LLM en Jinja2: sistema.j2, usuario.j2)
 │   │   ├── seguridad/          (guardrails de consultas, política de ingesta)
 │   │   └── infraestructura/    (persistencia SQLite, observabilidad)
 │   └── frontend/               (Vite + React + TypeScript)
 ├── tests/
-│   ├── backend/                (pytest, 366 pruebas)
+│   ├── backend/                (pytest, 380 pruebas)
 │   └── frontend/               (Vitest, 37 pruebas)
 ├── Data/                       (base documental; incluye el archivo restringido de ejemplo)
 ├── docs/Cuestionario.md
@@ -83,7 +250,7 @@ Más detalle: `especificaciones/*/plan.md`.
 | Capa | Tecnología | Motivo |
 |------|------------|--------|
 | Backend | Python 3.12, FastAPI, Pydantic, Uvicorn | Tipado, validación automática, OpenAPI en `/docs` |
-| Recuperación | BM25 y normalización propios (sin NLTK/embeddings) | Determinista, explicable, sin modelos ni red |
+| Recuperación | BM25 y normalización propios + embeddings locales con `fastembed` (ONNX, sin PyTorch) | Híbrida: BM25 determinista y explicable; embeddings para paráfrasis, en CPU y sin red tras descargar el modelo |
 | Persistencia | SQLite (`sqlite3` estándar) | Cero configuración, archivo local, suficiente para el alcance |
 | LLM (opcional) | Groq (plan gratuito) vía `httpx`; prompts en plantillas Jinja2 | Intercambiable por configuración; prompts versionados fuera del código |
 | Frontend | React 19, TypeScript, Vite | Preferidos por el enunciado; build rápido |
@@ -124,6 +291,11 @@ Copia `.env.example` a `.env` si quieres cambiar valores (todas las variables ti
 | `LLM_MODEL` | `openai/gpt-oss-20b` | Modelo de Groq (p. ej. `openai/gpt-oss-120b`) |
 | `GROQ_API_KEY` | — | Solo con `LLM_PROVIDER=groq` ([crear clave](https://console.groq.com/keys)) |
 | `LLM_TIMEOUT_SEGUNDOS` | `30` | Tiempo máximo de espera del LLM |
+| `EMBEDDINGS` | `none` | `local` activa la recuperación semántica (el modelo se descarga solo la primera vez, ~0,22 GB) |
+| `EMBEDDINGS_MODELO` | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | Modelo multilingüe de `fastembed` |
+| `EMBEDDINGS_CACHE` | `./storage/modelos` | Carpeta donde queda el modelo para usarlo sin red |
+| `UMBRAL_SEMANTICO` | `0.6` | Similitud mínima para que un fragmento cuente como parecido |
+| `LLM_MAX_FRAGMENTOS` | `12` | Tope de fragmentos que recibe el LLM |
 | `LOG_LEVEL` | `INFO` | Nivel de log (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`; otro valor impide arrancar) |
 
 Frontend: `VITE_API_URL` (vacío = mismo origen; en desarrollo Vite reenvía `/api` a `http://localhost:8000`, configurable con `VITE_API_PROXY`).
@@ -184,6 +356,13 @@ Todos los errores tienen la forma `{"error": "<mensaje legible>", "codigo": "<C�
 Una pregunta bloqueada por seguridad **no** es un error: responde 200 con estado `Bloqueada por seguridad`.
 
 
+### Activar los embeddings (opcional, local)
+```bash
+# en .env
+EMBEDDINGS=local
+```
+La primera vez que arranca, el backend descarga el modelo en `storage/modelos` (~0,22 GB, unos 30 s); desde ahí funciona sin internet y carga en menos de 2 s. Sin `EMBEDDINGS=local` todo funciona igual, solo con BM25.
+
 ### Activar un LLM (opcional)
 ```bash
 # Groq (gratuito): en .env
@@ -204,7 +383,7 @@ En ambos casos: `cp .env.example .env`, completar `LLM_PROVIDER=groq` y `GROQ_AP
 ## Pruebas
 
 ```bash
-python -m pytest              # backend: 366 pruebas (≈ 1,5 s, sin red), con el .venv activado
+python -m pytest              # backend: 380 pruebas (≈ 1,5 s, sin red), con el .venv activado
 npm test                      # frontend: 37 pruebas (Vitest + jsdom)
 npm run build                 # verificación de tipos + build de producción
 python -m ruff check src/backend tests/backend && python -m mypy   # lint y tipos
@@ -216,7 +395,8 @@ Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo in
 
 ## Limitaciones
 
-- **Emparejamiento léxico:** el modo extractivo depende de que la pregunta use palabras de los documentos o frases del asesor ya traducidas (stemming, sinónimos y frases como «hasta cuánta plata prestan» → monto máximo). Responde bien las 97 preguntas del conjunto de evaluación, pero esas reglas se ajustaron mirando esos casos: una pregunta con vocabulario nuevo puede recibir «Sin información suficiente». Ante la duda no adivina. Activar el LLM mejora la comprensión.
+- **Modo sin conexión, por palabras:** el motor extractivo depende de que la pregunta use palabras de los documentos o frases del asesor ya traducidas. Responde bien las 97 preguntas del conjunto de evaluación, pero esas reglas se ajustaron mirando esos casos: con 40 preguntas nuevas acierta 19 (48 %). Los embeddings no responden en este modo (medido: aumentaban las respuestas equivocadas), así que ante vocabulario nuevo dice «Sin información suficiente» en lugar de adivinar. Con Groq, embeddings y contexto ampliado acierta 38 de esas 40 (95 %) sin ninguna respuesta equivocada (especificación 007).
+- **Primera descarga del modelo:** `EMBEDDINGS=local` necesita internet una sola vez para bajar el modelo (~0,22 GB); si no puede, el servicio sigue con recuperación léxica y lo registra.
 - **Sin razonamiento:** no calcula ni infiere (p. ej. no suma cuotas ni compara más de dos productos a la vez).
 - **Con LLM (Groq) activo:** el prompt prohíbe cálculos, pero el modelo puede hacer aritmética simple sobre valores citados (p. ej. «la diferencia es de 36 meses» en una comparación de plazos). Las fuentes citadas permiten verificarlo; el modo por defecto (sin LLM) nunca calcula. La pregunta del asesor se envía a Groq: no escribir datos personales del cliente.
 - **Reglas de seguridad por patrones:** los datos de terceros y la información restringida se bloquean por intención (pedir el dato), no por palabras sueltas (RF-S14). Las credenciales siguen siendo estrictas a propósito: «¿Cuál es la clave del Wi-Fi de la oficina?» se bloquea (se prefiere ese falso positivo a arriesgar una fuga).
@@ -228,9 +408,8 @@ Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo in
 
 ## Mejoras futuras
 
-- Recuperación híbrida (BM25 + embeddings) y reordenamiento; evolución a RAG descrita en `docs/Cuestionario.md`.
+- Reordenamiento (*reranker*) de los candidatos y un modelo de embeddings más grande para que el modo sin conexión también pueda responder por significado.
 - Caché de respuestas por pregunta normalizada y recarga del corpus en caliente.
-- Conjunto de evaluación automática (preguntas/respuestas esperadas) con métricas de precisión y cobertura en CI.
 - Autenticación, autorización por rol y auditoría; PostgreSQL con `pgvector` en producción.
 - Banco de pruebas adversariales (prompt injection) y clasificador de intención como capa adicional.
 - Enrutador opcional con LLM (con el enrutador por reglas como *fallback*) y prompts por dominio para cada agente.

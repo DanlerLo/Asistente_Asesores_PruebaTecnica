@@ -9,7 +9,7 @@ El asistente no es un chatbot conectado a un LLM: es un sistema de recuperación
 
 | Área | Qué hace la solución y por qué | Dónde verlo |
 |------|--------------------------------|-------------|
-| **Recuperación (la R de RAG)** | BM25 propio sobre fragmentos por encabezado Markdown, con *stemming* en español, sinónimos del vocabulario del asesor («cuánto cuesta» → prima) y corrección ortográfica contra el vocabulario del corpus. Elegí recuperación léxica porque el corpus es pequeño y de vocabulario controlado: es determinista, explicable y no necesita red. Si la pregunta nombra un producto, los demás productos quedan fuera, para no responder con datos ajenos. | `herramientas/recuperacion.py`, `herramientas/texto.py` |
+| **Recuperación híbrida (la R de RAG)** | Dos vías que se complementan. **BM25 propio** sobre fragmentos por encabezado Markdown, con *stemming* en español, sinónimos y frases del asesor («cuánto cuesta» → prima) y corrección ortográfica: determinista y explicable; si la pregunta nombra un producto, los demás quedan fuera. **Embeddings locales** (`fastembed`, modelo multilingüe en CPU, sin red tras la primera descarga): cada línea de los documentos es un vector y la pregunta se compara por significado, para las paráfrasis que BM25 no ve («¿qué riesgos cubre el seguro para negocios?» → *Coberturas: Incendio…*). | `herramientas/recuperacion.py`, `herramientas/semantica.py` |
 | **Arquitectura agéntica** | Un orquestador valida, aplica la seguridad y enruta de forma determinista. Los especialistas (crédito, microseguros, operativo) son dueños de sus documentos; el de crédito y el de microseguros conocen su catálogo y, ante «¿cuál tiene la tasa más baja?», listan el dato de cada producto en vez de inventar un ganador. Un agente aparte atiende lo que está fuera de dominio. El enrutamiento no lo decide un LLM: es reproducible y no cuesta tokens. | `orquestador/`, `agentes/` |
 | **Ingeniería de prompts** | Los prompts viven en plantillas Jinja2 versionadas, fuera del código. `StrictUndefined` hace fallar una variable faltante en lugar de enviar un prompt incompleto. Un filtro propio neutraliza en los datos los delimitadores con los que se podría inyectar instrucciones. Los fragmentos van marcados como datos. El prompt exige citar la sección, responder solo con lo recuperado, no calcular y devolver la frase exacta del enunciado si no hay evidencia. | `generacion/prompts/*.j2`, `generacion/plantillas.py` |
 | **Integración con el LLM** | Groq con `openai/gpt-oss-20b` (gratuito, como exige el enunciado): temperatura 0, `reasoning_effort: low` e `include_reasoning: false` para que el razonamiento no se mezcle con la respuesta. Una respuesta cortada (`finish_reason` distinto de `stop`) se descarta. Las fuentes que se devuelven son **solo las secciones que el texto del modelo cita**, no todo lo recuperado. La cuota se lee de las cabeceras `x-ratelimit-*` y se muestra al asesor. | `generacion/llm.py` |
@@ -23,7 +23,7 @@ El asistente no es un chatbot conectado a un LLM: es un sistema de recuperación
 | Para qué | Herramienta |
 |----------|-------------|
 | Agente de desarrollo | **Claude Code** en **VS Code**, instruido con `AGENTS.md` y la constitución |
-| Solución | Python 3.12 + FastAPI, **SQLite**, React 19 + TypeScript + Vite, Jinja2; **GroqCloud** (gratuito) como LLM opcional |
+| Solución | Python 3.12 + FastAPI, **SQLite**, React 19 + TypeScript + Vite, Jinja2; **fastembed** (embeddings locales, ONNX); **GroqCloud** (gratuito) como LLM opcional |
 | Calidad | pytest + pytest-cov, Vitest + Testing Library, ruff, mypy, Playwright (recorridos en navegador) |
 | Entrega | Git, **GitHub** y **GitHub Actions** (CI en cada push); uv para el entorno |
 
@@ -60,6 +60,7 @@ Sobre mi código base y mis decisiones:
 Siempre en ciclo especificación → prueba roja → implementación → suite completa.
 
 ### Qué sugerencias de la IA rechacé
+- **Que los embeddings respondieran solos en el modo sin conexión.** Se implementó un respaldo que, cuando las reglas léxicas no encontraban respuesta, devolvía la línea más parecida por significado. Lo medí con 40 preguntas nuevas: ganaba 1 a 3 aciertos, pero las respuestas equivocadas pasaban de 4 a entre 6 y 10. El modelo reconoce el tema de una línea, no si la responde. Lo retiré y usé los embeddings para traerle la evidencia al LLM, que sí decide si responde: con Groq y contexto ampliado, esas 40 preguntas pasaron de 33 a 38 aciertos y de 5 a 0 respuestas equivocadas.
 - **Una regla del motor que pasaba todas las pruebas y aun así estaba mal.** Para RF-12 la IA propuso exigir que el fragmento de respaldo compartiera términos con *todos* los encabezados recuperados. Antes de aceptarla la medí contra el banco de regresión: rompía **17 respuestas correctas**. La rechacé y se rediseñó; la versión final solo cambia las 2 respuestas que estaban mal. Desde entonces ninguna regla del motor entra sin medir el antes y el después.
 - **Sinónimos que «mejoraban» la cobertura** («plata» → monto, «codeudor» → garantía): hacían que algunas preguntas se respondieran con datos de **otro producto**. En un banco, un dato equivocado es peor que decir «no tengo información», así que los retiré.
 - **Un umbral de cobertura alto (0,5)** como criterio de «sin información»: daba falsos negativos en preguntas largas; lo reemplacé por reglas explicables.
@@ -75,7 +76,7 @@ No confío en una respuesta de la IA porque suene bien; confío en lo que puedo 
    - Ningún valor del documento restringido aparece en el índice, en el LLM ni en las respuestas; las pruebas lo leen del archivo en tiempo de ejecución para no copiarlo al código.
    - Un banco de evasiones del guardrail: caracteres invisibles, homoglifos y leetspeak.
 6. **CI en cada push** con lint, tipos (mypy encontró dos defectos reales al activarse), pruebas y build.
-7. **Decisiones con datos:** por ejemplo, evalué guardar las consultas en JSON en lugar de SQLite para simplificar. Lo medí, JSON resultó más lento y me quedé con SQLite.
+7. **Decisiones con datos:** evalué guardar las consultas en JSON en lugar de SQLite para simplificar; lo medí, JSON resultó más lento y me quedé con SQLite. Antes de agregar embeddings escribí 40 preguntas nuevas que nunca uso para ajustar reglas (`generalizacion.json`): el 100 % de la evaluación bajaba a 48 % con ellas, y con esa medición decidí dónde sí sirven los embeddings y dónde no.
 8. **Ejecución real:**
    - Servidor y consultas con `curl`.
    - Recorridos de la interfaz en navegador.
@@ -126,13 +127,13 @@ Lo implementado hoy, reforzado para producción:
 - **Alertas:** aumento súbito de "sin información" (síntoma de corpus roto), de bloqueos (ataque o regla rota) o de latencia.
 
 ### ¿Cómo evolucionaría la solución hacia RAG?
-Ya es un RAG léxico (recuperar → generar) con todas las piezas aisladas; la evolución es incremental:
-1. **Embeddings + búsqueda híbrida:** indexar los mismos fragmentos con un modelo de embeddings y combinar BM25 con similitud vectorial (fusión RRF); mantener el bloqueo por entidad como filtro de metadatos.
-2. **Reordenamiento** (*reranker*) de los 20–50 candidatos para elegir los 5 mejores.
-3. **Metadatos y filtros:** producto, tipo de documento, vigencia, versión; respuestas con "vigente desde".
-4. **Ingesta continua:** pipeline que detecta cambios en los documentos, reindexa fragmentos afectados y mantiene la lista de denegación.
+Ya es un RAG con recuperación híbrida: BM25 por palabras y embeddings locales por significado, con generación extractiva o con LLM. La evolución es incremental:
+1. **Embeddings con el modo sin conexión:** un modelo más grande o un *reranker* que decida si una línea responde la pregunta, no solo si trata el mismo tema; hoy por eso el modo sin conexión no responde por similitud.
+2. **Fusión de rankings** (RRF) entre BM25 y embeddings, manteniendo el bloqueo por entidad como filtro de metadatos.
+3. **Metadatos y filtros:** producto, tipo de documento, vigencia, versión; respuestas con «vigente desde».
+4. **Ingesta continua:** detectar cambios en los documentos, reindexar y reembeber solo los fragmentos afectados y mantener la lista de denegación.
 5. **Generación con verificación:** el modelo cita por identificador de fragmento y una capa comprueba que cada cita existe y respalda la afirmación.
-6. **Evaluación RAG** (precisión del contexto, fidelidad de la respuesta, utilidad) con el conjunto de evaluación.
+6. **Evaluación RAG** continua (precisión del contexto, fidelidad, utilidad) con el conjunto de evaluación y el de preguntas nuevas.
 
 Persistencia: PostgreSQL con `pgvector` para fragmentos, embeddings y consultas en un solo motor (ver sección 6).
 
@@ -239,7 +240,7 @@ La **llamada al LLM** (cientos de milisegundos a segundos, con variabilidad de r
 - Respuesta completa por **pregunta normalizada + versión del corpus** (muchas preguntas de asesores se repiten casi literalmente).
 - Resultados de recuperación por conjunto de raíces.
 - El prompt del sistema y los fragmentos frecuentes (caché de prompt del proveedor).
-- Embeddings de fragmentos (cuando existan) y de preguntas frecuentes.
+- Embeddings de las líneas del corpus (se calculan al arrancar; se cachean por versión del corpus) y de las preguntas frecuentes.
 - Historial y estadísticas en la interfaz con TTL corto.
 Invalidación por versión del corpus y por cambio de reglas de seguridad.
 
@@ -270,7 +271,7 @@ Cero dependencias externas (es una librería embebida en Python: no hay servidor
 No. SQLite es adecuado para desarrollo, pruebas y pilotos de una sola instancia, pero en producción habrá varias réplicas del backend, escrituras concurrentes sostenidas, requisitos de respaldo, retención, auditoría y consultas analíticas.
 
 ### ¿Qué motor de base de datos utilizaría?
-**PostgreSQL** (gestionado), con la extensión **`pgvector`** cuando se incorporen embeddings.
+**PostgreSQL** (gestionado), con la extensión **`pgvector`** para guardar los embeddings que hoy se calculan en memoria al arrancar.
 
 ### ¿Por qué?
 - Concurrencia real y escalabilidad horizontal de lectura (réplicas), con alta disponibilidad y respaldos gestionados.

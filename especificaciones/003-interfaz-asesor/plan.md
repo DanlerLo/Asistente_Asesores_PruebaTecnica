@@ -2,6 +2,28 @@
 
 ## Arquitectura propuesta
 
+```mermaid
+%%{init: {"flowchart": {"curve": "step", "wrappingWidth": 520, "nodeSpacing": 40, "rankSpacing": 45}}}%%
+flowchart TB
+    LIM["<b>LimiteErrores</b> (main.tsx)<br/><i>un error de pintado no deja la página en blanco</i>"]
+    VISTA["<b>Interfaz</b> · components/<br/>SelectorModo · Conversacion · BurbujaAsistente · EstadoBadge · Fuentes<br/>Especialidades · Compositor · Historial<br/><i>chat, estado de cada respuesta, fuentes, modo Groq / sin conexión</i>"]
+    APP["<b>Estado</b> · App.tsx<br/><i>conversación (memoria de las últimas 3 preguntas), historial,<br/>modo LLM y cuota, errores, límite de longitud</i>"]
+    API["<b>Acceso al backend</b> · api.ts<br/>consultar · obtenerHistorial · obtenerEstadoLlm · cambiarModoLlm · obtenerMaxLongitud<br/><i>tiempo máximo de 45 s, validación de la forma de cada respuesta, errores legibles</i>"]
+    BACK(["Backend FastAPI · /api/*"])
+
+    LIM --> VISTA
+    VISTA <-- "props y eventos" --> APP
+    APP <-- "funciones tipadas" --> API
+    API <-- "HTTP JSON" --> BACK
+
+    classDef capa fill:#f1f3f5,stroke:#343a40,color:#000
+    classDef red fill:#e7f5ff,stroke:#1c7ed6,color:#000
+    class LIM,VISTA,APP capa
+    class API red
+```
+
+Archivos:
+
 ```
 src/frontend/
 ├── index.html
@@ -9,9 +31,9 @@ src/frontend/
 └── src/
     ├── main.tsx          (montaje)
     ├── App.tsx           (estado: turnos de la conversación, texto, error, historial, modo del LLM)
-    ├── api.ts            (consultar, obtenerHistorial, obtenerEstadoLlm, cambiarModoLlm, ErrorApi)
+    ├── api.ts            (consultar, obtenerHistorial, obtenerEstadoLlm, cambiarModoLlm, obtenerMaxLongitud, ErrorApi)
     ├── styles.css        (tokens de color claro/oscuro con la paleta del Banco W, sin framework)
-    └── components/
+    └── components/        (además LimiteErrores.tsx: protege toda la interfaz)
         ├── Conversacion.tsx  ─► BurbujaAsistente.tsx ─► EstadoBadge + Fuentes + Especialidades
         ├── Compositor.tsx    (caja de texto del chat)
         ├── SelectorModo.tsx  (Modo conexión / Modo sin conexión, cuota y pop-up)

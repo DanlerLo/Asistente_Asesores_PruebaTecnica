@@ -2,22 +2,86 @@
 
 ## Arquitectura propuesta
 
-```
-            ┌──────────────────────────── src/backend/asistente ─────────────────────────────────┐
-HTTP        │ api/app.py (FastAPI)                                                                 │
-POST        │   └─► orquestador/ ─► seguridad.validar_pregunta / evaluar_entrada  (RF-06, 002)    │
-/api/       │         ├─► herramientas.IndiceBM25.buscar                 (RF-02..04, RF-13)       │
-consultar   │         │       └─ herramientas.corpus (Data/*.md → Fragmento[])                    │
-            │         ├─► enrutador ─► agentes/ ─► generacion.extractivo ──o── generacion.llm     │
-            │         │                              (RF-03, RF-05, RF-12)       (RF-11)          │
-            │         ├─► seguridad.filtrar_salida                       (002)                    │
-            │         └─► infraestructura.RepositorioConsultas           (RF-09) ──► SQLite       │
-            └────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+%%{init: {"flowchart": {"curve": "step", "nodeSpacing": 30, "rankSpacing": 45}}}%%
+flowchart TB
+    API["API · FastAPI<br/>POST /api/consultar"] --> ORQ["Orquestador"]
+
+    ORQ --> DB[("SQLite<br/>historial")]
+    ORQ --> SEG["Seguridad<br/>entrada y salida"]
+    ORQ --> REC["Recuperación híbrida<br/>BM25 + embeddings"]
+    ORQ --> ENR["Enrutador<br/>elige el agente"]
+
+    REC --> DOCS[("Data/*.md")]
+    REC --> MOD[("Modelo de embeddings<br/>local")]
+
+    ENR --> CRE["Agente<br/>crédito"]
+    ENR --> MIC["Agente<br/>microseguros"]
+    ENR --> OPE["Agente<br/>operativo"]
+    ENR --> FDD["Agente<br/>fuera de dominio"]
+
+    CRE --> GEN["Respuesta con cita"]
+    MIC --> GEN
+    OPE --> GEN
+
+    GEN --> EXT["Motor extractivo<br/>modo sin conexión"]
+    GEN --> LLM["LLM<br/>modo conexión"]
+    LLM -.-> GROQ(["Groq · opcional"])
 ```
 
-Flujo de una consulta: **validar → guardrail de entrada → recuperar → responder → guardrail de salida → persistir**. El orquestador (antes `ServicioConsultas`) es independiente de HTTP para permitir pruebas unitarias sin levantar el servidor.
+Recorrido de una consulta:
 
-> Desde la característica 004 el servicio es el `Orquestador` (`orquestador/`), que delega la respuesta en agentes por dominio, y los módulos viven en carpetas por capa. Ver `especificaciones/004-orquestador-agentes/plan.md`.
+```mermaid
+%%{init: {"flowchart": {"curve": "step"}}}%%
+flowchart TD
+    subgraph ARRANQUE["Al arrancar · ingesta"]
+        direction LR
+        D[("Data/*.md")] --> PI{"Política de ingesta<br/>seguridad/ingesta.py"}
+        PI -- "restringido o confidencial" --> X["Fuera del índice<br/>solo alimenta el filtro de salida"]
+        PI -- "público" --> FR["Fragmentos por sección<br/>herramientas/markdown.py"]
+        FR --> IB["Índice BM25"]
+        FR --> IS["Índice semántico<br/>embeddings locales"]
+    end
+
+    REQ(["POST /api/consultar<br/>pregunta + contexto"]) --> VAL{"¿Entrada válida?"}
+    VAL -- "no" --> E400["400 · error + código"]
+    VAL -- "sí" --> INT{"¿Pide algo restringido?<br/>bloqueo por intención"}
+    INT -- "sí" --> BLQ["Bloqueada por seguridad<br/>cita la política"]
+    INT -- "no" --> CTX{"¿Pregunta de seguimiento?<br/>«¿y el más bajo?»"}
+    CTX -- "sin referente" --> SIN["No tengo información suficiente para responder."]
+    CTX -- "resuelta" --> REC
+
+    subgraph REC["Recuperación híbrida · la R del RAG"]
+        direction LR
+        BM25["BM25<br/>palabras, sinónimos,<br/>frases del asesor"]
+        SEM["Similitud semántica<br/>significado"]
+    end
+
+    REC --> ENR{"Enrutador<br/>reglas, sin LLM"}
+    ENR -- "producto inexistente<br/>o nada relevante" --> SIN
+    ENR -- "documento del fragmento" --> AG["Agente de dominio<br/>crédito · microseguros · operativo"]
+    AG --> CAT{"¿Atributo sin<br/>producto nombrado?"}
+    CAT -- "sí" --> LIS["Lista el dato<br/>de cada producto"]
+    CAT -- "no" --> MODO{"¿Modo conexión<br/>Groq?"}
+    MODO -- "sí" --> LLM["LLM con contexto ampliado<br/>BM25 + semántico + documento"]
+    MODO -- "no o falla" --> EXT["Motor extractivo<br/>líneas literales + cita"]
+    LIS --> OUT
+    LLM --> OUT
+    EXT --> OUT{"Filtro de salida<br/>¿secreto en texto o fuentes?"}
+    OUT -- "sí" --> BLQ
+    OUT -- "no" --> OK["Exitosa o<br/>Sin información suficiente"]
+    OK --> DB
+    BLQ --> DB
+    SIN --> DB
+    DB[("SQLite<br/>pregunta enmascarada,<br/>respuesta, fuentes, estado")] --> RES(["JSON<br/>respuesta · fuentes · estado"])
+
+    IB -.-> BM25
+    IS -.-> SEM
+```
+
+Flujo de una consulta: **validar → guardrail de entrada → recuperar (BM25 + embeddings) → responder → guardrail de salida → persistir**. El orquestador es independiente de HTTP para permitir pruebas unitarias sin levantar el servidor. Es un RAG: la recuperación híbrida trae la evidencia y la generación (extractiva o con LLM) responde solo con ella.
+
+> El orquestador y los agentes por dominio se detallan en `especificaciones/004-orquestador-agentes/plan.md`; la recuperación semántica, en `especificaciones/007-recuperacion-semantica/plan.md`.
 
 ## Componentes
 | Componente | Responsabilidad | Decisiones clave |
@@ -25,6 +89,7 @@ Flujo de una consulta: **validar → guardrail de entrada → recuperar → resp
 | `config.py` | Configuración inmutable desde variables de entorno | Valores por defecto seguros: sin LLM, `Data/`, SQLite en `storage/` |
 | `herramientas/texto.py` | Normalización en español: tildes, stopwords, raíces, sinónimos | Stemmer propio determinista (sin NLTK/spaCy) aplicado igual a documentos y preguntas |
 | `herramientas/corpus.py` + `markdown.py` | Carga y deduplicación (`corpus.py`, con la política de `seguridad/ingesta.py` inyectada); fragmentación por encabezados (`markdown.py`) | Tablas → `clave: valor`; etiqueta + lista → una línea; fragmento «Índice» por documento |
+| `herramientas/semantica.py` | Embeddings locales: una entrada por línea, similitud coseno | `fastembed` con un modelo multilingüe en CPU; opcional (`EMBEDDINGS=local`), sin red tras la primera descarga |
 | `herramientas/recuperacion.py` | BM25 propio + bloqueo por entidad + priorización del índice | Cobertura calculada sobre términos que existen en el corpus |
 | `generacion/extractivo.py` | Respuesta extractiva: elige las líneas que responden; compone texto con cita | Reglas explícitas y probadas (ver «Reglas de selección de líneas») |
 | `generacion/llm.py` | Proveedor Groq opcional | Prompt cerrado a fragmentos; temperatura 0; fallback al extractivo |
@@ -44,7 +109,7 @@ Flujo de una consulta: **validar → guardrail de entrada → recuperar → resp
 5. Si no, el fragmento no responde: así no se contesta con datos que no están en el documento.
 
 ## Decisiones de arquitectura (ADR resumidos)
-- **ADR-1 Recuperación léxica en lugar de embeddings.** El corpus es pequeño, en español y con vocabulario controlado; BM25 es determinista, explicable y no requiere modelos ni red. Evolución a RAG vectorial descrita en `docs/Cuestionario.md`.
+- **ADR-1 Recuperación híbrida: BM25 como base, embeddings locales como complemento.** El corpus es pequeño, en español y con vocabulario controlado: BM25 con sinónimos es determinista, explicable y responde bien lo que usa las palabras de los documentos. No alcanza para paráfrasis («¿qué riesgos cubre el seguro para negocios?»), así que se suma un índice semántico local (`fastembed`, ONNX en CPU, sin servicios pagos). Medido con 40 preguntas nuevas: la similitud mejora mucho el contexto del LLM, pero usada para elegir la línea en el modo extractivo aumentaba las respuestas equivocadas; por eso en ese modo solo enruta (ADR-25, especificación 007).
 - **ADR-2 Respuesta extractiva por defecto.** Garantiza por construcción "responder únicamente con información encontrada"; un LLM es opcional para redacción.
 - **ADR-3 SQLite.** Cero configuración, archivo local, suficiente para el volumen de la prueba; el repositorio aísla el cambio futuro a PostgreSQL.
 - **ADR-4 Sin frameworks adicionales** (ORM, rank_bm25, NLTK): menos superficie de ataque y de dependencia; el código propio está cubierto por pruebas.
