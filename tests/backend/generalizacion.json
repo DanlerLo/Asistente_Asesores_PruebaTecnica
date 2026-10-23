@@ -1,0 +1,275 @@
+{
+ "descripcion": "Preguntas nuevas para medir generalización (especificación 007). Se escribieron antes de implementar la búsqueda semántica y NO se usan para ajustar reglas: solo miden. No están en banco_preguntas.txt ni en evaluacion.json.",
+ "preguntas": [
+  {
+   "id": "N01",
+   "pregunta": "¿Cuál es la plata mínima que puedo pedir en el Crédito Productivo Impulso?",
+   "contiene": [
+    "$2.000.000"
+   ]
+  },
+  {
+   "id": "N02",
+   "pregunta": "¿En cuántos meses como mucho se paga el Agro Crece?",
+   "contiene": [
+    "84 meses"
+   ]
+  },
+  {
+   "id": "N03",
+   "pregunta": "¿Qué tan caro es el interés del Educativo Avanza?",
+   "contiene": [
+    "15,6 %"
+   ]
+  },
+  {
+   "id": "N04",
+   "pregunta": "¿Para quién está pensado el Crédito Mujer Emprende?",
+   "contiene": [
+    "mujeres emprendedoras"
+   ]
+  },
+  {
+   "id": "N05",
+   "pregunta": "¿Qué beneficios adicionales trae el Mujer Emprende?",
+   "contiene": [
+    "Formación financiera"
+   ]
+  },
+  {
+   "id": "N06",
+   "pregunta": "¿Qué cosas se pueden financiar con el crédito agropecuario?",
+   "contiene": [
+    "Siembra"
+   ]
+  },
+  {
+   "id": "N07",
+   "pregunta": "¿Hasta qué edad se puede asegurar alguien en Salud Básica Familiar?",
+   "contiene": [
+    "65 años"
+   ]
+  },
+  {
+   "id": "N08",
+   "pregunta": "¿Cuánto paga Vida Protegida si el asegurado fallece?",
+   "contiene": [
+    "$20.000.000"
+   ]
+  },
+  {
+   "id": "N09",
+   "pregunta": "¿Accidente Personal Esencial cubre la incapacidad?",
+   "contiene": [
+    "Incapacidad permanente"
+   ]
+  },
+  {
+   "id": "N10",
+   "pregunta": "¿Qué valor mensual tiene Negocio Seguro?",
+   "contiene": [
+    "$12.000"
+   ]
+  },
+  {
+   "id": "N11",
+   "pregunta": "¿En qué casos no paga ningún microseguro?",
+   "contiene": [
+    "preexistentes"
+   ]
+  },
+  {
+   "id": "N12",
+   "pregunta": "¿Cuánto se demoran en responder una reclamación del seguro?",
+   "contiene": [
+    "10 a 15 días"
+   ]
+  },
+  {
+   "id": "N13",
+   "pregunta": "¿Por dónde puede pagar el cliente la prima?",
+   "contiene": [
+    "Corresponsales bancarios"
+   ]
+  },
+  {
+   "id": "N14",
+   "pregunta": "¿Qué documentos le piden a un estudiante para el Educativo Avanza?",
+   "contiene": [
+    "Orden de matrícula"
+   ]
+  },
+  {
+   "id": "N15",
+   "pregunta": "¿El Agro Crece da tiempo de gracia?",
+   "contiene": [
+    "Hasta 6 meses"
+   ]
+  },
+  {
+   "id": "N16",
+   "pregunta": "¿Cómo le entregan la plata del crédito al cliente?",
+   "contiene": [
+    "Abono a cuenta"
+   ]
+  },
+  {
+   "id": "N17",
+   "pregunta": "¿En cuánto tiempo responden una queja?",
+   "contiene": [
+    "5 días hábiles"
+   ]
+  },
+  {
+   "id": "N18",
+   "pregunta": "¿Dónde se puede poner un reclamo o una petición?",
+   "contiene": [
+    "Formulario en el sitio web"
+   ]
+  },
+  {
+   "id": "N19",
+   "pregunta": "¿A qué hora abren las oficinas los sábados?",
+   "contiene": [
+    "8:00 a.m."
+   ]
+  },
+  {
+   "id": "N20",
+   "pregunta": "¿Qué papeles valen para actualizar los datos de un cliente?",
+   "contiene": [
+    "Certificado laboral"
+   ]
+  },
+  {
+   "id": "N21",
+   "pregunta": "¿Qué hace el banco después de recibir los documentos de una solicitud?",
+   "contiene": [
+    "Validación de identidad"
+   ]
+  },
+  {
+   "id": "N22",
+   "pregunta": "¿El asesor puede contarle a un cliente la información de otro?",
+   "contiene": [
+    "Información de otros clientes"
+   ]
+  },
+  {
+   "id": "N23",
+   "pregunta": "¿Qué debe hacer el asesor cuando no está seguro de una respuesta?",
+   "contiene": [
+    "Escalar caso"
+   ]
+  },
+  {
+   "id": "N24",
+   "pregunta": "¿Las respuestas del asistente tienen que decir de dónde sacaron la información?",
+   "contiene": [
+    "indicar la fuente"
+   ]
+  },
+  {
+   "id": "N25",
+   "pregunta": "¿Cómo debe tratar el asesor los datos del cliente?",
+   "contiene": [
+    "Proteger información del cliente"
+   ]
+  },
+  {
+   "id": "N26",
+   "pregunta": "¿Cobran por estudiar la solicitud de crédito?",
+   "contiene": [
+    "no tiene costo"
+   ]
+  },
+  {
+   "id": "N27",
+   "pregunta": "¿Puedo abonar a capital en mi crédito sin multa?",
+   "contiene": [
+    "sin penalidad"
+   ]
+  },
+  {
+   "id": "N28",
+   "pregunta": "¿Las tasas que aparecen son fijas?",
+   "contiene": [
+    "de referencia"
+   ]
+  },
+  {
+   "id": "N29",
+   "pregunta": "¿Cuál microseguro sale más económico?",
+   "contiene": [
+    "$7.500"
+   ]
+  },
+  {
+   "id": "N30",
+   "pregunta": "¿Cuál de los créditos se puede pagar en más tiempo?",
+   "contiene": [
+    "84 meses"
+   ]
+  },
+  {
+   "id": "N31",
+   "pregunta": "Necesito saber la cobertura más alta que ofrece Accidente Personal Esencial",
+   "contiene": [
+    "$25.000.000"
+   ]
+  },
+  {
+   "id": "N32",
+   "pregunta": "¿Qué riesgos cubre el seguro para negocios?",
+   "contiene": [
+    "Incendio"
+   ]
+  },
+  {
+   "id": "N33",
+   "pregunta": "¿Cuánto vale al mes el seguro de salud familiar?",
+   "contiene": [
+    "$15.000"
+   ]
+  },
+  {
+   "id": "N34",
+   "pregunta": "¿Un recién nacido puede entrar en Salud Básica Familiar?",
+   "contiene": [
+    "0 años"
+   ]
+  },
+  {
+   "id": "N35",
+   "pregunta": "¿El crédito para estudiantes pide codeudor?",
+   "contiene": [
+    "Codeudor"
+   ]
+  },
+  {
+   "id": "N36",
+   "pregunta": "¿Cuál es la tasa del crédito de vivienda?",
+   "sin_informacion": true
+  },
+  {
+   "id": "N37",
+   "pregunta": "¿Qué microseguro cubre a las mascotas?",
+   "sin_informacion": true
+  },
+  {
+   "id": "N38",
+   "pregunta": "¿Cuánto cuesta un tiquete a Cartagena?",
+   "sin_informacion": true
+  },
+  {
+   "id": "N39",
+   "pregunta": "¿Cuántos empleados tiene el banco?",
+   "sin_informacion": true
+  },
+  {
+   "id": "N40",
+   "pregunta": "¿Al Impulso le dan periodo de gracia?",
+   "sin_informacion": true
+  }
+ ]
+}
