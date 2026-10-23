@@ -1,4 +1,4 @@
-"""Cuota de la API gratuita y modo sin conexión (especificación 005). Sin red: ``httpx.post`` se reemplaza."""
+"""Cuota de la API gratuita y modo sin conexión (especificación 005). Sin red: ``ClienteHttpLLM.post`` se reemplaza."""
 from __future__ import annotations
 
 import pytest
@@ -25,6 +25,11 @@ CABECERAS = {
 }
 
 
+def _metodo(funcion):
+    """Adapta ``funcion(url, **kw)`` para reemplazar ``ClienteHttpLLM.post`` (recibe también el cliente)."""
+    return lambda _cliente, url, **kwargs: funcion(url, **kwargs)
+
+
 class RespuestaHttpFalsa:
     def __init__(self, cuerpo: dict, cabeceras: dict[str, str], status: int = 200) -> None:
         self.cuerpo, self.headers, self.status_code = cuerpo, cabeceras, status
@@ -45,7 +50,7 @@ def _responder_groq(monkeypatch: pytest.MonkeyPatch, cabeceras: dict[str, str], 
         llamadas.append(url)
         return RespuestaHttpFalsa(cuerpo if status == 200 else {"error": {}}, cabeceras, status)
 
-    monkeypatch.setattr(llm.httpx, "post", post_falso)
+    monkeypatch.setattr(llm.ClienteHttpLLM, "post", _metodo(post_falso))
     return llamadas
 
 
@@ -221,7 +226,7 @@ def test_log_de_fallo_no_incluye_la_url_ni_credenciales(
         # El mensaje de httpx incluye la URL; una URL de proxy puede llevar usuario y clave.
         raise RuntimeError(f"Server error '500' for url 'http://usuario:clave@proxy{url[8:]}'")
 
-    monkeypatch.setattr(llm.httpx, "post", post_falla)
+    monkeypatch.setattr(llm.ClienteHttpLLM, "post", _metodo(post_falla))
     orquestador.proveedor_llm = ProveedorGroq(api_key="prueba", modelo="m", timeout=1.0)
     with caplog.at_level("WARNING", logger="asistente.llm"):
         orquestador.consultar(PREGUNTA)
@@ -243,6 +248,9 @@ def test_put_llm_responde_mientras_una_consulta_espera_al_llm(cfg: Configuracion
             en_llm.set()
             liberar.wait(timeout=5)
             return "Monto máximo: $50.000.000"
+
+        def cerrar(self) -> None:
+            pass
 
     app = crear_app(cfg=cfg, corpus=corpus, repositorio=RepositorioConsultas(":memory:"))
     with TestClient(app) as cliente_http:

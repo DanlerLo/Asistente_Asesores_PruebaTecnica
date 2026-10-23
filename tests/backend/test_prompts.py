@@ -5,7 +5,7 @@ import pytest
 from jinja2 import UndefinedError
 
 from asistente.dominio import FRASE_SIN_INFO
-from asistente.generacion.llm import INSTRUCCIONES_SISTEMA
+from asistente.generacion.llm import instrucciones_sistema
 from asistente.generacion.plantillas import DIRECTORIO_PROMPTS, renderizar
 from asistente.herramientas.corpus import Fragmento
 
@@ -23,13 +23,13 @@ def test_las_plantillas_viven_en_la_carpeta_prompts():
 
 
 def test_prompt_de_sistema_incluye_la_frase_canonica_y_las_reglas():
-    assert FRASE_SIN_INFO in INSTRUCCIONES_SISTEMA
-    assert "<fragmentos>" in INSTRUCCIONES_SISTEMA
+    assert FRASE_SIN_INFO in instrucciones_sistema()
+    assert "<fragmentos>" in instrucciones_sistema()
     # Formato de cita con un ejemplo concreto: con marcadores («<archivo>») el modelo los copiaba literalmente.
-    assert "Fuente: Productos de Crédito.md › Crédito Agro Crece > Condiciones" in INSTRUCCIONES_SISTEMA
-    assert "<archivo>" not in INSTRUCCIONES_SISTEMA and "<sección>" not in INSTRUCCIONES_SISTEMA
-    assert "No hagas cálculos" in INSTRUCCIONES_SISTEMA  # responder solo con lo encontrado
-    assert "{{" not in INSTRUCCIONES_SISTEMA and "{%" not in INSTRUCCIONES_SISTEMA
+    assert "Fuente: Productos de Crédito.md › Crédito Agro Crece > Condiciones" in instrucciones_sistema()
+    assert "<archivo>" not in instrucciones_sistema() and "<sección>" not in instrucciones_sistema()
+    assert "No hagas cálculos" in instrucciones_sistema()  # responder solo con lo encontrado
+    assert "{{" not in instrucciones_sistema() and "{%" not in instrucciones_sistema()
 
 
 def test_prompt_de_usuario_conserva_el_formato_de_fragmentos_y_pregunta():

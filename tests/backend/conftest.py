@@ -8,9 +8,10 @@ from fastapi.testclient import TestClient
 
 from asistente.api import crear_app
 from asistente.config import RAIZ_PROYECTO, Configuracion
-from asistente.herramientas.corpus import Corpus, cargar_corpus
+from asistente.herramientas.corpus import Corpus
 from asistente.infraestructura.persistencia import RepositorioConsultas
 from asistente.orquestador import Orquestador
+from asistente.seguridad.ingesta import cargar_corpus_seguro
 
 DATA_DIR = RAIZ_PROYECTO / "Data"
 
@@ -35,7 +36,7 @@ def cfg() -> Configuracion:
 
 @pytest.fixture(scope="session")
 def corpus(cfg: Configuracion) -> Corpus:
-    return cargar_corpus(cfg.data_dir, cfg.archivos_restringidos)
+    return cargar_corpus_seguro(cfg.data_dir, cfg.archivos_restringidos)
 
 
 @pytest.fixture
@@ -62,14 +63,16 @@ def orquestador_con(directorio: Path, archivos: dict[str, str], **ajustes) -> Or
     """Orquestador construido sobre una base documental ad hoc."""
     data_dir = crear_base_documental(directorio, archivos)
     cfg = Configuracion(data_dir=data_dir, **ajustes)
-    corpus = cargar_corpus(data_dir, cfg.archivos_restringidos)
+    corpus = cargar_corpus_seguro(data_dir, cfg.archivos_restringidos)
     return Orquestador(cfg, corpus, RepositorioConsultas(":memory:"))
 
 
 class ProveedorFalso:
     """Proveedor LLM de prueba: devuelve una respuesta fija (o lanza) y registra las llamadas."""
 
-    nombre = "falso"
+    nombre = modelo = "falso"
+    total_llamadas = 0
+    cuota = None
 
     def __init__(self, respuesta: str | Exception) -> None:
         self.respuesta = respuesta
@@ -80,3 +83,6 @@ class ProveedorFalso:
         if isinstance(self.respuesta, Exception):
             raise self.respuesta
         return self.respuesta
+
+    def cerrar(self) -> None:
+        pass

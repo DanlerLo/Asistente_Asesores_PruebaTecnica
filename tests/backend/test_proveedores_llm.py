@@ -1,4 +1,4 @@
-"""Pruebas de los proveedores LLM y su configuración (RF-11). Sin red: ``httpx.post`` se reemplaza."""
+"""Pruebas de los proveedores LLM y su configuración (RF-11). Sin red: ``ClienteHttpLLM.post`` se reemplaza."""
 from __future__ import annotations
 
 import pytest
@@ -10,6 +10,11 @@ from asistente.generacion.llm import MODELO_GROQ_POR_DEFECTO, URL_GROQ, Proveedo
 from asistente.orquestador import Orquestador
 
 from conftest import ProveedorFalso
+
+
+def _metodo(funcion):
+    """Adapta ``funcion(url, **kw)`` para reemplazar ``ClienteHttpLLM.post`` (recibe también el cliente)."""
+    return lambda _cliente, url, **kwargs: funcion(url, **kwargs)
 
 
 class RespuestaHttpFalsa:
@@ -34,7 +39,7 @@ def solicitudes(monkeypatch: pytest.MonkeyPatch) -> list[dict]:
         mensaje = {"role": "assistant", "content": "  Monto máximo: $50.000.000  ", "reasoning": "pensando…"}
         return RespuestaHttpFalsa({"choices": [{"message": mensaje}]})
 
-    monkeypatch.setattr(llm.httpx, "post", post_falso)
+    monkeypatch.setattr(llm.ClienteHttpLLM, "post", _metodo(post_falso))
     return capturadas
 
 
@@ -57,7 +62,7 @@ def test_groq_envia_solicitud_compatible_con_openai(solicitudes: list[dict]):
 
 
 def test_groq_respuesta_sin_choices_devuelve_texto_vacio(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr(llm.httpx, "post", lambda url, **kw: RespuestaHttpFalsa({"choices": []}))
+    monkeypatch.setattr(llm.ClienteHttpLLM, "post", _metodo(lambda url, **kw: RespuestaHttpFalsa({"choices": []})))
     assert ProveedorGroq(api_key="prueba", modelo="m", timeout=1.0).completar("s", "u") == ""
 
 
@@ -93,7 +98,7 @@ def test_por_defecto_no_hay_proveedor(monkeypatch: pytest.MonkeyPatch):
 def test_orquestador_con_groq_vacio_degrada_al_extractivo(
     orquestador: Orquestador, monkeypatch: pytest.MonkeyPatch
 ):
-    monkeypatch.setattr(llm.httpx, "post", lambda url, **kw: RespuestaHttpFalsa({"choices": []}))
+    monkeypatch.setattr(llm.ClienteHttpLLM, "post", _metodo(lambda url, **kw: RespuestaHttpFalsa({"choices": []})))
     orquestador.proveedor_llm = ProveedorGroq(api_key="prueba", modelo="m", timeout=1.0)
     resultado = orquestador.consultar("¿Cuál es el monto máximo del Crédito Productivo Impulso?")
     assert resultado.estado == ESTADO_EXITOSA and resultado.modo == "extractivo"
@@ -104,7 +109,7 @@ def test_orquestador_con_groq_vacio_degrada_al_extractivo(
 def test_groq_respuesta_incompleta_degrada_al_extractivo(monkeypatch: pytest.MonkeyPatch, motivo: str):
     # Cortada por límite de tokens (o filtrada): no se puede entregar un monto a medias como "Exitosa".
     cuerpo = {"choices": [{"finish_reason": motivo, "message": {"content": "El monto máximo es de $"}}]}
-    monkeypatch.setattr(llm.httpx, "post", lambda url, **kw: RespuestaHttpFalsa(cuerpo))
+    monkeypatch.setattr(llm.ClienteHttpLLM, "post", _metodo(lambda url, **kw: RespuestaHttpFalsa(cuerpo)))
     assert ProveedorGroq(api_key="prueba", modelo="m", timeout=1.0).completar("s", "u") == ""
 
 
@@ -137,3 +142,19 @@ def test_proveedores_no_soportados_se_rechazan(monkeypatch: pytest.MonkeyPatch, 
     monkeypatch.setenv("LLM_PROVIDER", proveedor)
     with pytest.raises(ValueError, match="LLM_PROVIDER inválido.*none.*groq"):
         Configuracion.desde_entorno()
+
+
+def test_groq_reutiliza_un_cliente_http_y_lo_cierra(solicitudes: list[dict]):
+    """F4: un ``httpx.Client`` por proveedor (pool y keep-alive), cerrado al apagar el servicio."""
+    proveedor = ProveedorGroq(api_key="prueba", modelo="m", timeout=5.0)
+    cliente = proveedor._cliente
+    proveedor.completar("s", "u")
+    proveedor.completar("s", "u")
+    assert proveedor._cliente is cliente and len(solicitudes) == 2
+    proveedor.cerrar()
+    assert cliente.is_closed
+
+
+def test_el_prompt_del_sistema_se_renderiza_solo_al_usarse():
+    """F4: importar el paquete no lee plantillas si el LLM está desactivado."""
+    assert llm.instrucciones_sistema() is llm.instrucciones_sistema()  # una sola vez, en caché

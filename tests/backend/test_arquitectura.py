@@ -18,8 +18,9 @@ PROHIBIDAS = {
     "herramientas": {"agentes", "orquestador", "api", "generacion", "seguridad", "infraestructura"},
     "seguridad": {"agentes", "orquestador", "api", "generacion", "infraestructura"},
     "infraestructura": {"agentes", "orquestador", "api", "generacion", "herramientas"},
-    "generacion": {"agentes", "orquestador", "api"},
-    "agentes": {"orquestador", "api"},
+    # generacion y agentes no aplican seguridad ni persisten: eso lo hace el orquestador (hallazgo F11).
+    "generacion": {"agentes", "orquestador", "api", "seguridad", "infraestructura"},
+    "agentes": {"orquestador", "api", "seguridad", "infraestructura"},
     "orquestador": {"api"},
 }
 

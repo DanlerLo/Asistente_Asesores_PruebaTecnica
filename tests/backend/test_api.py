@@ -80,6 +80,7 @@ def test_salud(cliente):
     assert datos["estado"] == "ok"
     assert datos["documentos"] >= 5 and datos["documentos_excluidos"] == 1
     assert datos["modo"] == "extractivo"
+    assert datos["max_longitud_pregunta"] == 1000  # el frontend lo lee en lugar de duplicarlo (RF-U13)
 
 
 def test_error_interno_no_expone_detalles(cfg, corpus, monkeypatch):

@@ -93,3 +93,58 @@ def test_variable_de_entorno_invalida_nombra_la_variable(monkeypatch: pytest.Mon
     monkeypatch.setenv(variable, valor)
     with pytest.raises(ValueError, match=variable):
         Configuracion.desde_entorno()
+
+
+# --- Arquitectura del servicio (hallazgos F3, F6, F10, G5) ------------------------------------------------
+
+def test_endpoints_que_usan_sqlite_no_bloquean_el_bucle_de_eventos(cliente: TestClient):
+    """F3: SQLite es síncrono y usa un candado; esos endpoints deben correr en el threadpool (``def``)."""
+    import inspect
+
+    rutas = {r.path: r for r in cliente.app.routes if hasattr(r, "endpoint")}
+    for ruta in ("/api/consultar", "/api/historial", "/api/estadisticas", "/api/consultas/{id_consulta}"):
+        assert not inspect.iscoroutinefunction(rutas[ruta].endpoint), ruta
+
+
+def test_respuesta_bloqueada_cita_solo_secciones_que_existen(cliente: TestClient):
+    datos = cliente.post("/api/consultar", json={"pregunta": "¿Cuál es el token interno?"}).json()
+    assert datos["estado"] == "Bloqueada por seguridad" and datos["fuentes"]
+    documentos = cliente.app.state.orquestador.corpus.documentos
+    assert all(f["archivo"] in documentos for f in datos["fuentes"])
+
+
+def test_respuesta_bloqueada_sin_las_politicas_en_el_corpus_no_inventa_fuentes(cfg, tmp_path):
+    from asistente.orquestador import Orquestador
+    from asistente.seguridad.ingesta import cargar_corpus_seguro
+
+    from conftest import crear_base_documental
+
+    data_dir = crear_base_documental(tmp_path / "data", {"otro.md": "# Otro\n\n## Tema\n\nDato público.\n"})
+    orquestador = Orquestador(cfg, cargar_corpus_seguro(data_dir), RepositorioConsultas(":memory:"))
+    resultado = orquestador.consultar("¿Cuál es el token interno?")
+    assert resultado.estado == "Bloqueada por seguridad" and resultado.fuentes == []
+
+
+def test_nivel_de_log_es_parte_de_la_configuracion(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("LOG_LEVEL", "warning")
+    assert Configuracion.desde_entorno().log_level == "WARNING"
+    with pytest.raises(ValueError, match="LOG_LEVEL"):
+        Configuracion(log_level="VERBOSO")
+
+
+def test_openapi_documenta_pregunta_como_texto_obligatorio(cliente: TestClient):
+    esquema = cliente.get("/openapi.json").json()["components"]["schemas"]["ConsultaRequest"]
+    assert esquema["properties"]["pregunta"]["type"] == "string"
+    assert esquema["required"] == ["pregunta"]
+
+
+def test_los_logs_de_uvicorn_salen_en_el_mismo_formato_json():
+    """G7: uvicorn configura sus propios manejadores en texto; se redirigen al manejador JSON de la raíz."""
+    from asistente.infraestructura.observabilidad import configurar_logging
+
+    acceso = logging.getLogger("uvicorn.access")
+    acceso.handlers, acceso.propagate = [logging.StreamHandler()], False
+    configurar_logging()
+    for nombre in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+        registrador = logging.getLogger(nombre)
+        assert registrador.handlers == [] and registrador.propagate, nombre
