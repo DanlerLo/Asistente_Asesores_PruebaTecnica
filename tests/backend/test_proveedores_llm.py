@@ -1,8 +1,12 @@
 """Pruebas de los proveedores LLM y su configuración (RF-11). Sin red: ``ClienteHttpLLM.post`` se reemplaza."""
 from __future__ import annotations
 
-import pytest
+import logging
 
+import pytest
+from fastapi.testclient import TestClient
+
+from asistente.api import crear_app
 from asistente.config import Configuracion
 from asistente.dominio import ESTADO_EXITOSA
 from asistente.generacion import llm
@@ -136,12 +140,36 @@ def test_fuentes_sin_cita_reconocible_usan_el_fragmento_principal(orquestador: O
     assert [f["seccion"] for f in resultado.fuentes] == ["Crédito Productivo Impulso > Condiciones"]
 
 
-@pytest.mark.parametrize("proveedor", ["mistral", "openai", "desconocido"])
-def test_proveedores_no_soportados_se_rechazan(monkeypatch: pytest.MonkeyPatch, proveedor: str):
-    """Groq es el único proveedor: un valor distinto en LLM_PROVIDER falla al arrancar con un mensaje claro."""
+@pytest.mark.parametrize("proveedor", ["", "  ", "mistral", "openai"])
+def test_llm_provider_vacio_o_desconocido_arranca_sin_conexion(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, proveedor: str
+):
+    """RF-11: un valor que no sirve no impide arrancar; el servicio queda en modo sin conexión y lo advierte."""
     monkeypatch.setenv("LLM_PROVIDER", proveedor)
-    with pytest.raises(ValueError, match="LLM_PROVIDER inválido.*none.*groq"):
-        Configuracion.desde_entorno()
+    with caplog.at_level(logging.WARNING, logger="asistente"):
+        cfg = Configuracion.desde_entorno()
+    assert cfg.llm_provider == "none" and construir_proveedor(cfg) is None
+    assert any("LLM_PROVIDER" in r.getMessage() for r in caplog.records)
+
+
+def test_groq_sin_clave_en_el_entorno_arranca_sin_conexion(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+):
+    monkeypatch.setenv("LLM_PROVIDER", "groq")
+    monkeypatch.setenv("GROQ_API_KEY", "  ")
+    with caplog.at_level(logging.WARNING, logger="asistente"):
+        cfg = Configuracion.desde_entorno()
+    assert cfg.llm_provider == "none" and construir_proveedor(cfg) is None
+    assert any("GROQ_API_KEY" in r.getMessage() for r in caplog.records)
+
+
+def test_el_backend_arranca_y_responde_con_groq_sin_clave(monkeypatch: pytest.MonkeyPatch, tmp_path):
+    monkeypatch.setenv("LLM_PROVIDER", "groq")
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    monkeypatch.setenv("DB_PATH", str(tmp_path / "consultas.db"))
+    with TestClient(crear_app(Configuracion.desde_entorno())) as cliente:
+        r = cliente.post("/api/consultar", json={"pregunta": "¿Cuál es el monto máximo del Crédito Agro Crece?"})
+    assert r.status_code == 200 and r.json()["modo"] == "extractivo"
 
 
 def test_groq_reutiliza_un_cliente_http_y_lo_cierra(solicitudes: list[dict]):
