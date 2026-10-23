@@ -3,7 +3,7 @@
 Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]` = completada.
 
 ## Fase A — Base del proyecto
-- [x] T-001 Crear `src/backend/asistente`, `tests/backend`, `pyproject.toml` (pytest con `pythonpath=src/backend`) y `requirements*.txt`.
+- [x] T-001 Crear `src/backend/asistente`, `tests/backend`, `pyproject.toml` (pytest con `pythonpath=src/backend`) y `requirements.txt`.
 - [x] T-002 `config.py`: dataclass inmutable `Configuracion` y `desde_entorno()` con valores por defecto locales (RNF-01).
 - [x] T-003 `observabilidad.py`: formateador JSON y `configurar_logging()` (RNF-06).
 

@@ -47,7 +47,7 @@ Estas decisiones son humanas; proponlas, no las ejecutes:
 
 ## 6. Comandos útiles
 ```bash
-pip install -r requirements-dev.txt          # backend
+pip install -r requirements.txt              # backend
 python3 -m pytest -q                         # pruebas backend
 python3 -m uvicorn asistente.main:app --app-dir src/backend --env-file .env --reload --port 8000
 npm install && npm run dev                   # frontend en http://localhost:5173

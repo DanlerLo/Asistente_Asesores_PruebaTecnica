@@ -242,7 +242,7 @@ Más detalle: `especificaciones/*/plan.md`.
 ├── .github/workflows/ci.yml    (integración continua)
 ├── AGENTS.md
 ├── README.md
-├── requirements.txt / requirements-dev.txt / pyproject.toml
+├── requirements.txt / pyproject.toml
 ├── package.json                (workspace npm - src/frontend)
 └── .env.example
 ```
@@ -268,7 +268,7 @@ git clone https://github.com/DanlerLo/Asistente-Asesores-BancoW.git && cd Asiste
 
 # Backend: entorno virtual con Python 3.12 o 3.13
 python3.12 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 
 # Frontend (instala el workspace src/frontend)
 npm install
