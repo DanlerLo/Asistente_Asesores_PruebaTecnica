@@ -13,7 +13,7 @@ import time
 from dataclasses import dataclass, field
 
 from ..config import Configuracion
-from ..dominio import Fuente, RespuestaGenerada, respuesta_bloqueada, respuesta_sin_informacion
+from ..dominio import ESTADO_BLOQUEADA, Fuente, RespuestaGenerada, respuesta_bloqueada, respuesta_sin_informacion
 from ..generacion.llm import ProveedorLLM
 from ..herramientas.corpus import Corpus
 from ..herramientas.recuperacion import IndiceBM25
@@ -21,6 +21,7 @@ from ..infraestructura.persistencia import RegistroConsulta, RepositorioConsulta
 from ..seguridad.guardrails import (
     CITAS_BLOQUEO,
     ErrorValidacion,
+    enmascarar,
     evaluar_entrada,
     filtrar_salida,
     validar_contexto,
@@ -125,7 +126,8 @@ class Orquestador:
         latencia_ms = int((time.perf_counter() - inicio) * 1000)
         fuentes = [f.a_dict() for f in generada.fuentes]
         registro = RegistroConsulta(
-            pregunta=pregunta,
+            # RF-S13: el historial es compartido y sin autenticación; se guarda sin datos sensibles.
+            pregunta=enmascarar(pregunta, self.corpus.secretos, bloqueada=generada.estado == ESTADO_BLOQUEADA),
             respuesta=generada.texto,
             fuentes=fuentes,
             estado=generada.estado,

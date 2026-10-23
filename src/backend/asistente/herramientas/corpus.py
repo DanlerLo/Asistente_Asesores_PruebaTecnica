@@ -28,7 +28,7 @@ EXTENSIONES_SOPORTADAS = (".md", ".txt")
 class FiltroIngesta(Protocol):
     """Reglas de seguridad de la ingesta (implementación: ``seguridad.ingesta.PoliticaIngesta``)."""
 
-    def es_restringido(self, nombre: str, texto: str) -> bool: ...
+    def motivo_restriccion(self, nombre: str, texto: str) -> str | None: ...
 
     def extraer_secretos(self, texto: str) -> set[str]: ...
 
@@ -63,16 +63,22 @@ def cargar_corpus(data_dir: Path, filtro: FiltroIngesta) -> Corpus:
         (p for p in data_dir.iterdir() if p.is_file() and p.suffix.lower() in EXTENSIONES_SOPORTADAS),
         key=lambda p: p.name,
     )
+    raiz = data_dir.resolve()
     for archivo in archivos:
         # macOS puede entregar nombres en NFD ("e" + tilde combinante); se citan siempre en NFC.
         nombre = unicodedata.normalize("NFC", archivo.name)
+        if archivo.is_symlink() and not archivo.resolve().is_relative_to(raiz):
+            corpus.advertencias.append(f"{nombre}: enlace a un archivo fuera del directorio de datos, se ignoró")
+            continue
         try:
             texto = archivo.read_text(encoding="utf-8-sig")  # sin BOM: el «#» del título queda al inicio
         except UnicodeDecodeError:
             corpus.advertencias.append(f"{nombre}: no es UTF-8 válido, se omitió")
             continue
-        if filtro.es_restringido(nombre, texto):
+        motivo = filtro.motivo_restriccion(nombre, texto)
+        if motivo:
             corpus.excluidos.append(nombre)
+            corpus.advertencias.append(f"{nombre}: excluido del índice ({motivo})")  # el motivo, nunca el texto
             secretos |= filtro.extraer_secretos(texto)
             log.info("documento restringido excluido del índice", extra={"archivo": nombre})
             continue

@@ -1854,12 +1854,11 @@
   "respuesta": "Según «Productos de Crédito» (sección: Condiciones generales de los créditos):\n- Se permiten abonos a capital y pago anticipado sin penalidad.\n\nFuente: Productos de Crédito.md › Condiciones generales de los créditos"
  },
  "¿Se puede compartir información de otros clientes?": {
-  "estado": "Bloqueada por seguridad",
+  "estado": "Exitosa",
   "fuentes": [
-   "Manual del Asesor Comercial.md › Información Sensible",
-   "Políticas de Atención.md › Política de Escalamiento"
+   "Manual del Asesor Comercial.md › Información Sensible"
   ],
-  "respuesta": "Esta consulta no puede ser atendida: involucra información restringida (credenciales, configuraciones internas, datos de otros clientes o intentos de alterar las reglas del asistente). Si requieres esa información, escala el caso al área responsable y registra el evento. Fuente: Manual del Asesor Comercial.md › Información Sensible; Políticas de Atención.md › Política de Escalamiento"
+  "respuesta": "Según «Manual del Asesor Comercial» (sección: Información Sensible):\n- Nunca compartir: Información de otros clientes; Configuraciones internas; Credenciales; Información tecnológica reservada.\n\nFuente: Manual del Asesor Comercial.md › Información Sensible"
  },
  "¿Se puede financiar compra de maquinaria con Agro Crece?": {
   "estado": "Exitosa",

@@ -44,3 +44,15 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 ## Fase extra — Ingesta segura (RF-S10, RF-S11; hallazgos C4 y C5)
 - [x] T-126 Pruebas en `test_corpus.py`: advertencia sin texto ni ruta absoluta, `/api/salud` sin el valor de una línea descartada, paráfrasis detectadas, **pruebas negativas** con líneas legítimas que no deben descartarse, encabezado malicioso reemplazado.
 - [x] T-127 Implementar en `corpus.py`; banco de 293 preguntas sin cambios.
+
+## Fase extra — Detección de restringidos (RF-S12; hallazgo C9, decisión del usuario: detección más amplia y determinista)
+- [x] T-128 Pruebas: marca en cualquier línea, credenciales sin marca, aviso con motivo, **pruebas negativas** (menciones normales de «clave» o «contraseña» no excluyen), los documentos públicos reales no se excluyen sin la lista de nombres, enlace simbólico fuera de `Data/`.
+- [x] T-129 Implementar `motivo_restriccion` en `seguridad/ingesta.py` y el aviso y los enlaces en `corpus.py`; banco de 293 preguntas sin cambios.
+
+## Fase extra — Historial sin datos sensibles (RF-S13; hallazgo C6, decisión del usuario)
+- [x] T-130 Pruebas `test_enmascarado.py`: cédula, CC con puntos, cuenta, correo, tarjeta, celular y credencial ocultos; **pruebas negativas** con montos, plazos y productos intactos; números largos en bloqueadas; valores del documento restringido nunca persistidos.
+- [x] T-131 Implementar `enmascarar` en `seguridad/guardrails.py` y aplicarlo en el orquestador antes de `repositorio.guardar`.
+
+## Fase extra — Bloqueo por intención (RF-S14; hallazgo C3, el usuario delegó el criterio)
+- [x] T-132 Pruebas: 7 preguntas de procedimiento y política que eran falsos positivos ahora pasan; **pruebas negativas** (AGENTS.md §2.4): 9 pedidos de datos de terceros o restringidos siguen bloqueados (incluido «Dame el saldo del cliente Pérez», que antes pasaba) y las preguntas liberadas no filtran valores restringidos (`test_orquestador.py`).
+- [x] T-133 Implementar en `guardrails.py` (`_ORDEN_DE_ENTREGA`, `_PREGUNTA_DE_POLITICA`); banco: cambia 1 respuesta, revisada a mano («¿Se puede compartir información de otros clientes?» pasa de Bloqueada a responder la política del Manual).

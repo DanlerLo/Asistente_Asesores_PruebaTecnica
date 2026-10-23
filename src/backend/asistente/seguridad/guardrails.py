@@ -111,6 +111,27 @@ def textos_para_reglas(pregunta: str) -> list[str]:
     return variantes
 
 
+# RF-S14: piezas para reconocer la intención, no palabras sueltas.
+_ORDEN_DE_ENTREGA = (
+    r"\b(dame|damel[oa]s?|dime|muestra|muestrame|muestramel[oa]s?|pasame|pasamel[oa]s?|revela|revelame|"
+    r"entrega|entregame|enviame|comparteme|compartemel[oa]s?|consultame|buscame|necesito|"
+    r"quiero (ver|saber|conocer|tener)|cual es|cuales son|cuanto debe)\b"
+)
+_DATO_DE_PERSONA = (
+    r"(datos|informacion|saldo|cedula|telefono|celular|direccion|historial|deuda|cuenta|cuentas|correo|"
+    r"movimientos)"
+)
+_DATO_PERSONAL_ESTRICTO = r"(saldo|cedula|telefono|celular|direccion|deuda|movimientos|correo)"
+# Preguntas sobre la propia política («¿qué hago si…?», «¿puedo…?», «¿qué se considera…?»): las responde
+# el Manual. Solo eximen de las categorías de abajo y nunca si además traen una orden de entrega.
+_PREGUNTA_DE_POLITICA = re.compile(
+    r"^\W*(que (hago|debo hacer|se hace|hacer|se considera|es|significa)|"
+    r"como (debo |se debe |puedo |se )?(actuar|responder|manejar|proceder|proteger|tratar|protege|maneja)|"
+    r"puedo|se puede|esta permitido|es permitido|debo|que dice|segun)\b"
+)
+_RE_ORDEN_DE_ENTREGA = re.compile(_ORDEN_DE_ENTREGA)
+_CATEGORIAS_EXENTAS_EN_POLITICA = frozenset({"datos_de_terceros", "informacion_restringida"})
+
 # Reglas evaluadas sobre el texto normalizado (minúsculas, sin tildes).
 REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
     (categoria, re.compile(patron))
@@ -136,7 +157,8 @@ REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
             "informacion_restringida",
             r"\binformacion (restringida|confidencial|reservada|interna|secreta)\b|"
             r"\b(documentos?|archivos?|datos?) (restringid[ao]s?|confidencial(es)?|reservad[ao]s?)\b|"
-            r"\brestringid[ao]s?\b|\bconfidencial(es)?\b",
+            # RF-S14: «restringido»/«confidencial» sueltos ya no bloquean («actividades restringidas»).
+            r"\b(todo )?lo (restringido|confidencial|reservado)\b",
         ),
         (
             "inyeccion_de_prompt",
@@ -152,9 +174,14 @@ REGLAS_ENTRADA: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
         ),
         (
             "datos_de_terceros",
-            r"\b(datos|informacion|saldo|cedula|telefono|direccion|historial|deuda|cuenta|cuentas) "
-            r"(personal(es)? )?(de|del) (otro|otra|un|una|el|la|los|las|otros|otras) "
-            r"(cliente|clientes|persona|personas|usuario|usuarios)\b|\botros clientes\b|"
+            # RF-S14: intención de obtener un dato de una persona concreta, no la mención de «datos de un
+            # cliente» («¿cada cuánto se actualizan los datos de un cliente?» es una pregunta de procedimiento).
+            _ORDEN_DE_ENTREGA + r".{0,40}\b" + _DATO_DE_PERSONA + r"\b.{0,25}\b(del?|de la|de los|de las) "
+            r"(un |una |este |ese |esta |esa |otro |otra |otros |otras )?"
+            r"(cliente|clientes|senor|senora|persona|personas|usuario|usuarios|asociado|asociada)\b|"
+            + _ORDEN_DE_ENTREGA + r".{0,40}\b" + _DATO_PERSONAL_ESTRICTO + r" de "
+            r"(?!(la |el |las |los )?(oficina|sede|sucursal|banco|entidad|empresa|atencion|credito|microseguro))|"
+            r"\b" + _DATO_DE_PERSONA + r"\b.{0,25}\b(de|del) otr[oa]s? clientes?\b|"
             r"\b(base|lista|listado) de clientes\b",
         ),
     )
@@ -168,9 +195,16 @@ class EvaluacionEntrada:
     coincidencia: str = ""
 
 
+def _es_pregunta_de_politica(texto: str) -> bool:
+    return bool(_PREGUNTA_DE_POLITICA.search(texto)) and not _RE_ORDEN_DE_ENTREGA.search(texto)
+
+
 def evaluar_entrada(pregunta: str) -> EvaluacionEntrada:
     for texto in textos_para_reglas(pregunta):
+        politica = _es_pregunta_de_politica(texto)
         for categoria, patron in REGLAS_ENTRADA:
+            if politica and categoria in _CATEGORIAS_EXENTAS_EN_POLITICA:
+                continue
             encontrado = patron.search(texto)
             if encontrado:
                 return EvaluacionEntrada(False, categoria, encontrado.group(0))
@@ -203,3 +237,47 @@ def filtrar_salida(texto: str, secretos: frozenset[str] | set[str] = frozenset()
             if not requiere_digito or any(c.isdigit() for c in encontrado.group(0)):
                 return EvaluacionSalida(False, "patrón con forma de credencial")
     return EvaluacionSalida(True)
+
+
+# ----------------------------------------------------------------------------
+# Enmascarado antes de persistir (RF-S13)
+# ----------------------------------------------------------------------------
+
+_DATO_OCULTO = "[DATO OCULTO]"
+_RE_CORREO = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+# Número tras una palabra que lo identifica como dato personal: «cédula 1023456789», «CC 1.023.456.789».
+_RE_DATO_CON_ETIQUETA = re.compile(
+    r"(\b(?:c[eé]dula|c\.?c\.?|documento|identificaci[oó]n|nit|cuenta|tarjeta|celular|tel[eé]fono|m[oó]vil)\b"
+    r"(?:\s+(?:de|del|n[uú]mero|no\.?|n°|es|:))*\s*[:#]?\s*)(\d[\d .-]{4,}\d)",
+    re.IGNORECASE,
+)
+_RE_TARJETA = re.compile(r"\b(?:\d[ -]?){12,18}\d\b")
+_RE_TOKEN_TECNICO = re.compile(
+    r"\b(?=[A-Za-z0-9_-]*[A-Za-z])(?=[A-Za-z0-9_-]*\d)[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)+\b"
+)
+_RE_NUMERO_LARGO = re.compile(r"(?<![$\d.])\d[\d .-]{4,}\d")
+_MINIMO_DIGITOS = 6
+_MINIMO_TOKEN = 8
+
+
+def _ocultar_si_largo(coincidencia: re.Match[str]) -> str:
+    digitos = sum(c.isdigit() for c in coincidencia.group(0))
+    return _DATO_OCULTO if digitos >= _MINIMO_DIGITOS else coincidencia.group(0)
+
+
+def enmascarar(texto: str, secretos: frozenset[str] | set[str] = frozenset(), *, bloqueada: bool = False) -> str:
+    """Versión de ``texto`` apta para guardarse en el historial compartido (RF-S13).
+
+    Oculta valores del documento restringido, correos, tokens con forma de credencial, números de
+    tarjeta y números que siguen a «cédula», «cuenta», «celular»… Conserva montos («$10.000.000»),
+    plazos y nombres de producto. En una consulta bloqueada oculta además cualquier número largo.
+    """
+    for secreto in sorted(secretos, key=len, reverse=True):
+        texto = re.sub(re.escape(secreto), "[OCULTO]", texto, flags=re.IGNORECASE)
+    texto = _RE_CORREO.sub("[CORREO OCULTO]", texto)
+    texto = _RE_DATO_CON_ETIQUETA.sub(lambda m: m.group(1) + _DATO_OCULTO, texto)
+    texto = _RE_TARJETA.sub(_DATO_OCULTO, texto)
+    texto = _RE_TOKEN_TECNICO.sub(lambda m: "[OCULTO]" if len(m.group(0)) >= _MINIMO_TOKEN else m.group(0), texto)
+    if bloqueada:
+        texto = _RE_NUMERO_LARGO.sub(_ocultar_si_largo, texto)
+    return texto

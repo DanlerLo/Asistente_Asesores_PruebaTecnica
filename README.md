@@ -67,7 +67,7 @@ Más detalle: `sdd/especificaciones/*/plan.md`.
 │   │   └── infraestructura/    (persistencia SQLite, observabilidad)
 │   └── frontend/               (Vite + React + TypeScript)
 ├── tests/
-│   ├── backend/                (pytest, 311 pruebas)
+│   ├── backend/                (pytest, 352 pruebas)
 │   └── frontend/               (Vitest, 37 pruebas)
 ├── Data/                       (base documental; incluye el archivo restringido de ejemplo)
 ├── docs/Cuestionario.md
@@ -117,7 +117,7 @@ Copia `.env.example` a `.env` si quieres cambiar valores (todas las variables ti
 |----------|-------------|-------------|
 | `DATA_DIR` | `./Data` | Carpeta con la base documental (`.md`/`.txt`) |
 | `DB_PATH` | `./storage/consultas.db` | Archivo SQLite (se crea solo) |
-| `ARCHIVOS_RESTRINGIDOS` | `Información restringida.md` | Archivos excluidos del índice, separados por `;` (además de la detección por marca CONFIDENCIAL) |
+| `ARCHIVOS_RESTRINGIDOS` | `Información restringida.md` | Archivos excluidos del índice, separados por `;`. Además se excluye todo documento con marca de clasificación, con «información restringida» en la cabecera o con contenido con forma de credencial (RF-S12, reglas deterministas) |
 | `MAX_LONGITUD_PREGUNTA` | `1000` | Límite de caracteres por pregunta |
 | `TOP_K` | `8` | Fragmentos candidatos por consulta |
 | `UMBRAL_COBERTURA` | `0.3` | Cobertura mínima de términos útiles de la pregunta |
@@ -199,7 +199,7 @@ El modelo recibe la pregunta y solo los fragmentos recuperados (nunca el documen
 ## Pruebas
 
 ```bash
-python -m pytest              # backend: 311 pruebas (< 1 s, sin red), con el .venv activado
+python -m pytest              # backend: 352 pruebas (< 1 s, sin red), con el .venv activado
 npm test                      # frontend: 37 pruebas (Vitest + jsdom)
 npm run build                 # verificación de tipos + build de producción
 python -m ruff check src/backend tests/backend && python -m mypy   # lint y tipos
@@ -214,10 +214,10 @@ Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo in
 - **Emparejamiento léxico:** el modo extractivo depende de que la pregunta use palabras presentes en los documentos (hay stemming y un mapa pequeño de sinónimos; p. ej. "cubre" ≈ "cobertura", "cuesta" ≈ "costo"). Preguntas muy coloquiales o con muchos términos ajenos al corpus pueden recibir «Sin información suficiente». Activar el LLM mejora la comprensión.
 - **Sin razonamiento:** no calcula ni infiere (p. ej. no suma cuotas ni compara más de dos productos a la vez).
 - **Con LLM (Groq) activo:** el prompt prohíbe cálculos, pero el modelo puede hacer aritmética simple sobre valores citados (p. ej. «la diferencia es de 36 meses» en una comparación de plazos). Las fuentes citadas permiten verificarlo; el modo por defecto (sin LLM) nunca calcula. La pregunta del asesor se envía a Groq: no escribir datos personales del cliente.
-- **Reglas de seguridad por patrones:** pueden bloquear preguntas legítimas que contengan palabras como "clave" o "confidencial" (decisión deliberada: se prefiere el falso positivo).
+- **Reglas de seguridad por patrones:** los datos de terceros y la información restringida se bloquean por intención (pedir el dato), no por palabras sueltas (RF-S14). Las credenciales siguen siendo estrictas a propósito: «¿Cuál es la clave del Wi-Fi de la oficina?» se bloquea (se prefiere ese falso positivo a arriesgar una fuga).
 - **Idioma:** español únicamente.
 - **Carga en el arranque:** cambios en `Data/` requieren reiniciar el backend.
-- **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol.
+- **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol. Mientras tanto el historial es compartido, por eso la pregunta se guarda enmascarada (cédulas, cuentas, correos, credenciales → `[DATO OCULTO]`/`[OCULTO]`, RF-S13); `PUT /api/llm` no pide credencial.
 - **Un solo proceso:** el modo LLM elegido, el contador de llamadas y la cuota viven en memoria del proceso; con varios workers de uvicorn cada uno tendría los suyos. Se ejecuta con un worker (suficiente para uso interno); para escalar habría que llevar ese estado a un almacén compartido.
 - **SQLite con una conexión y un candado:** las escrituras se serializan. Los endpoints que tocan la base (`consultar`, `historial`, `estadisticas`, `consultas/{id}`) son síncronos y corren en el threadpool, así que el candado no bloquea el bucle de eventos (una prueba lo verifica). En producción, PostgreSQL con un pool.
 

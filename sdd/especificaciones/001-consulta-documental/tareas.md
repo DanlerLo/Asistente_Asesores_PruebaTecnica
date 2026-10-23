@@ -63,6 +63,7 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 
 - [x] T-047 Hallazgo G7: los registradores de uvicorn se redirigen al manejador JSON de la raíz (un solo formato en stdout); verificado con uvicorn real.
 
+
 ## Fase G — Datos y documentación
 - [x] T-024 Ampliar `Data/` con registros ficticios adicionales y `Preguntas Frecuentes.md` (sin tocar el archivo restringido).
 - [x] T-025 Documentar instalación, ejecución y limitaciones en `README.md`.

@@ -6,8 +6,17 @@ cargador de documentos:
 * **Los documentos son datos, nunca instrucciones.** Una línea o un encabezado con apariencia de
   instrucción para un asistente se descarta (RF-S5, RF-S11). Es una heurística de mejor esfuerzo: la
   garantía real es no indexar lo restringido y el filtro de salida.
-* **Lo restringido no se indexa.** Un archivo restringido por nombre o por su marca
-  ``CLASIFICACIÓN: CONFIDENCIAL`` solo aporta valores sensibles al filtro de salida.
+* **Lo restringido no se indexa** (RF-S12). Lo deciden reglas deterministas, nunca un agente ni un LLM;
+  basta una para excluir el archivo:
+
+  1. su nombre está en ``ARCHIVOS_RESTRINGIDOS``;
+  2. tiene una marca de clasificación (confidencial, reservado, restringido o secreto) en **cualquier**
+     línea;
+  3. menciona «información restringida» en su cabecera;
+  4. contiene algo con forma de credencial (``Token:``, ``Contraseña:``, ``Usuario administrador:`` seguido
+     de un valor técnico) aunque nadie lo haya marcado.
+
+  Un archivo excluido solo aporta valores sensibles al filtro de salida.
 
 ``herramientas.corpus`` no puede importar ``seguridad`` (regla de capas): recibe esta política por
 inyección (``FiltroIngesta``). ``cargar_corpus_seguro`` es la forma de cargar el corpus con ella.
@@ -38,8 +47,12 @@ PATRONES_INYECCION: tuple[re.Pattern[str], ...] = tuple(
         r"\b(ignore|disregard)\s+(all\s+)?(previous|prior|above|earlier)\b",
     )
 )
-PATRON_CONFIDENCIAL = re.compile(
-    r"clasificacion\s*:\s*confidencial|informacion\s+restringida", re.IGNORECASE
+_RE_MARCA = re.compile(r"clasificacion\s*:\s*(confidencial|reservad[oa]|restringid[oa]|secret[oa])")
+_RE_MENCION = re.compile(r"informacion\s+restringida")
+_LINEAS_CABECERA = 10
+# Etiqueta de credencial al inicio de la línea; el valor va detrás de «:» o en la línea siguiente.
+_RE_ETIQUETA_CREDENCIAL = re.compile(
+    r"^\W*(token|contrasena|password|api\s*key|clave\s+de\s+acceso|usuario\s+administrador|secreto)\b[^:]{0,30}:\s*(.*)$"
 )
 _RE_SECRETO = re.compile(r"[A-Za-z0-9][A-Za-z0-9_\-]{4,}")
 
@@ -50,12 +63,46 @@ def es_instruccion_sospechosa(linea: str) -> bool:
     return any(p.search(texto) for p in PATRONES_INYECCION)
 
 
-def es_restringido(nombre: str, texto: str, archivos_restringidos: tuple[str, ...]) -> bool:
+def _es_valor_tecnico(valor: str) -> bool:
+    """Un solo token de 6+ caracteres con dígitos, «-» o «_» (``QZX-4821-KLM``), no una frase."""
+    valor = valor.strip().strip(".")
+    return (
+        bool(valor)
+        and " " not in valor
+        and len(valor) >= 6
+        and any(c.isdigit() or c in "-_" for c in valor)
+    )
+
+
+def _tiene_credenciales(texto_normalizado: str) -> bool:
+    lineas = [linea.strip() for linea in texto_normalizado.splitlines() if linea.strip()]
+    for i, linea in enumerate(lineas):
+        coincidencia = _RE_ETIQUETA_CREDENCIAL.match(linea)
+        if not coincidencia:
+            continue
+        valor = coincidencia.group(2) or (lineas[i + 1] if i + 1 < len(lineas) else "")
+        if _es_valor_tecnico(valor):
+            return True
+    return False
+
+
+def motivo_restriccion(nombre: str, texto: str, archivos_restringidos: tuple[str, ...]) -> str | None:
+    """Por qué un archivo no debe indexarse, o ``None`` si es público (RF-S12)."""
     nombre_norm = normalizar(nombre)
     if any(nombre_norm == normalizar(r) for r in archivos_restringidos):
-        return True
-    cabecera = normalizar("\n".join(texto.splitlines()[:10]))
-    return bool(PATRON_CONFIDENCIAL.search(cabecera))
+        return "nombre en ARCHIVOS_RESTRINGIDOS"
+    normalizado = normalizar(texto)
+    if _RE_MARCA.search(normalizado):
+        return "marca de clasificación"
+    if _RE_MENCION.search("\n".join(normalizado.splitlines()[:_LINEAS_CABECERA])):
+        return "mención de información restringida en la cabecera"
+    if _tiene_credenciales(normalizado):
+        return "contenido con forma de credencial"
+    return None
+
+
+def es_restringido(nombre: str, texto: str, archivos_restringidos: tuple[str, ...]) -> bool:
+    return motivo_restriccion(nombre, texto, archivos_restringidos) is not None
 
 
 def extraer_secretos(texto: str) -> set[str]:
@@ -74,8 +121,8 @@ class PoliticaIngesta:
 
     archivos_restringidos: tuple[str, ...] = ()
 
-    def es_restringido(self, nombre: str, texto: str) -> bool:
-        return es_restringido(nombre, texto, self.archivos_restringidos)
+    def motivo_restriccion(self, nombre: str, texto: str) -> str | None:
+        return motivo_restriccion(nombre, texto, self.archivos_restringidos)
 
     def extraer_secretos(self, texto: str) -> set[str]:
         return extraer_secretos(texto)
