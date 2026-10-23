@@ -57,3 +57,5 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 - [x] T-134 Pruebas negativas: 9 pedidos de datos de terceros o de información restringida siguen bloqueados y las preguntas liberadas no filtran valores restringidos.
 - [x] T-135 Implementar `_ORDEN_DE_ENTREGA` y `_PREGUNTA_DE_POLITICA` en `guardrails.py`.
 - [x] T-136 Revisar a mano la única respuesta del banco que cambió antes de actualizar la foto.
+- [x] T-137 Pruebas: preguntar si un trámite pide clave no se bloquea; prueba negativa con 10 formas de pedir o nombrar una credencial que siguen bloqueadas (RF-S15).
+- [x] T-138 Implementar `_REQUISITO_DE_CREDENCIAL` en `guardrails.py`; el filtro de salida no cambia.

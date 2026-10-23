@@ -109,6 +109,12 @@ _PREGUNTA_DE_POLITICA = re.compile(
     r"puedo|se puede|esta permitido|es permitido|debo|que dice|segun)\b"
 )
 _RE_ORDEN_DE_ENTREGA = re.compile(_ORDEN_DE_ENTREGA)
+# RF-S15: «¿se requiere clave para el formulario?» pregunta por un trámite, no pide la credencial.
+# Una clave con calificativo («temporal», «interna», «del administrador») nunca entra en la excepción.
+_REQUISITO_DE_CREDENCIAL = re.compile(
+    r"\b(se requiere|requiere|se necesita|necesita|se pide|piden|pide|hace falta|es necesari[oa]|hay que tener) "
+    r"(una |un |la |el )?(claves?|contrasenas?|passwords?)\b(?! (temporal|interna|interno|del?|de acceso|admin))"
+)
 _CATEGORIAS_EXENTAS_EN_POLITICA = frozenset({"datos_de_terceros", "informacion_restringida"})
 
 # Reglas evaluadas sobre el texto normalizado (minúsculas, sin tildes).
@@ -177,13 +183,20 @@ def _es_pregunta_de_politica(texto: str) -> bool:
     return bool(_PREGUNTA_DE_POLITICA.search(texto)) and not _RE_ORDEN_DE_ENTREGA.search(texto)
 
 
+def _sin_requisitos_de_credencial(texto: str) -> str:
+    """Quita las menciones de trámite («se requiere clave») salvo que la pregunta pida algo («dámela»)."""
+    if _RE_ORDEN_DE_ENTREGA.search(texto):
+        return texto
+    return _REQUISITO_DE_CREDENCIAL.sub(" ", texto)
+
+
 def evaluar_entrada(pregunta: str) -> EvaluacionEntrada:
     for texto in textos_para_reglas(pregunta):
         politica = _es_pregunta_de_politica(texto)
         for categoria, patron in REGLAS_ENTRADA:
             if politica and categoria in _CATEGORIAS_EXENTAS_EN_POLITICA:
                 continue
-            encontrado = patron.search(texto)
+            encontrado = patron.search(_sin_requisitos_de_credencial(texto) if categoria == "credenciales" else texto)
             if encontrado:
                 return EvaluacionEntrada(False, categoria, encontrado.group(0))
     return EvaluacionEntrada(True)

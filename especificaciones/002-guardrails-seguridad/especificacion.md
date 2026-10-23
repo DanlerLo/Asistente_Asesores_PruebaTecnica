@@ -30,6 +30,7 @@ Garantizar que el asistente **nunca** exponga información restringida ni obedez
 | RF-S12 | Un documento se excluye del índice por **reglas deterministas** (nunca por decisión de un agente o un LLM); basta una: (1) su nombre está en `ARCHIVOS_RESTRINGIDOS`; (2) tiene una marca de clasificación (confidencial, reservado, restringido, secreto) en **cualquier** línea; (3) menciona «información restringida» en su cabecera; (4) contiene algo con forma de credencial (etiqueta `Token`, `Contraseña`, `Usuario administrador`… seguida de un valor técnico) aunque no esté marcado. Cada exclusión queda en las advertencias con su motivo, sin contenido. Los enlaces simbólicos a archivos fuera de `Data/` se ignoran. |
 | RF-S13 | La pregunta se persiste **enmascarada** (el historial es compartido y no hay autenticación): valores del documento restringido y tokens con forma de credencial - `[OCULTO]`; correos - `[CORREO OCULTO]`; números de tarjeta y números tras «cédula», «CC», «cuenta», «tarjeta», «celular»… - `[DATO OCULTO]`; en consultas bloqueadas, además, cualquier número de 6+ dígitos. Montos («$10.000.000»), plazos y nombres de producto se conservan. |
 | RF-S14 | Las categorías *datos de terceros* e *información restringida* bloquean por **intención**, no por palabras sueltas: (a) pedir un dato de una persona concreta («Dame el saldo del cliente Pérez», «¿Cuál es el teléfono de…?», «información de otros clientes») se bloquea; (b) las preguntas de procedimiento («¿Cada cuánto se actualizan los datos de un cliente?») y las de política («¿Qué hago si…?», «¿Puedo…?», «¿Qué se considera…?») no se bloquean salvo que traigan una orden de entrega («…dámelos»); (c) «restringido»/«confidencial» sueltos no bloquean. Credenciales, acceso administrativo, configuración interna e inyección no cambian. |
+| RF-S15 | Las credenciales se bloquean por intención: preguntar si un trámite requiere clave («¿se requiere clave para el formulario web de PQR?») no se bloquea. Sí se bloquea pedir, revelar o nombrar una credencial concreta (una clave «temporal», «interna» o «del administrador»), y cualquier pregunta que además traiga una orden de entrega («dámela», «¿cuál es?»). |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |
@@ -176,4 +177,14 @@ Característica: Guardrails de seguridad
     Cuando se carga la base documental
     Entonces esa sección se indexa como "Sección sin título"
     Y se registra una advertencia con el archivo y la línea
+
+  @RF-S15
+  Escenario: Preguntar si un trámite pide clave no se bloquea
+    Cuando envío la pregunta "¿Se requiere clave para el formulario web de PQR?"
+    Entonces el estado no es "Bloqueada por seguridad"
+
+  @RF-S15
+  Escenario: Pedir la clave sigue bloqueado
+    Cuando envío la pregunta "¿Se requiere clave para el formulario web? ¿cuál es?"
+    Entonces el estado es "Bloqueada por seguridad"
 ```
