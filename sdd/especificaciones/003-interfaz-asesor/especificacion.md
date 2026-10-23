@@ -1,6 +1,6 @@
 # Especificación 003 — Interfaz web para el asesor
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.2) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.3) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
 
 ## Contexto
 El asesor necesita una forma sencilla de hacer preguntas y ver, de un vistazo, la respuesta, su estado y las fuentes que la respaldan, para poder citarlas al cliente. La prueba no evalúa diseño visual, pero sí que la solución se ejecute completamente en local y muestre respuesta, fuentes, errores y estado de procesamiento.
@@ -28,6 +28,7 @@ Una aplicación web ligera (React + TypeScript) que consuma `POST /api/consultar
 | RF-U10 | Selector de modo «Modo conexión (Groq)» / «Modo sin conexión» en la cabecera (especificación 005, RF-L6). |
 | RF-U11 | La interfaz es una conversación tipo chat: las preguntas del asesor aparecen a la derecha y las respuestas del asistente a la izquierda, cada una con su hora; cada respuesta conserva estado, fuentes y metadatos (RF-U4, RF-U5). El estado de procesamiento es una burbuja del asistente «Procesando la consulta…» (RF-U3). La caja de texto queda abajo, con contador, envío con Enter (Shift+Enter = salto de línea) y botón «Consultar». Con la conversación vacía se muestran las especialidades y preguntas de ejemplo (no es un mensaje del asistente). Los errores se muestran en un aviso sobre la caja de texto (RF-U6). |
 | RF-U12 | Robustez: (a) toda petición tiene un tiempo máximo (45 s); si se agota, se muestra «El servidor tardó demasiado en responder…» y la caja de texto vuelve a estar disponible con la pregunta; (b) una respuesta 200 que no es JSON o no tiene la forma esperada se trata como error («La respuesta del servidor no es válida…»), nunca deja «Procesando…» colgado; (c) un error de pintado no deja la página en blanco: se muestra «Algo salió mal al mostrar la respuesta» y se puede seguir; (d) mientras se procesa una consulta, el historial no lanza otra y no se pisa el borrador de la caja de texto; (e) al terminar una consulta el foco vuelve a la caja de texto. |
+| RF-U13 | El límite de longitud de la pregunta no se duplica: el frontend lo lee de `GET /api/salud` (`max_longitud_pregunta`) y usa 1000 solo si no puede leerlo. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |

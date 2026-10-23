@@ -19,6 +19,7 @@ import threading
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
+from functools import cache
 from typing import Protocol
 
 import httpx
@@ -30,14 +31,28 @@ from .plantillas import renderizar
 
 log = logging.getLogger("asistente.llm")
 
-# Se renderiza una sola vez: un prompt del sistema estable aprovecha la caché del proveedor.
-INSTRUCCIONES_SISTEMA = renderizar("sistema.j2", frase_sin_info=FRASE_SIN_INFO)
+@cache
+def instrucciones_sistema() -> str:
+    """Prompt del sistema, renderizado una sola vez y solo si se usa un LLM (estable: aprovecha la caché
+    del proveedor)."""
+    return renderizar("sistema.j2", frase_sin_info=FRASE_SIN_INFO)
+
+
+class ClienteHttpLLM(httpx.Client):
+    """Cliente HTTP de los proveedores LLM: un tipo propio permite simularlo en pruebas sin afectar a otros."""
 
 
 class ProveedorLLM(Protocol):
+    """Lo que el orquestador necesita de un proveedor: completar, informar uso y cerrar sus conexiones."""
+
     nombre: str
+    modelo: str
+    total_llamadas: int
+    cuota: CuotaLLM | None
 
     def completar(self, sistema: str, usuario: str) -> str: ...
+
+    def cerrar(self) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -122,6 +137,11 @@ class ProveedorGroq:
         self.total_llamadas = 0  # desde el arranque (seguro entre hilos)
         self.cuota: CuotaLLM | None = None  # Groq la informa en cada respuesta; no hay endpoint de uso
         self._candado = threading.Lock()
+        # Un cliente por proveedor: reutiliza conexiones (sin un handshake TLS por consulta). Se cierra al apagar.
+        self._cliente = ClienteHttpLLM()
+
+    def cerrar(self) -> None:
+        self._cliente.close()
 
     def _contar_llamada(self) -> None:
         with self._candado:
@@ -135,7 +155,7 @@ class ProveedorGroq:
 
     def completar(self, sistema: str, usuario: str) -> str:
         self._contar_llamada()
-        respuesta = httpx.post(
+        respuesta = self._cliente.post(
             URL_GROQ,
             headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
             json=self._cuerpo(sistema, usuario),
@@ -182,7 +202,7 @@ def responder_con_llm(
         return respuesta_sin_informacion(modo=proveedor.nombre)
     usuario = renderizar("usuario.j2", fragmentos=[r.fragmento for r in resultados], pregunta=pregunta)
     try:
-        texto = proveedor.completar(INSTRUCCIONES_SISTEMA, usuario)
+        texto = proveedor.completar(instrucciones_sistema(), usuario)
     except Exception as exc:  # noqa: BLE001 - cualquier fallo del proveedor degrada al modo extractivo
         # Solo el tipo y el código HTTP: el mensaje de httpx incluye la URL, que puede llevar credenciales.
         estado_http = getattr(getattr(exc, "response", None), "status_code", None)

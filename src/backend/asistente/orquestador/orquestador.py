@@ -13,12 +13,13 @@ import time
 from dataclasses import dataclass, field
 
 from ..config import Configuracion
-from ..dominio import RespuestaGenerada, respuesta_bloqueada, respuesta_sin_informacion
+from ..dominio import Fuente, RespuestaGenerada, respuesta_bloqueada, respuesta_sin_informacion
 from ..generacion.llm import ProveedorLLM
 from ..herramientas.corpus import Corpus
 from ..herramientas.recuperacion import IndiceBM25
 from ..infraestructura.persistencia import RegistroConsulta, RepositorioConsultas, ahora_iso
 from ..seguridad.guardrails import (
+    CITAS_BLOQUEO,
     ErrorValidacion,
     evaluar_entrada,
     filtrar_salida,
@@ -57,6 +58,16 @@ class ResultadoConsulta:
         }
 
 
+def _citas_de_bloqueo(corpus: Corpus) -> list[Fuente]:
+    """Secciones de ``CITAS_BLOQUEO`` presentes en el corpus, en ese orden."""
+    citas: list[Fuente] = []
+    for archivo, seccion in CITAS_BLOQUEO:
+        fragmento = next((f for f in corpus.fragmentos if (f.archivo, f.ruta_seccion) == (archivo, seccion)), None)
+        if fragmento is not None:
+            citas.append(Fuente(fragmento.documento, fragmento.archivo, fragmento.ruta_seccion, 1.0))
+    return citas
+
+
 class Orquestador:
     def __init__(
         self,
@@ -74,6 +85,8 @@ class Orquestador:
         self._proveedor_configurado = proveedor_llm  # el que una persona configuró en .env
         self.enrutador = enrutador or Enrutador()
         self.entidades = entidades_del_corpus(corpus.fragmentos)
+        # Citas del bloqueo resueltas contra el corpus: sin esas secciones, no se citan archivos inexistentes.
+        self.fuentes_bloqueo = _citas_de_bloqueo(corpus)
 
     def consultar(self, pregunta_cruda: object, contexto: object = None) -> ResultadoConsulta:
         """Atiende una pregunta. Lanza ``ErrorValidacion`` si la entrada o el contexto no son válidos.
@@ -87,7 +100,7 @@ class Orquestador:
         detalle = agente = motivo_ruta = referente = ""
         entrada = evaluar_entrada(pregunta)
         if not entrada.permitido:
-            generada = respuesta_bloqueada()
+            generada = respuesta_bloqueada(self.fuentes_bloqueo)
             detalle = f"entrada:{entrada.categoria}"
         else:
             # El contexto pasa por el mismo guardrail: una pregunta anterior bloqueable se ignora.
@@ -106,7 +119,7 @@ class Orquestador:
             evaluaciones = (filtrar_salida(texto, self.corpus.secretos) for texto in textos)
             salida = next((evaluacion for evaluacion in evaluaciones if not evaluacion.permitido), None)
             if salida is not None:
-                generada = respuesta_bloqueada()
+                generada = respuesta_bloqueada(self.fuentes_bloqueo)
                 detalle = f"salida:{salida.motivo}"
 
         latencia_ms = int((time.perf_counter() - inicio) * 1000)
@@ -167,15 +180,20 @@ class Orquestador:
     def estado_llm(self) -> dict:
         """Proveedor configurado, si está activo, llamadas desde el arranque y última cuota conocida."""
         configurado = self._proveedor_configurado
-        cuota = getattr(configurado, "cuota", None)
+        cuota = configurado.cuota if configurado else None
         return {
             "proveedor": configurado.nombre if configurado else None,
-            "modelo": getattr(configurado, "modelo", None),
+            "modelo": configurado.modelo if configurado else None,
             "activo": self.proveedor_llm is not None,
             "modo": self.proveedor_llm.nombre if self.proveedor_llm else "extractivo",
-            "llamadas": getattr(configurado, "total_llamadas", 0),
+            "llamadas": configurado.total_llamadas if configurado else 0,
             "cuota": cuota.a_dict() if cuota else None,
         }
+
+    def cerrar(self) -> None:
+        """Libera las conexiones del proveedor LLM configurado (al apagar el servicio)."""
+        if self._proveedor_configurado is not None:
+            self._proveedor_configurado.cerrar()
 
     def cambiar_modo_llm(self, activo: bool) -> dict:
         """Desactiva el LLM (modo sin conexión) o reactiva el proveedor configurado en ``.env``.
@@ -199,4 +217,5 @@ class Orquestador:
             "advertencias": list(self.corpus.advertencias),
             "modo": self.proveedor_llm.nombre if self.proveedor_llm else "extractivo",
             "agentes": self.enrutador.agentes,
+            "max_longitud_pregunta": self.cfg.max_longitud_pregunta,
         }

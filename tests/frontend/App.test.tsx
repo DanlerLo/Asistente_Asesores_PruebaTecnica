@@ -23,12 +23,27 @@ describe('App', () => {
   beforeEach(() => vi.restoreAllMocks());
   afterEach(() => vi.unstubAllGlobals());
 
-  it('muestra el formulario de consulta, sin logo de marca', () => {
-    simularFetch(async () => HISTORIAL_VACIO);
+  it('muestra el formulario de consulta, sin logo de marca', async () => {
+    const fetchMock = simularFetch(async () => HISTORIAL_VACIO);
     render(<App />);
     expect(screen.queryByRole('img', { name: 'Banco W' })).not.toBeInTheDocument();
     expect(screen.getByLabelText('Pregunta')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Consultar' })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled()); // deja terminar las cargas iniciales (sin aviso act)
+  });
+
+  it('usa el límite de longitud que informa el backend (RF-U13)', async () => {
+    const fetchMock = simularFetch(async (url) =>
+      String(url).includes('/api/salud') ? respuestaJson(200, { estado: 'ok', max_longitud_pregunta: 50 }) : HISTORIAL_VACIO,
+    );
+    render(<App />);
+    expect(await screen.findByText('0 / 50')).toBeInTheDocument();
+    const campo = screen.getByLabelText('Pregunta');
+    await userEvent.click(campo);
+    await userEvent.paste('a'.repeat(51));
+    await userEvent.click(screen.getByRole('button', { name: 'Consultar' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('La pregunta supera el máximo de 50 caracteres.');
+    expect(fetchMock.mock.calls.filter(([u]) => String(u).includes('/api/consultar'))).toHaveLength(0);
   });
 
   it('rechaza una pregunta vacía sin llamar al backend', async () => {

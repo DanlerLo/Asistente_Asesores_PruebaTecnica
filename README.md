@@ -57,18 +57,18 @@ Más detalle: `sdd/especificaciones/*/plan.md`.
 │   ├── backend/asistente/
 │   │   ├── main.py             (punto de entrada: uvicorn asistente.main:app)
 │   │   ├── config.py · dominio.py   (configuración; estados, frase canónica, Fuente)
-│   │   ├── api/                (FastAPI: rutas, errores, CORS)
+│   │   ├── api/                (FastAPI: app, rutas, esquemas)
 │   │   ├── orquestador/        (flujo de la consulta y enrutador de agentes)
 │   │   ├── agentes/            (credito, microseguros, operativo, fuera_de_dominio)
-│   │   ├── herramientas/       (texto, corpus, recuperacion BM25)
+│   │   ├── herramientas/       (texto, corpus, markdown, recuperacion BM25)
 │   │   ├── generacion/         (extractivo, llm, plantillas)
 │   │   │   └── prompts/        (prompts del LLM en Jinja2: sistema.j2, usuario.j2)
-│   │   ├── seguridad/          (guardrails)
+│   │   ├── seguridad/          (guardrails de consultas, política de ingesta)
 │   │   └── infraestructura/    (persistencia SQLite, observabilidad)
 │   └── frontend/               (Vite + React + TypeScript)
 ├── tests/
-│   ├── backend/                (pytest, 241 pruebas)
-│   └── frontend/               (Vitest, 29 pruebas)
+│   ├── backend/                (pytest, 311 pruebas)
+│   └── frontend/               (Vitest, 37 pruebas)
 ├── Data/                       (base documental; incluye el archivo restringido de ejemplo)
 ├── docs/Cuestionario.md
 ├── AGENTS.md
@@ -126,7 +126,7 @@ Copia `.env.example` a `.env` si quieres cambiar valores (todas las variables ti
 | `LLM_MODEL` | `openai/gpt-oss-20b` | Modelo de Groq (p. ej. `openai/gpt-oss-120b`) |
 | `GROQ_API_KEY` | — | Solo con `LLM_PROVIDER=groq` ([crear clave](https://console.groq.com/keys)) |
 | `LLM_TIMEOUT_SEGUNDOS` | `30` | Tiempo máximo de espera del LLM |
-| `LOG_LEVEL` | `INFO` | Nivel de log |
+| `LOG_LEVEL` | `INFO` | Nivel de log (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`; otro valor impide arrancar) |
 
 Frontend: `VITE_API_URL` (vacío = mismo origen; en desarrollo Vite reenvía `/api` a `http://localhost:8000`, configurable con `VITE_API_PROXY`).
 
@@ -199,10 +199,13 @@ El modelo recibe la pregunta y solo los fragmentos recuperados (nunca el documen
 ## Pruebas
 
 ```bash
-python3 -m pytest -q          # backend: 241 pruebas (< 1 s, sin red)
-npm test                      # frontend: 29 pruebas (Vitest + jsdom)
+python -m pytest              # backend: 311 pruebas (< 1 s, sin red), con el .venv activado
+npm test                      # frontend: 37 pruebas (Vitest + jsdom)
 npm run build                 # verificación de tipos + build de producción
+python -m ruff check src/backend tests/backend && python -m mypy   # lint y tipos
 ```
+
+**Integración continua:** GitHub Actions (`.github/workflows/ci.yml`) ejecuta en cada push y pull request ruff, mypy, pytest con cobertura, Vitest y el build. Sin secretos ni red: el LLM queda desactivado en CI.
 
 Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo inválido · base documental vacía/inexistente · caracteres especiales y de control · documentos duplicados · consultas extensas (dentro y fuera del límite) · atributo inexistente para el producto nombrado · comparación entre productos · bloqueo por credenciales, accesos admin, configuración interna, información restringida, inyección de prompt (español e inglés) y datos de terceros · instrucción embebida en un documento · fuga de secreto desde documento público y desde un LLM · fallback del LLM · persistencia, historial y estadísticas · error interno sin detalles · productos y atributos inexistentes («crédito hipotecario») · preguntas de seguimiento con contexto · banco de regresión de 293 preguntas con foto de respuestas esperadas (`test_banco.py`) · enrutamiento a agentes por dominio y fuera de dominio sin LLM · nombres de archivo en NFD (macOS) · dependencias entre capas (prueba de arquitectura).
 
@@ -216,7 +219,7 @@ Casos cubiertos (ver `tests/`): consulta válida · pregunta vacía · cuerpo in
 - **Carga en el arranque:** cambios en `Data/` requieren reiniciar el backend.
 - **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol.
 - **Un solo proceso:** el modo LLM elegido, el contador de llamadas y la cuota viven en memoria del proceso; con varios workers de uvicorn cada uno tendría los suyos. Se ejecuta con un worker (suficiente para uso interno); para escalar habría que llevar ese estado a un almacén compartido.
-- **SQLite con una conexión y un candado:** las escrituras se serializan. `POST /api/consultar` corre en un hilo aparte, pero `GET /api/historial` y `/api/estadisticas` son `async` y leen en el bucle de eventos: si una escritura tiene el candado esperan unos milisegundos. Con este volumen no se nota; en producción, PostgreSQL con un pool.
+- **SQLite con una conexión y un candado:** las escrituras se serializan. Los endpoints que tocan la base (`consultar`, `historial`, `estadisticas`, `consultas/{id}`) son síncronos y corren en el threadpool, así que el candado no bloquea el bucle de eventos (una prueba lo verifica). En producción, PostgreSQL con un pool.
 
 ## Mejoras futuras
 

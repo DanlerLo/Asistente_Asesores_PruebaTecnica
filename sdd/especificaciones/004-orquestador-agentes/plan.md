@@ -33,9 +33,9 @@ Dependencias permitidas (de arriba hacia abajo): `api → orquestador → agente
 | `agentes/base.py` | Protocolo `Agente` y `AgenteDocumental` (extractivo o LLM con *fallback*) | parte de `servicio.py` |
 | `agentes/credito.py`, `microseguros.py`, `operativo.py` | Agentes de dominio: nombre y documentos que atienden | — |
 | `agentes/fuera_de_dominio.py` | Frase canónica sin LLM (RF-O4) | — |
-| `herramientas/texto.py`, `corpus.py`, `recuperacion.py` | Normalización, ingesta y búsqueda BM25 | raíz del paquete |
+| `herramientas/texto.py`, `corpus.py`, `markdown.py`, `recuperacion.py` | Normalización, carga, fragmentación y búsqueda BM25 | raíz del paquete |
 | `generacion/extractivo.py`, `llm.py`, `plantillas.py`, `prompts/` | Redacción de la respuesta | `motor.py`, `llm.py`, `plantillas.py` |
-| `seguridad/guardrails.py` | Validación, bloqueo por intención, filtro de salida | `guardrails.py` |
+| `seguridad/guardrails.py`, `ingesta.py` | Validación, bloqueo por intención, filtro de salida; política de ingesta (restringidos, instrucciones embebidas) | `guardrails.py`, `corpus.py` |
 | `infraestructura/persistencia.py`, `observabilidad.py` | SQLite y logs JSON | raíz del paquete |
 | `dominio.py` | Estados, frase canónica, `Fuente`, `RespuestaGenerada` (modelos compartidos) | `motor.py` |
 | `config.py` | Configuración desde el entorno | `config.py` |

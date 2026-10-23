@@ -22,6 +22,12 @@ from functools import partial
 
 from ..herramientas.texto import normalizar
 
+# Políticas que respaldan un bloqueo (archivo, sección). El orquestador las cita solo si existen en el corpus.
+CITAS_BLOQUEO: tuple[tuple[str, str], ...] = (
+    ("Manual del Asesor Comercial.md", "Información Sensible"),
+    ("Políticas de Atención.md", "Política de Escalamiento"),
+)
+
 
 class ErrorValidacion(ValueError):
     def __init__(self, codigo: str, mensaje: str) -> None:

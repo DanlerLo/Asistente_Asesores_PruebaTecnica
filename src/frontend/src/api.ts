@@ -147,6 +147,13 @@ export function esEstadoLlm(datos: unknown): datos is EstadoLlm {
   return !!estado && typeof estado.activo === 'boolean' && 'proveedor' in estado;
 }
 
+/** Límite de longitud de la pregunta configurado en el backend (RF-U13); `null` si no se pudo leer. */
+export async function obtenerMaxLongitud(): Promise<number | null> {
+  const salud = await solicitar<{ max_longitud_pregunta?: unknown }>('/api/salud');
+  const valor = esObjeto(salud) ? salud.max_longitud_pregunta : undefined;
+  return typeof valor === 'number' && Number.isInteger(valor) && valor > 0 ? valor : null;
+}
+
 export function obtenerEstadoLlm(): Promise<EstadoLlm> {
   return solicitar<EstadoLlm>('/api/llm');
 }

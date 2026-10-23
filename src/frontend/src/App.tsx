@@ -6,6 +6,7 @@ import {
   esEstadoLlm,
   obtenerEstadoLlm,
   obtenerHistorial,
+  obtenerMaxLongitud,
   type EstadoLlm,
   type RegistroHistorial,
 } from './api';
@@ -15,6 +16,7 @@ import { Historial } from './components/Historial';
 import { LimiteErrores } from './components/LimiteErrores';
 import { SelectorModo } from './components/SelectorModo';
 
+/** Valor de respaldo; el real lo informa el backend en `/api/salud` (RF-U13). */
 export const MAX_LONGITUD_PREGUNTA = 1000;
 /** Preguntas anteriores que se envían como contexto (el backend usa las 3 más recientes). */
 export const MAX_CONTEXTO = 3;
@@ -28,6 +30,7 @@ export default function App() {
   const [estadoLlm, setEstadoLlm] = useState<EstadoLlm | null>(null);
   const [cambiandoModo, setCambiandoModo] = useState(false);
   const [ayudaSinConexion, setAyudaSinConexion] = useState(false);
+  const [maxLongitud, setMaxLongitud] = useState(MAX_LONGITUD_PREGUNTA);
   const siguienteId = useRef(1);
   // Cada lectura o cambio del estado del LLM recibe un número; solo se aplica la respuesta más reciente,
   // para que un GET lento no pise el modo que el asesor acaba de cambiar.
@@ -55,6 +58,9 @@ export default function App() {
   useEffect(() => {
     void cargarHistorial();
     void cargarEstadoLlm();
+    obtenerMaxLongitud()
+      .then((valor) => valor && setMaxLongitud(valor))
+      .catch(() => {}); // sin /api/salud se usa el valor de respaldo
   }, [cargarHistorial, cargarEstadoLlm]);
 
   async function cambiarModo(activo: boolean) {
@@ -81,8 +87,8 @@ export default function App() {
       setError('Escribe una pregunta antes de consultar.');
       return;
     }
-    if (limpia.length > MAX_LONGITUD_PREGUNTA) {
-      setError(`La pregunta supera el máximo de ${MAX_LONGITUD_PREGUNTA} caracteres.`);
+    if (limpia.length > maxLongitud) {
+      setError(`La pregunta supera el máximo de ${maxLongitud} caracteres.`);
       return;
     }
     // Contexto: las preguntas ya respondidas de la conversación visible (especificación 006).
@@ -157,7 +163,7 @@ export default function App() {
         <Compositor
           texto={texto}
           procesando={procesando}
-          maximo={MAX_LONGITUD_PREGUNTA}
+          maximo={maxLongitud}
           onCambiar={setTexto}
           onEnviar={() => void enviar()}
         />

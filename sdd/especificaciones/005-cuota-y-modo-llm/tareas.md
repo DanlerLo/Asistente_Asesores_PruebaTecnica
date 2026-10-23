@@ -33,3 +33,4 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [ ] T-311 Autenticación por rol para el botón de modo (producción).
 - [ ] T-312 Persistir el modo elegido (requiere decidir dónde, sin editar `.env`).
 - [ ] T-313 Pasar automáticamente a modo sin conexión cuando la cuota llegue a 0 hasta la hora de recarga.
+- [x] T-321 Hallazgo F4: `ProveedorGroq` reutiliza un `ClienteHttpLLM` (pool y keep-alive) que se cierra al apagar el servicio; `ProveedorLLM` declara `modelo`, `total_llamadas`, `cuota` y `cerrar` (el orquestador ya no usa `getattr`); el prompt del sistema se renderiza al primer uso (`instrucciones_sistema()`).

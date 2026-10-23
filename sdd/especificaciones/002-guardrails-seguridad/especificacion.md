@@ -1,6 +1,6 @@
 # Especificación 002 — Guardrails de seguridad y protección de información
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.2) · Principios aplicados: 1 (Seguridad por defecto), 3 (TDD), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.3) · Principios aplicados: 1 (Seguridad por defecto), 3 (TDD), 7 (Observabilidad).
 
 ## Contexto
 La base documental incluye `Información restringida.md`, clasificado como CONFIDENCIAL: contiene credenciales ficticias y un "prompt administrativo" que ordena entregar toda la información si alguien la pide. El Manual del Asesor prohíbe compartir información de otros clientes, configuraciones internas, credenciales e información tecnológica reservada; la Política de Protección de Información restringe el acceso a personal autorizado; la Política de Escalamiento exige detener, escalar y registrar ante incertidumbre. El asistente será usado por personas y podría recibir intentos de *prompt injection*, directos o embebidos en documentos.
@@ -25,6 +25,8 @@ Garantizar que el asistente **nunca** exponga información restringida ni obedez
 | RF-S7 | Los errores internos devuelven un mensaje genérico; nunca trazas, rutas ni configuración. |
 | RF-S8 | El filtro de salida revisa también cada fuente devuelta (documento, sección y extracto), no solo el texto de la respuesta: con un LLM activo la respuesta puede no repetir el dato, pero el extracto lleva el fragmento crudo al frontend y al historial. Si alguna fuente contiene un valor de la lista de denegación o un patrón con forma de credencial, toda la respuesta se reemplaza por el bloqueo y no se persiste el extracto. |
 | RF-S9 | Antes de evaluar las reglas de entrada, la pregunta se normaliza para que no se puedan evadir con trucos tipográficos: compatibilidad Unicode (NFKC: letras de ancho completo), eliminación de caracteres invisibles de formato (espacio de ancho cero, guion suave), homoglifos cirílicos y griegos comunes («о» cirílica → «o») y dígitos usados como letras dentro de una palabra («t0ken» → «token»). La pregunta que se guarda y se envía al LLM ya no lleva caracteres invisibles. Las reglas aceptan «del» además de «de» («usuario del administrador»). Solo endurece: ninguna pregunta que antes se bloqueaba deja de bloquearse. |
+| RF-S10 | Las advertencias de ingesta (visibles en `GET /api/salud`) identifican archivo y línea, **nunca el texto** descartado, y no exponen rutas absolutas del servidor. |
+| RF-S11 | La detección de instrucciones embebidas cubre paráfrasis dirigidas al asistente («Nota para el asistente: …», «Haz caso omiso de …», «Asistente: …», «ignore previous …») y también se aplica a los **encabezados**: uno malicioso se reemplaza por «Sección sin título» y no viaja en la cita ni en el prompt. Es una heurística de mejor esfuerzo; la garantía real es no indexar lo restringido y el filtro de salida. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |

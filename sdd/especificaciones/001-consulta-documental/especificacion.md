@@ -1,6 +1,6 @@
 # Especificación 001 — Consulta documental con citación de fuentes
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.2) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
+Estado: implementada · Constitución: 1.0 (vigente: 1.3) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
 
 ## Contexto
 Los asesores comerciales atienden clientes en oficina y por teléfono y necesitan respuestas rápidas y confiables sobre productos de crédito, microseguros, procedimientos operativos y políticas internas. Hoy consultan documentos Markdown dispersos (`Data/`). La Política de Transparencia exige que toda respuesta esté sustentada en documentación oficial y la Política de Citas exige que los asistentes digitales indiquen la fuente utilizada.
@@ -35,6 +35,8 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-17 | Cada respuesta lleva `x-request-id`: se respeta el recibido si cumple `[A-Za-z0-9._-]{1,64}`; si no, se genera uno. Todos los logs emitidos al atender la solicitud incluyen `request_id`, también los errores 500. |
 | RF-18 | `GET /api/consultas/{id}` acepta solo dígitos ASCII (`²` o `٣` → 400 `ID_INVALIDO`, nunca 500); `GET /api/historial?limite=` fuera de 1..200 o no numérico → 400 `SOLICITUD_INVALIDA` con un mensaje que nombra el parámetro. |
 | RF-19 | Una configuración fuera de rango (`TOP_K` < 1, `MAX_LONGITUD_PREGUNTA` < 1, `UMBRAL_COBERTURA` fuera de (0, 1], `LLM_TIMEOUT_SEGUNDOS` ≤ 0, proveedor desconocido o un valor no numérico) impide arrancar con un mensaje que nombra la variable. |
+| RF-20 | El parser de Markdown tolera BOM al inicio del archivo, conserva los comparadores `<`/`>` (solo elimina etiquetas HTML reales), reconoce etiquetas que contienen «:» («Atención en oficinas (8:00 a 17:00):») y, en tablas de 3 o más columnas, nombra cada valor con su cabecera («Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses»). |
+| RF-21 | Una consulta bloqueada cita las políticas que respaldan el bloqueo (*Manual › Información Sensible*, *Políticas › Escalamiento*) **solo si existen en el corpus**; si no, `fuentes` es `[]` y el texto no cita archivos. `LOG_LEVEL` es parte de la configuración validada. El esquema OpenAPI documenta `pregunta` como texto obligatorio. |
 
 ## Requerimientos no funcionales
 | ID | Requerimiento |

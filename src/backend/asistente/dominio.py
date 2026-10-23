@@ -6,6 +6,7 @@ ningún otro módulo del paquete.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 ESTADO_EXITOSA = "Exitosa"
@@ -18,9 +19,7 @@ MENSAJE_BLOQUEO = (
     "Esta consulta no puede ser atendida: involucra información restringida "
     "(credenciales, configuraciones internas, datos de otros clientes o intentos de "
     "alterar las reglas del asistente). Si requieres esa información, escala el caso "
-    "al área responsable y registra el evento. "
-    "Fuente: Manual del Asesor Comercial.md › Información Sensible; "
-    "Políticas de Atención.md › Política de Escalamiento"
+    "al área responsable y registra el evento."
 )
 
 
@@ -54,9 +53,9 @@ def respuesta_sin_informacion(modo: str = "extractivo") -> RespuestaGenerada:
     return RespuestaGenerada(texto=FRASE_SIN_INFO, estado=ESTADO_SIN_INFO, fuentes=[], modo=modo)
 
 
-def respuesta_bloqueada(motivo: str = "") -> RespuestaGenerada:
-    fuentes = [
-        Fuente("Manual del Asesor Comercial", "Manual del Asesor Comercial.md", "Información Sensible", 1.0),
-        Fuente("Políticas de Atención", "Políticas de Atención.md", "Política de Escalamiento", 1.0),
-    ]
-    return RespuestaGenerada(texto=MENSAJE_BLOQUEO, estado=ESTADO_BLOQUEADA, fuentes=fuentes, modo="guardrail")
+def respuesta_bloqueada(fuentes: Sequence[Fuente] = ()) -> RespuestaGenerada:
+    """Mensaje de bloqueo; cita las políticas que lo respaldan solo si existen en el corpus (hallazgo F6)."""
+    texto = MENSAJE_BLOQUEO
+    if fuentes:
+        texto += " Fuente: " + "; ".join(f"{f.archivo} › {f.seccion}" for f in fuentes)
+    return RespuestaGenerada(texto=texto, estado=ESTADO_BLOQUEADA, fuentes=list(fuentes), modo="guardrail")

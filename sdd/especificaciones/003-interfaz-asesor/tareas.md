@@ -31,3 +31,4 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [x] T-220 Pruebas (`api.test.ts`, `Robustez.test.tsx`): tiempo agotado → `TIEMPO_AGOTADO`; 200 sin JSON o sin forma válida → `RESPUESTA_INVALIDA`; error de pintado con aviso; historial deshabilitado mientras se procesa sin pisar el borrador; foco de vuelta a la caja de texto.
 - [x] T-221 Implementar: `AbortController` de 45 s y validación de forma en `api.ts`, componente `LimiteErrores` (en `main.tsx` y alrededor de la conversación), `Historial` con `deshabilitado` y foco en `Compositor`.
 - [x] T-222 Se retira el logo del banco de la cabecera y de `src/assets/` (decisión del usuario); se conservan los colores. La prueba ahora verifica que no se muestra.
+- [x] T-223 RF-U13 (hallazgo E5): `max_longitud_pregunta` en `/api/salud` y leído al montar `App`; la primera prueba de `App` espera las cargas iniciales (sin aviso `act`, hallazgo E7).

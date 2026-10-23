@@ -41,3 +41,6 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [x] T-124 Prueba (RF-S9): evasiones con espacio de ancho cero, guion suave, homoglifos cirílicos, «t0ken»/«c1ave» y «usuario del administrador»; pasaban como «Sin información».
 - [x] T-125 `textos_para_reglas`: NFKC + sin caracteres invisibles + homoglifos + lecturas sin dígitos-letra; `validar_pregunta` quita los invisibles. El banco de 293 preguntas no cambia.
 
+## Fase extra — Ingesta segura (RF-S10, RF-S11; hallazgos C4 y C5)
+- [x] T-126 Pruebas en `test_corpus.py`: advertencia sin texto ni ruta absoluta, `/api/salud` sin el valor de una línea descartada, paráfrasis detectadas, **pruebas negativas** con líneas legítimas que no deben descartarse, encabezado malicioso reemplazado.
+- [x] T-127 Implementar en `corpus.py`; banco de 293 preguntas sin cambios.

@@ -1,6 +1,6 @@
 # Especificación 004 — Orquestador y agentes especializados
 
-Estado: implementada · Constitución: 1.1 (vigente: 1.2) · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 5 (Mantenibilidad), 6 (Costos), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.1 (vigente: 1.3) · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 5 (Mantenibilidad), 6 (Costos), 7 (Observabilidad).
 
 ## Contexto
 El backend (características 001 y 002) resuelve cada consulta con un único servicio que valida, aplica guardrails, recupera, responde, filtra y persiste. Funciona, pero todos los módulos viven en una sola carpeta y no existe una noción explícita de **dominio**: una pregunta de crédito, de microseguros o ajena al negocio ("¿quién ganó el partido?") recorre exactamente el mismo camino. El caso de negocio define cuatro temas (productos de crédito, microseguros, procedimientos operativos y políticas internas) y la Política de Escalamiento exige detener y registrar ante incertidumbre.
@@ -31,7 +31,7 @@ Reorganizar el backend en capas con una responsabilidad cada una y resolver las 
 |----|---------------|
 | RNF-O1 | Determinismo: misma pregunta y mismo corpus ⇒ mismo agente y misma respuesta. |
 | RNF-O2 | Cero llamadas de red añadidas: el enrutamiento no usa LLM. |
-| RNF-O3 | Dependencias entre capas en una sola dirección: `herramientas` y `seguridad` no importan `agentes`, `orquestador` ni `api`; `agentes` no importan `orquestador` ni `api`. Una prueba lo verifica. |
+| RNF-O3 | Dependencias entre capas en una sola dirección: `herramientas` y `seguridad` no importan `agentes`, `orquestador` ni `api`; `agentes` no importan `orquestador` ni `api`; `generacion` y `agentes` tampoco importan `seguridad` ni `infraestructura` (los guardrails y la persistencia son del orquestador). Una prueba lo verifica. |
 | RNF-O4 | Agregar un agente de dominio requiere un módulo nuevo y una línea en el registro del enrutador, sin tocar el orquestador. |
 
 ## Riesgos

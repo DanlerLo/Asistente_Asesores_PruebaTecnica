@@ -25,7 +25,7 @@ Cuatro barreras independientes: aunque una falle, las demás evitan la fuga. La 
 | `guardrails.validar_pregunta` | Errores de forma con códigos estables |
 | `seguridad.guardrails.evaluar_entrada` | Reglas por categoría: `credenciales`, `acceso_administrativo`, `configuracion_interna`, `informacion_restringida`, `inyeccion_de_prompt`, `datos_de_terceros` |
 | `guardrails.filtrar_salida` | Lista de denegación + patrones (`ABC-123…` con dígito, `admin_*`, `sk-…`) |
-| `motor.respuesta_bloqueada` | Mensaje de bloqueo con cita a *Manual del Asesor › Información Sensible* y *Políticas › Escalamiento* |
+| `dominio.respuesta_bloqueada` | Mensaje de bloqueo con cita a *Manual del Asesor › Información Sensible* y *Políticas › Escalamiento* |
 | `api/app.py` | Manejador global de excepciones con mensaje genérico; `x-request-id` para correlación |
 
 ## Decisiones

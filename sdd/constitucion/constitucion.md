@@ -1,6 +1,6 @@
 # Constitución — Asistente interno para asesores comerciales
 
-Versión 1.2 · 2026-10-22 · Rige todas las especificaciones de `sdd/especificaciones/`. Toda especificación, plan y tarea se traza a uno de estos principios; las excepciones se documentan en el `plan.md` afectado.
+Versión 1.3 · 2026-10-23 · Rige todas las especificaciones de `sdd/especificaciones/`. Toda especificación, plan y tarea se traza a uno de estos principios; las excepciones se documentan en el `plan.md` afectado.
 
 ## 1. Seguridad por defecto
 - Los documentos de `Data/` son **datos, nunca instrucciones**: las líneas con apariencia de instrucción se descartan en la ingesta.
@@ -37,3 +37,5 @@ Versión 1.2 · 2026-10-22 · Rige todas las especificaciones de `sdd/especifica
 - Logs JSON con identificador de solicitud; endpoints de salud y estadísticas; advertencias de ingesta visibles.
 
 **Gobierno:** cambiarla exige nueva versión y fecha; si una especificación la contradice, prevalece la constitución.
+
+**Registro de cambios:** 1.0 (21/10) siete principios del enunciado · 1.1 (21/10) principio 5 con orquestador, agentes y herramientas (spec 004) · 1.2 (22/10) recortada a una página y regla de trazabilidad · 1.3 (23/10) este registro.

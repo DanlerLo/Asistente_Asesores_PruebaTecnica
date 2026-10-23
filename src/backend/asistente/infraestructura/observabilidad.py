@@ -51,6 +51,12 @@ class FormateadorJSON(logging.Formatter):
 
 def configurar_logging(nivel: str = "INFO") -> None:
     instalar_id_de_solicitud()
+    # uvicorn instala sus manejadores de texto antes de importar la app: se redirigen a la raíz para que
+    # todo salga en un solo formato (JSON) y una sola línea por evento.
+    for nombre in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+        registrador = logging.getLogger(nombre)
+        registrador.handlers = []
+        registrador.propagate = True
     raiz = logging.getLogger()
     if any(isinstance(h.formatter, FormateadorJSON) for h in raiz.handlers):
         return

@@ -1,6 +1,6 @@
 # Especificación 005 — Cuota de la API gratuita y modo sin conexión
 
-Estado: implementada · Constitución: 1.1 (vigente: 1.2) · Principios aplicados: 4 (Uso responsable de IA), 6 (Costos), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.1 (vigente: 1.3) · Principios aplicados: 4 (Uso responsable de IA), 6 (Costos), 7 (Observabilidad).
 
 ## Contexto
 Con `LLM_PROVIDER=groq` (RF-11) el asistente usa el plan gratuito de GroqCloud, limitado por solicitudes por minuto y por día. Hoy el asesor no sabe cuántas llamadas quedan ni puede dejar de usar el LLM sin editar `.env` y reiniciar el backend. Groq informa la cuota en cabeceras de **cada** respuesta (`x-ratelimit-limit-requests`, `x-ratelimit-remaining-requests`, `x-ratelimit-reset-requests` para el día; `*-tokens` para tokens por minuto) y no ofrece un endpoint para consultarla sin hacer una solicitud.

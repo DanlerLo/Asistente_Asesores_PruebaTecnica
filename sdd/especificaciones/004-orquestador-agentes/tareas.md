@@ -39,3 +39,5 @@ Orden de ejecución; prueba antes que implementación. `[x]` = completada.
 - [ ] T-519 Enrutador opcional con LLM (clasificación de intención) activado por variable de entorno, con el enrutador por reglas como *fallback*.
 - [ ] T-520 Persistir el agente que atendió cada consulta (requiere cambiar el esquema de `consultas`: decisión humana).
 - [ ] T-521 Prompts del sistema por dominio (`prompts/<agente>/sistema.j2`).
+- [x] T-525 Hallazgos F5 y G1: la política de ingesta pasa a `seguridad/ingesta.py` y llega a `cargar_corpus` por inyección (`FiltroIngesta`; sin política no se puede cargar); el parser pasa a `herramientas/markdown.py` y `fragmentar` (127 líneas, complejidad 25) se divide en `_Fragmentador` con un método por tipo de línea. Banco de 293 preguntas idéntico.
+- [x] T-526 Hallazgo G1 (`crear_app`, 94 líneas): modelos y mensajes en `api/esquemas.py`, endpoints en un `APIRouter` (`api/rutas.py`); `app.py` queda como raíz de composición (ciclo de vida, middleware y errores).

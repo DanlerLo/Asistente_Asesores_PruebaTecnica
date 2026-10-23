@@ -15,6 +15,7 @@ from pathlib import Path
 RAIZ_PROYECTO = Path(__file__).resolve().parents[3]
 
 PROVEEDORES_LLM = ("none", "groq")
+NIVELES_LOG = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
 
 def _numero[N: (int, float)](variable: str, por_defecto: str, tipo: Callable[[str], N]) -> N:
     """Lee un número del entorno; si no lo es, el error nombra la variable."""
@@ -43,6 +44,7 @@ class Configuracion:
     llm_model: str = ""
     groq_api_key: str = ""
     llm_timeout_segundos: float = 30.0
+    log_level: str = "INFO"
 
     def __post_init__(self) -> None:
         """RF-19: un valor fuera de rango falla al arrancar con un mensaje claro, no en la primera consulta."""
@@ -54,6 +56,8 @@ class Configuracion:
             raise ValueError("UMBRAL_COBERTURA debe estar entre 0 (excluido) y 1.")
         if self.llm_timeout_segundos <= 0:
             raise ValueError("LLM_TIMEOUT_SEGUNDOS debe ser mayor que 0.")
+        if self.log_level not in NIVELES_LOG:
+            raise ValueError(f"LOG_LEVEL inválido: '{self.log_level}'. Valores permitidos: {NIVELES_LOG}")
         if self.llm_provider not in PROVEEDORES_LLM:
             raise ValueError(f"LLM_PROVIDER inválido: '{self.llm_provider}'. Valores permitidos: {PROVEEDORES_LLM}")
 
@@ -85,4 +89,5 @@ class Configuracion:
             llm_model=os.getenv("LLM_MODEL", "").strip(),
             groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
             llm_timeout_segundos=_numero("LLM_TIMEOUT_SEGUNDOS", "30", float),
+            log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
         )

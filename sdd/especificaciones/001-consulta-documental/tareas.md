@@ -57,6 +57,12 @@ Orden de ejecución. Cada tarea de implementación va precedida por su prueba (T
 - [x] T-043 Pruebas `test_robustez_api.py`: `x-request-id` validado y presente en logs y en el 500; ids con dígitos no ASCII → 400; `limite` inválido con mensaje propio; configuración fuera de rango rechazada nombrando la variable.
 - [x] T-044 Implementar: `ContextVar` + fábrica de registros en `observabilidad.py`, validación en el middleware y en `GET /api/consultas/{id}`, `Configuracion.__post_init__` y lectura numérica con mensaje.
 
+- [x] T-045 RF-20 (hallazgo D4): pruebas del parser (BOM, comparadores, etiquetas con horas, tablas de 3 columnas) e implementación en `corpus.py`; el banco de 293 preguntas no cambia.
+
+- [x] T-046 RF-21 y hallazgos F3, F6, F10, F11, G5: citas de bloqueo resueltas contra el corpus (`CITAS_BLOQUEO` en `seguridad/`), `log_level` en `Configuracion`, endpoints con SQLite síncronos, esquema OpenAPI de `pregunta`, prueba de capas más estricta (`generacion` y `agentes` no importan `seguridad` ni `infraestructura`).
+
+- [x] T-047 Hallazgo G7: los registradores de uvicorn se redirigen al manejador JSON de la raíz (un solo formato en stdout); verificado con uvicorn real.
+
 ## Fase G — Datos y documentación
 - [x] T-024 Ampliar `Data/` con registros ficticios adicionales y `Preguntas Frecuentes.md` (sin tocar el archivo restringido).
 - [x] T-025 Documentar instalación, ejecución y limitaciones en `README.md`.

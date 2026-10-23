@@ -24,7 +24,7 @@ Flujo de una consulta: **validar → guardrail de entrada → recuperar → resp
 |------------|-----------------|------------------|
 | `config.py` | Configuración inmutable desde variables de entorno | Valores por defecto seguros: sin LLM, `Data/`, SQLite en `storage/` |
 | `herramientas/texto.py` | Normalización en español: tildes, stopwords, raíces, sinónimos | Stemmer propio determinista (sin NLTK/spaCy) aplicado igual a documentos y preguntas |
-| `herramientas/corpus.py` | Carga, exclusión de restringidos, deduplicación, fragmentación por encabezados | Tablas → `clave: valor`; etiqueta + lista → una línea; fragmento «Índice» por documento |
+| `herramientas/corpus.py` + `markdown.py` | Carga y deduplicación (`corpus.py`, con la política de `seguridad/ingesta.py` inyectada); fragmentación por encabezados (`markdown.py`) | Tablas → `clave: valor`; etiqueta + lista → una línea; fragmento «Índice» por documento |
 | `herramientas/recuperacion.py` | BM25 propio + bloqueo por entidad + priorización del índice | Cobertura calculada sobre términos que existen en el corpus |
 | `generacion/extractivo.py` (antes `motor.py`) | Respuesta extractiva: elige las líneas que responden; compone texto con cita | Reglas explícitas y probadas (ver docstring de `seleccionar_lineas`) |
 | `generacion/llm.py` | Proveedor Groq opcional | Prompt cerrado a fragmentos; temperatura 0; fallback al extractivo |
