@@ -218,7 +218,8 @@ Más detalle: `especificaciones/*/plan.md`.
 │   ├── 003-interfaz-asesor/{especificacion,plan,tareas}.md
 │   ├── 004-orquestador-agentes/{especificacion,plan,tareas}.md
 │   ├── 005-cuota-y-modo-llm/{especificacion,plan,tareas}.md
-│   └── 006-contexto-y-recuperacion/{especificacion,plan,tareas}.md
+│   ├── 006-contexto-y-recuperacion/{especificacion,plan,tareas}.md
+│   └── 007-recuperacion-semantica/{especificacion,plan,tareas}.md
 ├── src/
 │   ├── backend/asistente/
 │   │   ├── main.py             (punto de entrada: uvicorn asistente.main:app)
@@ -236,12 +237,14 @@ Más detalle: `especificaciones/*/plan.md`.
 │   ├── backend/                (pytest, 380 pruebas)
 │   └── frontend/               (Vitest, 37 pruebas)
 ├── Data/                       (base documental; incluye el archivo restringido de ejemplo)
+├── storage/                    (se crea al arrancar: consultas.db y el modelo de embeddings; no se versiona)
 ├── docs/Cuestionario.md
+├── .github/workflows/ci.yml    (integración continua)
 ├── AGENTS.md
 ├── README.md
 ├── requirements.txt / requirements-dev.txt / pyproject.toml
 ├── package.json                (workspace npm → src/frontend)
-├── .env.example
+└── .env.example
 ```
 
 
@@ -415,13 +418,13 @@ Otros casos cubiertos (ver `tests/`): cuerpo inválido · caracteres de control 
 - **Carga en el arranque:** cambios en `Data/` requieren reiniciar el backend.
 - **Sin autenticación:** pensado para red interna; en producción se requiere identidad y autorización por rol. Mientras tanto el historial es compartido, por eso la pregunta se guarda enmascarada (cédulas, cuentas, correos, credenciales → `[DATO OCULTO]`/`[OCULTO]`, RF-S13); `PUT /api/llm` no pide credencial.
 - **Un solo proceso:** el modo LLM elegido, el contador de llamadas y la cuota viven en memoria del proceso; con varios workers de uvicorn cada uno tendría los suyos. Se ejecuta con un worker (suficiente para uso interno); para escalar habría que llevar ese estado a un almacén compartido.
-- **SQLite con una conexión y un candado:** las escrituras se serializan. Los endpoints que tocan la base (`consultar`, `historial`, `estadisticas`, `consultas/{id}`) son síncronos y corren en el threadpool, así que el candado no bloquea el bucle de eventos (una prueba lo verifica). En producción, PostgreSQL con un pool.
+- **SQLite con una conexión y un candado:** las escrituras se serializan. Los endpoints que tocan la base (`consultar`, `historial`, `estadisticas`, `consultas/{id}`) son síncronos y corren en el threadpool, así que el candado no bloquea el bucle de eventos (una prueba lo verifica). En producción, Redis para las conversaciones activas y Cosmos DB para el historial (Cuestionario, sección 7).
 
 ## Mejoras futuras
 
-- Reordenamiento (*reranker*) de los candidatos y un modelo de embeddings más grande para que el modo sin conexión también pueda responder por significado.
 - Caché de respuestas por pregunta normalizada y recarga del corpus en caliente.
-- Autenticación, autorización por rol y auditoría; PostgreSQL con `pgvector` en producción.
+- Autenticación, autorización por rol y auditoría.
+- En producción: modelos de OpenAI y `text-embedding-3` vía Azure OpenAI, índices en Azure AI Search (búsqueda híbrida y reordenador semántico), Redis para los hilos de conversación y Cosmos DB para el historial (Cuestionario, secciones 2 y 7).
 - Banco de pruebas adversariales (prompt injection) y clasificador de intención como capa adicional.
 - Enrutador opcional con LLM (con el enrutador por reglas como *fallback*) y prompts por dominio para cada agente.
 
