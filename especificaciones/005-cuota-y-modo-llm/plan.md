@@ -48,3 +48,5 @@
 | RF-L6 | `SelectorModo.test.tsx` |
 | RF-L7 | `test_api.py::test_consulta_valida` (conjunto exacto de campos) |
 | RNF-L2 | `test_cuota_llm.py::test_get_llm_no_expone_la_clave` |
+| RNF-L1 | `test_cuota_llm.py::test_groq_registra_cuota_y_cuenta_llamadas` (la cuota sale de las cabeceras de la misma llamada) |
+| RNF-L3 | todas las pruebas reemplazan `ClienteHttpLLM.post` y `fetch`; el CI corre sin red |

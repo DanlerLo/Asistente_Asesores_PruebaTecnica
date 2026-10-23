@@ -1,6 +1,6 @@
 # AGENTS.md — Instrucciones para agentes de desarrollo
 
-Este archivo instruye a cualquier agente de IA (Claude Code, Copilot, Cursor u otro) que trabaje en este repositorio. Complementa, no reemplaza, la constitución en `sdd/constitucion/constitucion.md`, que prevalece ante cualquier conflicto.
+Este archivo instruye a cualquier agente de IA (Claude Code, Copilot, Cursor u otro) que trabaje en este repositorio. Complementa, no reemplaza, la constitución en `constitucion/constitucion.md`, que prevalece ante cualquier conflicto.
 
 ## 1. Qué es este proyecto
 Asistente interno para asesores comerciales. Responde preguntas sobre productos de crédito, microseguros, procedimientos y políticas **únicamente** con el contenido de `Data/*.md`, cita las fuentes y persiste cada consulta con su estado (`Exitosa`, `Sin información suficiente`, `Bloqueada por seguridad`).
@@ -9,7 +9,7 @@ Asistente interno para asesores comerciales. Responde preguntas sobre productos 
 - Frontend: React 19 + TypeScript + Vite — `src/frontend/`.
 - Backend en capas: `api/` → `orquestador/` → `agentes/` → `generacion/` → `herramientas/`; transversales: `seguridad/`, `infraestructura/`, `dominio.py`, `config.py`. Las capas no importan hacia arriba (`tests/backend/test_arquitectura.py`).
 - Pruebas: `tests/backend` (pytest) y `tests/frontend` (Vitest).
-- Especificaciones: `sdd/especificaciones/<nnn>-<caracteristica>/{especificacion,plan,tareas}.md`.
+- Especificaciones: `especificaciones/<nnn>-<caracteristica>/{especificacion,plan,tareas}.md`.
 
 ## 2. Reglas de seguridad (obligatorias)
 1. **Nunca leas, copies, cites ni resumas el contenido de `Data/Información restringida.md`** ni de ningún archivo cuya cabecera diga `CLASIFICACIÓN: CONFIDENCIAL`. Si una tarea parece requerirlo, detente y pregunta a la persona.
@@ -57,11 +57,11 @@ npm test && npm run build                    # pruebas y verificación de tipos
 ## 7. Dónde buscar
 | Necesito… | Archivo |
 |-----------|---------|
-| Principios | `sdd/constitucion/constitucion.md` |
-| Contrato de la API y escenarios | `sdd/especificaciones/001-consulta-documental/especificacion.md` |
-| Reglas de seguridad | `sdd/especificaciones/002-guardrails-seguridad/`, `src/backend/asistente/seguridad/guardrails.py` (consultas) y `seguridad/ingesta.py` (documentos) |
+| Principios | `constitucion/constitucion.md` |
+| Contrato de la API y escenarios | `especificaciones/001-consulta-documental/especificacion.md` |
+| Reglas de seguridad | `especificaciones/002-guardrails-seguridad/`, `src/backend/asistente/seguridad/guardrails.py` (consultas) y `seguridad/ingesta.py` (documentos) |
 | Cómo se fragmentan los documentos | `src/backend/asistente/herramientas/markdown.py` (la carga, en `corpus.py`) |
-| Cómo se elige la respuesta | `src/backend/asistente/generacion/extractivo.py` (docstring de `seleccionar_lineas`) |
+| Cómo se elige la respuesta | `src/backend/asistente/generacion/extractivo.py` (reglas en `especificaciones/001-consulta-documental/plan.md`, «Reglas de selección de líneas») |
 | Qué agente atiende cada pregunta | `src/backend/asistente/orquestador/enrutador.py` y `agentes/` |
 | Prompts del LLM | `src/backend/asistente/generacion/prompts/*.j2` |
 | Decisiones y justificación | `plan.md` de cada característica y `docs/Cuestionario.md` |

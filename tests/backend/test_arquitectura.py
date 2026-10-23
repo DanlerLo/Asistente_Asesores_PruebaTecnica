@@ -91,7 +91,7 @@ def test_ningun_archivo_contiene_valores_restringidos():
     raiz = PAQUETE.parents[2]
     valores = valores_restringidos()
     revisados = [raiz / n for n in ("README.md", "AGENTS.md", ".env.example")]
-    for carpeta in ("src", "tests", "docs", "sdd"):
+    for carpeta in ("src", "tests", "docs", "constitucion", "especificaciones"):
         revisados += [p for p in (raiz / carpeta).rglob("*") if p.is_file() and "node_modules" not in p.parts
                       and p.suffix in {".py", ".ts", ".tsx", ".md", ".j2", ".txt", ".json", ".css", ".html"}]
     con_fuga = [str(p.relative_to(raiz)) for p in revisados if any(v in p.read_text(encoding="utf-8") for v in valores)]

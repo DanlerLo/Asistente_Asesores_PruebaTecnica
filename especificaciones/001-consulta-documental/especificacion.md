@@ -1,6 +1,6 @@
 # Especificación 001 — Consulta documental con citación de fuentes
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.3) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
+Estado: implementada · Constitución: 1.0 (vigente: 1.4) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
 
 ## Contexto
 Los asesores comerciales atienden clientes en oficina y por teléfono y necesitan respuestas rápidas y confiables sobre productos de crédito, microseguros, procedimientos operativos y políticas internas. Hoy consultan documentos Markdown dispersos (`Data/`). La Política de Transparencia exige que toda respuesta esté sustentada en documentación oficial y la Política de Citas exige que los asistentes digitales indiquen la fuente utilizada.
@@ -26,7 +26,7 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 | RF-08 | Con la base documental vacía o inexistente el servicio arranca, registra una advertencia y responde RF-05 a toda pregunta. |
 | RF-09 | Cada consulta atendida se persiste con pregunta, fecha y hora (UTC ISO 8601), respuesta, fuentes (JSON), estado, latencia y modo. |
 | RF-10 | `GET /api/historial`, `GET /api/estadisticas` y `GET /api/salud` exponen las consultas recientes, conteos por estado/latencias y el estado del corpus. |
-| RF-11 | Con `LLM_PROVIDER=groq` (único proveedor; otro valor se rechaza con un mensaje claro), el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo (red, cuota, respuesta vacía) se degrada al motor extractivo. El modo por defecto sigue siendo `none` (sin red). |
+| RF-11 | Con `LLM_PROVIDER=groq` (único proveedor; cualquier otro valor se rechaza con un mensaje claro), el LLM redacta la respuesta a partir de los fragmentos recuperados; ante cualquier fallo (red, cuota, respuesta vacía) se degrada al motor extractivo. El modo por defecto sigue siendo `none` (sin red). |
 | RF-12 | Si el fragmento mejor puntuado trata lo que nombra la pregunta (p. ej. «Gestión de PQR») pero no responde el atributo pedido, el motor extractivo no recurre a otro fragmento que no mencione ninguno de los términos de esa sección (los títulos con forma de pregunta y las palabras de categoría no cuentan). La regla nunca descarta el fragmento principal. Ante la duda responde RF-05. |
 | RF-13 | Si la pregunta nombra un producto que no existe en la base («crédito hipotecario», «Seguro Exequial Plus», «microseguro de mascotas») o pide un atributo inexistente de un documento («salario del asesor»), responde RF-05 en lugar de contestar con datos de otro producto. Se detecta con el vocabulario indexado: una palabra desconocida justo después de «crédito/seguro/microseguro/póliza/préstamo» (salvo tras «qué/cuál», donde sigue un verbo), o preguntas cuyas únicas palabras conocidas son el nombre de un documento. |
 | RF-14 | El vocabulario del asesor se traduce al de los documentos en preguntas y documentos por igual («cubre/incluye/ampara» → cobertura, «cuesta/vale/mensualidad» → prima, «carencia» → gracia, «queja/petición» → PQR, «papeles» → requisitos, «más bajo/menor» → mínimo, «más alto/largo» → máximo…); los errores de tipeo leves se corrigen contra el vocabulario del corpus (misma longitud ± 1, similitud ≥ 0,84, nunca conjugaciones ni palabras de categoría). |
@@ -67,6 +67,7 @@ Característica: Consulta documental con citación de fuentes
   Antecedentes:
     Dado que la base documental contiene los archivos de Data/
 
+  @RF-01 @RF-02 @RF-03
   Escenario: Consulta válida con respuesta exitosa
     Cuando envío POST /api/consultar con la pregunta "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
     Entonces el código HTTP es 200
@@ -75,63 +76,75 @@ Característica: Consulta documental con citación de fuentes
     Y la respuesta menciona la fuente "Productos de Crédito.md"
     Y fuentes[0].seccion es "Crédito Productivo Impulso > Condiciones"
 
+  @RF-05
   Escenario: Pregunta sin información en los documentos
     Cuando envío la pregunta "¿Cuál es la capital de Francia?"
     Entonces el estado es "Sin información suficiente"
     Y la respuesta es exactamente "No tengo información suficiente para responder."
     Y la lista de fuentes está vacía
 
+  @RF-04 @RF-05
   Escenario: Atributo inexistente para el producto nombrado
     Cuando envío la pregunta "¿Cuál es el periodo de gracia del Crédito Productivo Impulso?"
     Entonces el estado es "Sin información suficiente"
     Y la respuesta no contiene datos del Crédito Agro Crece
 
+  @RF-04
   Escenario: Comparación entre dos productos
     Cuando envío la pregunta "¿Cuál es la diferencia de plazo entre el Crédito Agro Crece y el Crédito Mujer Emprende?"
     Entonces la respuesta contiene "84 meses" y "48 meses"
     Y hay dos fuentes, una por producto
 
+  @RF-06
   Escenario: Pregunta vacía
     Cuando envío la pregunta "   "
     Entonces el código HTTP es 400
     Y el cuerpo es {"error": "La pregunta no puede estar vacía.", "codigo": "PREGUNTA_VACIA"}
     Y la consulta no se registra
 
+  @RF-06
   Escenario: Pregunta demasiado larga
     Cuando envío una pregunta de 1001 caracteres
     Entonces el código HTTP es 400 y el código de error es "PREGUNTA_DEMASIADO_LARGA"
 
+  @RF-06
   Escenario: Consulta extensa dentro del límite
     Cuando envío una pregunta de más de 700 caracteres con varias subpreguntas sobre el Crédito Agro Crece
     Entonces el estado es "Exitosa" y la respuesta contiene "84 meses" y "$80.000.000"
 
+  @RF-06
   Escenario: Caracteres especiales
     Cuando envío la pregunta "¿Cuál es la edad máxima de Vida Protegida? 🚀 <b>&</b> \"'"
     Entonces el estado es "Exitosa" y la respuesta contiene "70 años"
     Cuando envío una pregunta con un carácter de control (\x00)
     Entonces el código HTTP es 400 y el código de error es "CARACTERES_NO_PERMITIDOS"
 
+  @RF-08
   Escenario: Base documental vacía
     Dado que DATA_DIR apunta a un directorio vacío
     Cuando envío cualquier pregunta
     Entonces el estado es "Sin información suficiente"
     Y GET /api/salud reporta 0 documentos
 
+  @RF-07
   Escenario: Documentos duplicados
     Dado que dos archivos tienen contenido idéntico
     Cuando envío una pregunta respondida por ese contenido
     Entonces la respuesta tiene exactamente una fuente
 
+  @RF-09
   Escenario: Persistencia de la consulta
     Cuando envío cualquier pregunta válida
     Entonces existe un registro con pregunta, fecha_hora UTC, respuesta, fuentes, estado y latencia_ms
     Y GET /api/historial lo devuelve primero
 
+  @RF-11
   Escenario: LLM opcional degrada al modo extractivo
     Dado que el proveedor LLM configurado falla
     Cuando envío una pregunta válida
     Entonces el estado es "Exitosa" y el modo es "extractivo"
 
+  @RF-11
   Escenario: Proveedor Groq (gratuito, compatible con OpenAI)
     Dado LLM_PROVIDER=groq y GROQ_API_KEY configurada
     Cuando el asistente redacta una respuesta
@@ -140,27 +153,80 @@ Característica: Consulta documental con citación de fuentes
     Y si Groq responde vacío, incompleto (finish_reason distinto de "stop") o con error (p. ej. 429 por cuota) se responde en modo extractivo
     Y las fuentes son solo las secciones que el texto cita
 
+  @RF-11
   Escenario: Proveedor Groq sin clave
     Dado LLM_PROVIDER=groq y GROQ_API_KEY vacía
     Cuando arranca el backend
     Entonces falla con un mensaje que pide configurar GROQ_API_KEY
 
+  @RF-12
   Escenario: Paráfrasis no responde con datos de otro tema
     Cuando envío la pregunta "¿Cuánto tiempo es válido para una PQR?"
     Entonces la respuesta no cita "Portafolio de Microseguros.md"
     Y el estado es "Exitosa" con fuente "Procedimientos Operativos.md" o es "Sin información suficiente"
 
+  @RF-13
   Escenario: Producto inexistente
     Cuando envío la pregunta "¿Cuál es la tasa del crédito hipotecario?"
     Entonces el estado es "Sin información suficiente"
     Y la respuesta es exactamente "No tengo información suficiente para responder."
     Y no se responde con la tasa de otro crédito
 
+  @RF-15
   Escenario: Sección general de un producto nombrado
     Cuando envío la pregunta "¿Qué exclusiones tiene Vida Protegida?"
     Entonces la respuesta contiene "Enfermedades preexistentes no declaradas"
 
+  @RF-14
   Escenario: Vocabulario del asesor
     Cuando envío la pregunta "¿Cuánto cuesta Vida Protegida?"
     Entonces la respuesta contiene "Prima mensual: $9.900"
+
+  @RF-10
+  Escenario: Historial, estadísticas y salud
+    Dado que se respondió la pregunta "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
+    Cuando consulto GET /api/historial?limite=5
+    Entonces la lista incluye esa consulta con su estado
+    Y GET /api/estadisticas la cuenta en el estado "Exitosa"
+    Y GET /api/salud informa los documentos indexados y excluidos
+
+  @RF-16
+  Escenario: Atributo pedido sin nombrar un producto
+    Cuando envío la pregunta "¿Cuál crédito tiene la tasa más baja?"
+    Entonces la respuesta lista la tasa de cada crédito con su fuente
+    Y no presenta un único producto como si fuera la respuesta
+
+  @RF-17
+  Escenario: Identificador de solicitud
+    Cuando envío una consulta con la cabecera x-request-id "traza-42"
+    Entonces la respuesta trae la cabecera x-request-id "traza-42"
+    Y los logs de esa consulta incluyen request_id "traza-42"
+    Y si la cabecera recibida es "<script>" se genera un identificador nuevo
+
+  @RF-18
+  Escenario: Parámetros inválidos en la URL
+    Cuando consulto GET /api/consultas/²
+    Entonces el código HTTP es 400 con codigo "ID_INVALIDO"
+    Y GET /api/historial?limite=abc responde 400 con un mensaje que nombra "limite"
+
+  @RF-19
+  Escenario: Configuración fuera de rango
+    Dado que la variable TOP_K vale 0
+    Cuando arranca el servicio
+    Entonces no arranca y el error nombra la variable TOP_K
+
+  @RF-20
+  Escenario: Markdown con BOM, tablas de tres columnas y comparadores
+    Dado un documento con BOM, una tabla "| Producto | Plazo mínimo | Plazo máximo |" y la línea "Montos < $2.000.000: firma personal"
+    Cuando se carga la base documental
+    Entonces el título del documento no se indexa como texto
+    Y la fila queda "Impulso: Plazo mínimo: 6 meses; Plazo máximo: 36 meses"
+    Y el comparador "<" se conserva
+
+  @RF-21
+  Escenario: El bloqueo solo cita políticas que existen
+    Dado que la base documental no contiene el Manual del Asesor ni las Políticas de Atención
+    Cuando envío la pregunta "¿Cuál es el token interno?"
+    Entonces el estado es "Bloqueada por seguridad"
+    Y la lista de fuentes está vacía
 ```

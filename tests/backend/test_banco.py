@@ -76,3 +76,20 @@ def test_el_banco_coincide_con_la_foto(respuestas: dict[str, dict]):
     preguntas = esperado.keys() | foto.keys()
     cambios = {p: (esperado.get(p), foto.get(p)) for p in preguntas if esperado.get(p) != foto.get(p)}
     assert cambios == {}, f"{len(cambios)} respuestas cambiaron (esperado, actual): {cambios}"
+
+
+def test_latencia_p95_del_modo_extractivo(cfg, corpus):
+    """RNF-02: p95 < 100 ms en modo extractivo sobre todo el banco."""
+    import time
+
+    from asistente.infraestructura.persistencia import RepositorioConsultas
+
+    orquestador = Orquestador(cfg, corpus, RepositorioConsultas(":memory:"))
+    tiempos = []
+    for pregunta in _preguntas():
+        inicio = time.perf_counter()
+        orquestador.consultar(pregunta)
+        tiempos.append((time.perf_counter() - inicio) * 1000)
+    tiempos.sort()
+    p95 = tiempos[int(len(tiempos) * 0.95)]
+    assert p95 < 100, f"p95 = {p95:.1f} ms"

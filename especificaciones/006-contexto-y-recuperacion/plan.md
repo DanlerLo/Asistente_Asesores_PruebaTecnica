@@ -40,7 +40,7 @@
 |-------|---------|-------|
 | Unitarias | `tests/backend/test_contexto.py` | `es_seguimiento`, `entidades_nombradas`, `resolver_pregunta`, comparativos |
 | Orquestador y API | `tests/backend/test_contexto.py` | escenarios Gherkin, contexto inválido/malicioso, persistencia de la pregunta original, LLM recibe la pregunta efectiva, `GET /api/consultas/{id}` |
-| Regresión | banco de trabajo de 316 preguntas (hoy versionado con 293, ver nota) | sin contexto, solo cambian preguntas de seguimiento (RF-C5) |
+| Regresión | `tests/backend/test_banco.py` (293 preguntas) | sin contexto, solo cambian preguntas de seguimiento (RF-C5) |
 | Frontend | `tests/frontend/Conversacion.test.tsx` | envío del contexto, «Nueva conversación» |
 
 ## Trazabilidad
@@ -54,5 +54,6 @@
 | RF-C8 | `test_contexto.py::test_comparativos` |
 | RF-C9 | `test_contexto.py::test_get_consulta_por_id*` |
 | RF-C10 | `Conversacion.test.tsx` |
-
-> **Nota sobre el banco.** Las cifras 316 y 340 de estos planes son bancos de trabajo usados durante el desarrollo, con preguntas repetidas y variantes de una misma pregunta. El banco versionado (`tests/backend/banco_preguntas.txt`) quedó en **293** preguntas únicas tras depurarlas; es el que corre `test_banco.py`.
+| RNF-C1 | `test_banco.py::test_el_banco_es_determinista`; `test_contexto.py::test_resolver_pregunta_hereda_la_entidad_mas_reciente` |
+| RNF-C2 | la tabla `consultas` no cambia: `test_contexto.py::test_se_persiste_la_pregunta_original` usa el mismo repositorio |
+| RNF-C3 | `test_contexto.py::test_contexto_malicioso_se_ignora`, `test_entidades_nombradas` (el referente es siempre un nombre del corpus) |

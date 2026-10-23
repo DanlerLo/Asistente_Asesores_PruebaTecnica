@@ -1,6 +1,6 @@
 # Especificación 003 — Interfaz web para el asesor
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.3) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.4) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
 
 ## Contexto
 El asesor necesita una forma sencilla de hacer preguntas y ver, de un vistazo, la respuesta, su estado y las fuentes que la respaldan, para poder citarlas al cliente. La prueba no evalúa diseño visual, pero sí que la solución se ejecute completamente en local y muestre respuesta, fuentes, errores y estado de procesamiento.
@@ -50,15 +50,18 @@ Una aplicación web ligera (React + TypeScript) que consuma `POST /api/consultar
 ```gherkin
 Característica: Interfaz web del asesor
 
+  @RF-U1
   Escenario: Formulario inicial
     Cuando abro la aplicación
     Entonces veo el campo "Pregunta" y el botón "Consultar"
 
+  @RF-U2
   Escenario: Pregunta vacía
     Cuando pulso "Consultar" sin escribir nada
     Entonces veo el error "Escribe una pregunta antes de consultar."
     Y no se realiza ninguna llamada a /api/consultar
 
+  @RF-U3 @RF-U4 @RF-U5
   Escenario: Consulta exitosa con fuentes
     Dado que el backend responde Exitosa con una fuente
     Cuando escribo una pregunta y pulso "Consultar"
@@ -66,23 +69,28 @@ Característica: Interfaz web del asesor
     Y luego veo el texto de la respuesta, el badge "Exitosa", el archivo y la sección de la fuente
     Y el indicador de procesamiento desaparece
 
+  @RF-U4 @RF-U5
   Escenario: Sin información suficiente
     Dado que el backend responde "Sin información suficiente" sin fuentes
     Entonces veo la frase canónica, el badge correspondiente y el aviso "Sin fuentes"
 
+  @RF-U6
   Escenario: Error del backend
     Dado que el backend responde 400 con un mensaje de error
     Entonces veo ese mensaje en un elemento con role="alert"
 
+  @RF-U6
   Escenario: Error de conexión
     Dado que fetch falla
     Entonces veo "No se pudo conectar con el servidor"
 
+  @RF-U7
   Escenario: Historial
     Dado que el historial contiene una consulta bloqueada
     Entonces veo la pregunta con el badge "Bloqueada por seguridad"
     Cuando la pulso, se vuelve a consultar y se muestra la respuesta
 
+  @RF-U9
   Escenario: Mensaje amigable sin información
     Cuando la respuesta tiene estado "Sin información suficiente"
     Entonces veo la frase "No tengo información suficiente para responder." sin cambios
@@ -90,6 +98,7 @@ Característica: Interfaz web del asesor
     Y preguntas de ejemplo que al pulsarlas quedan en la caja de texto
     Y ese mensaje no aparece cuando la respuesta es "Exitosa"
 
+  @RF-U11
   Escenario: Conversación tipo chat
     Cuando envío "¿Cuál es el monto máximo del Crédito Productivo Impulso?"
     Entonces veo mi pregunta como mensaje del asesor
@@ -97,14 +106,50 @@ Característica: Interfaz web del asesor
     Y después veo la respuesta como mensaje del asistente con su estado y sus fuentes
     Y la caja de texto queda vacía para la siguiente pregunta
 
+  @RF-U12
   Escenario: El servidor no responde
     Dado que el backend no responde en 45 segundos
     Cuando envío una pregunta
     Entonces veo el error «El servidor tardó demasiado en responder»
     Y la pregunta vuelve a la caja de texto
 
+  @RF-U12
   Escenario: Respuesta inválida del servidor
     Dado que el servidor responde 200 con un cuerpo que no es una respuesta válida
     Cuando envío una pregunta
     Entonces veo un error y no queda «Procesando la consulta…»
+
+  @RF-U12
+  Escenario: Un error de pintado no deja la página en blanco
+    Dado que el servidor responde con fuentes en un formato inesperado
+    Cuando se muestra la respuesta
+    Entonces veo «Algo salió mal al mostrar la respuesta»
+    Y puedo seguir consultando
+
+  @RF-U12
+  Escenario: El historial no lanza otra consulta mientras se procesa
+    Dado que hay una consulta en curso
+    Entonces los botones del historial están deshabilitados
+    Y lo que estoy escribiendo en la caja de texto no se borra
+    Y al terminar la consulta el foco vuelve a la caja de texto
+
+  @RF-U13
+  Escenario: Límite de longitud informado por el backend
+    Dado que el backend informa max_longitud_pregunta 50 en GET /api/salud
+    Cuando escribo una pregunta de 51 caracteres y pulso «Consultar»
+    Entonces veo «La pregunta supera el máximo de 50 caracteres.»
+    Y no se llama al backend
+
+  @RF-U8
+  Escenario: Backend en otra dirección
+    Dado que VITE_API_URL apunta a "http://servidor:8000"
+    Cuando envío una pregunta
+    Entonces la petición se hace a "http://servidor:8000/api/consultar"
+
+  @RF-U10
+  Escenario: Selector de modo en la cabecera
+    Dado que el backend tiene Groq configurado
+    Cuando abro la aplicación
+    Entonces veo los botones «Modo conexión (Groq)» y «Modo sin conexión» en la cabecera
+    Y al pasar a «Modo sin conexión» aparece un aviso que explica qué implica
 ```

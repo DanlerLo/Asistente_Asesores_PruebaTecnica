@@ -1,41 +1,86 @@
 # Cuestionario
 
-> Las secciones marcadas con ✎ describen la experiencia personal del candidato: fueron redactadas a partir de la sesión de trabajo real y deben revisarse y completarse con cualquier herramienta o actividad adicional antes de la entrega.
-
 ## 1. Uso de IA
 
-### Herramientas utilizadas ✎
-- **Claude (claude.ai)** como asistente principal de ingeniería: diseño de la solución, generación de código, pruebas, documentación SDD y este cuestionario, en una sesión conversacional con ejecución de código y pruebas en un entorno aislado.
-- **pytest, Vitest, TypeScript** como validadores objetivos de todo lo generado (la suite completa se ejecutó tras cada cambio).
-- Sin herramientas pagas: el LLM no es dependencia de la solución; toda la ejecución es local.
-- ✎ Añadir aquí si se usaron otras herramientas (Claude Code, Copilot, Cursor, etc.).
+**Mi enfoque en una línea:** yo diseño, decido y valido; la IA ejecuta bajo un contrato explícito (`AGENTS.md`) y nada entra al repositorio sin pasar por pruebas que yo puedo leer.
 
-### Qué actividades se delegaron a la IA
-- Redacción inicial de la constitución, especificaciones (requerimientos, riesgos, escenarios Gherkin), planes y listas de tareas, a partir de las decisiones tomadas por la persona.
-- Implementación del backend (fragmentación de Markdown, BM25, motor extractivo, guardrails, persistencia, API) y del frontend, siguiendo un ciclo rojo → verde: escribir pruebas, ejecutarlas, corregir.
-- Ampliación de los datos de ejemplo con registros ficticios coherentes (productos, microseguros, procedimientos, preguntas frecuentes).
-- Depuración iterativa del motor con un banco de preguntas de control, que empezó con ~30 preguntas y hoy está versionado con 293 (`tests/backend/banco_preguntas.txt`, ejecutado por `tests/backend/test_banco.py` contra una foto de respuestas esperadas): la IA proponía reglas y las validaba contra las pruebas y el banco antes y después de cada cambio.
-- Redacción de README, AGENTS.md y borrador de este cuestionario.
+### La ingeniería de IA de la solución
+El asistente no es un chatbot conectado a un LLM: es un sistema de recuperación y generación (RAG) con control de alucinaciones, seguridad en capas y evaluación medible. Las decisiones de diseño son mías; todo se puede verificar en el repositorio.
 
-### Qué actividades se realizaron manualmente ✎
-- Lectura del enunciado y de los archivos de datos; identificación de la trampa de seguridad en `Información restringida.md` y de las reglas de negocio implícitas en las políticas (citación obligatoria, frase canónica, escalamiento).
-- Decisiones de alcance y de arquitectura: stack (Python/FastAPI + React/TypeScript), ejecución 100 % local con LLM opcional, SQLite, recuperación léxica extractiva en lugar de embeddings, estructura de carpetas (`sdd/`), seis características (001–006) en lugar de las dos del ejemplo.
-- Revisión del código y de las pruebas generadas; verificación manual del servidor real con `curl` y de la interfaz; revisión de que ningún valor del archivo restringido aparece en código, pruebas o respuestas.
-- Decisión de qué sugerencias aceptar o rechazar (siguiente sección) y de cuándo detener la iteración del motor (26/28 → 31/32 → 32/32 en la primera versión del banco de control; después, comparación antes/después sobre el banco versionado, que reveló y evitó regresiones como la primera versión de la regla RF-12).
-- ✎ Completar con la configuración del repositorio en GitHub, commits y cualquier ajuste posterior.
+| Área | Qué hace la solución y por qué | Dónde verlo |
+|------|--------------------------------|-------------|
+| **Recuperación (la R de RAG)** | BM25 propio sobre fragmentos por encabezado Markdown, con *stemming* en español, sinónimos del vocabulario del asesor («cuánto cuesta» → prima) y corrección ortográfica contra el vocabulario del corpus. Elegí recuperación léxica porque el corpus es pequeño y de vocabulario controlado: es determinista, explicable y no necesita red. Si la pregunta nombra un producto, los demás productos quedan fuera, para no responder con datos ajenos. | `herramientas/recuperacion.py`, `herramientas/texto.py` |
+| **Arquitectura agéntica** | Un orquestador valida, aplica la seguridad y enruta de forma determinista. Los especialistas (crédito, microseguros, operativo) son dueños de sus documentos; el de crédito y el de microseguros conocen su catálogo y, ante «¿cuál tiene la tasa más baja?», listan el dato de cada producto en vez de inventar un ganador. Un agente aparte atiende lo que está fuera de dominio. El enrutamiento no lo decide un LLM: es reproducible y no cuesta tokens. | `orquestador/`, `agentes/` |
+| **Ingeniería de prompts** | Los prompts viven en plantillas Jinja2 versionadas, fuera del código. `StrictUndefined` hace fallar una variable faltante en lugar de enviar un prompt incompleto. Un filtro propio neutraliza en los datos los delimitadores con los que se podría inyectar instrucciones. Los fragmentos van marcados como datos. El prompt exige citar la sección, responder solo con lo recuperado, no calcular y devolver la frase exacta del enunciado si no hay evidencia. | `generacion/prompts/*.j2`, `generacion/plantillas.py` |
+| **Integración con el LLM** | Groq con `openai/gpt-oss-20b` (gratuito, como exige el enunciado): temperatura 0, `reasoning_effort: low` e `include_reasoning: false` para que el razonamiento no se mezcle con la respuesta. Una respuesta cortada (`finish_reason` distinto de `stop`) se descarta. Las fuentes que se devuelven son **solo las secciones que el texto del modelo cita**, no todo lo recuperado. La cuota se lee de las cabeceras `x-ratelimit-*` y se muestra al asesor. | `generacion/llm.py` |
+| **Degradación controlada** | El LLM es opcional. Ante error, timeout, cuota agotada o respuesta incompleta responde el motor extractivo, que copia líneas literales de los documentos y por construcción no puede alucinar. Además hay un modo sin conexión que se activa desde la interfaz sin reiniciar. | `agentes/base.py`, `generacion/extractivo.py` |
+| **Guardrails en capas** | **Entrada:** validación, normalización Unicode (NFKC, caracteres invisibles, homoglifos, leetspeak) y bloqueo por intención. **Conocimiento:** un documento restringido nunca se indexa; lo deciden reglas deterministas en código (nombre, marca de clasificación en cualquier línea o contenido con forma de credencial), nunca un agente ni el LLM. Las instrucciones embebidas en los documentos se descartan en la ingesta. **Salida:** una lista de denegación derivada del documento restringido y patrones de credencial se aplican al texto y a cada fuente. **Persistencia:** el historial es compartido, así que la pregunta se guarda enmascarada (cédulas, cuentas, correos y credenciales ocultos). Los datos de terceros se bloquean por intención (pedir el dato), no por palabras sueltas, para no bloquear preguntas de procedimiento. Ante la duda, el sistema prefiere bloquear o decir «no tengo información» a dar un dato equivocado. | `seguridad/guardrails.py`, `seguridad/ingesta.py` |
+| **Memoria de conversación** | «¿Y el más bajo?» hereda el producto de la pregunta anterior; sin referente claro responde la frase canónica en vez de adivinar. El contexto también pasa por los guardrails, para que no sirva como vía de inyección. | `orquestador/contexto.py` |
+| **Evaluación** | Un conjunto de 97 preguntas con respuesta esperada y una precisión mínima que solo puede subir (de **48,5 % a 83,5 %**). Además un banco de regresión de 293 preguntas que detecta cualquier cambio de texto, estado o fuente. Cada regla del motor se acepta solo si mejora la métrica sin romper el banco. | `tests/backend/test_evaluacion.py`, `test_banco.py` |
+| **Observabilidad** | Logs JSON con el agente elegido, el motivo del enrutamiento, la latencia y el `request_id` de cada solicitud. Cada consulta se persiste con su estado, que permite medir la tasa de «sin información» y de bloqueos. | `infraestructura/` |
 
-### Qué sugerencias de la IA se rechazaron ✎
-- **Un umbral de cobertura alto (0,5) como criterio principal de "sin información".** Producía falsos negativos en preguntas largas; se reemplazó por reglas explicables (mínimo dos términos coincidentes, selección de líneas por atributos, bloqueo por entidad) y el umbral quedó como piso de seguridad en 0,3.
-- **Añadir un segundo fragmento a la respuesta siempre que su puntaje fuera cercano.** Generaba respuestas ruidosas con datos de otros productos; se restringió a entidades que la pregunta nombra explícitamente (comparaciones).
-- **Un rastro de autoría "generado por IA" en los commits y un único commit masivo.** Se prefirió un historial de commits por característica, escrito por la persona.
-- ✎ Añadir otras sugerencias rechazadas durante la revisión.
+### Herramientas utilizadas
+| Para qué | Herramienta |
+|----------|-------------|
+| Agente de desarrollo | **Claude Code** en **VS Code**, instruido con `AGENTS.md` y la constitución |
+| Solución | Python 3.12 + FastAPI, **SQLite**, React 19 + TypeScript + Vite, Jinja2; **GroqCloud** (gratuito) como LLM opcional |
+| Calidad | pytest + pytest-cov, Vitest + Testing Library, ruff, mypy, Playwright (recorridos en navegador) |
+| Entrega | Git, **GitHub** y **GitHub Actions** (CI en cada push); uv para el entorno |
 
-### Cómo se validaron las respuestas de la IA
-1. **Pruebas automatizadas como oráculo:** la suite de backend (pytest) y la de frontend (Vitest), escritas antes o junto con el código; ningún cambio se aceptó con la suite en rojo.
-2. **Banco de preguntas de control** (32 preguntas reales de asesor con la respuesta esperada) ejecutado contra el servicio tras cada ajuste del motor, para detectar regresiones que las pruebas unitarias no cubren.
-3. **Pruebas negativas de seguridad:** verificación de que los valores del documento restringido no aparecen en el índice, en el contexto enviado a un LLM, ni en ninguna respuesta; se leen del archivo en tiempo de prueba para no copiarlos al código.
-4. **Revisión de código** módulo por módulo, con especial atención a `seguridad/guardrails.py`, `herramientas/corpus.py` y `generacion/extractivo.py`.
-5. **Ejecución real:** servidor levantado con `uvicorn`, consultas con `curl`, build del frontend y verificación de tipos.
+La solución no requiere herramientas pagas: corre 100 % local y el LLM es opcional.
+
+### Qué actividades realicé yo
+- **Construí la primera versión de la aplicación**: maquetación del frontend y código base del backend y del frontend.
+- **Definí la arquitectura.** Cuando la primera versión creció como un monolito, la rediseñé como **orquestador + agentes especializados** (crédito, microseguros, operativo) **+ herramientas compartidas + un agente para preguntas fuera de dominio**, en capas que no pueden importarse hacia arriba (lo verifica una prueba).
+- **Diseñé la interfaz tipo chat**: referencia visual, disposición de mensajes, selector de modo discreto con explicación del modo sin conexión, aviso de cuota y paleta de colores.
+- **Leí el negocio antes que el código**: identifiqué la trampa de `Información restringida.md` y las reglas implícitas de las políticas (citación obligatoria, frase canónica, escalamiento), y las convertí en requisitos.
+- **Tomé las decisiones de producto y de alcance:**
+  - LLM gratuito (Groq) y opcional, con modo sin conexión.
+  - Retirar los proveedores que no se usaban.
+  - Memoria de conversación y consulta por ID.
+  - Mensaje de orientación que no altera la frase exigida por el enunciado.
+- **Gestioné la calidad como proceso:**
+  - Exigí TDD y cero pruebas en rojo.
+  - Pedí una auditoría independiente del proyecto y prioricé sus 85 hallazgos por severidad.
+  - Decidí qué se corregía y qué quedaba documentado como limitación.
+- **Decisiones de seguridad:**
+  - Que la detección de documentos restringidos fuera más amplia y determinista, sin dejarla en manos de los agentes.
+  - Guardar el historial enmascarado, porque sin autenticación es compartido.
+- **Gestioné la entrega:** repositorio en GitHub, rama `prueba-tecnica`, historial por bloques con el requerimiento (RF-xx) en cada mensaje y CI.
+
+### Qué delegué a la IA
+Sobre mi código base y mis decisiones:
+- las refactorizaciones (de monolito a agentes, prompts a Jinja2, capas);
+- la implementación de las características que definí;
+- las pruebas de cada cambio;
+- el afinamiento del motor de respuesta;
+- las correcciones de la auditoría;
+- la documentación SDD.
+
+Siempre en ciclo especificación → prueba roja → implementación → suite completa.
+
+### Qué sugerencias de la IA rechacé
+- **Una regla del motor que pasaba todas las pruebas y aun así estaba mal.** Para RF-12 la IA propuso exigir que el fragmento de respaldo compartiera términos con *todos* los encabezados recuperados. Antes de aceptarla la medí contra el banco de regresión: rompía **17 respuestas correctas**. La rechacé y se rediseñó; la versión final solo cambia las 2 respuestas que estaban mal. Desde entonces ninguna regla del motor entra sin medir el antes y el después.
+- **Sinónimos que «mejoraban» la cobertura** («plata» → monto, «codeudor» → garantía): hacían que algunas preguntas se respondieran con datos de **otro producto**. En un banco, un dato equivocado es peor que decir «no tengo información», así que los retiré.
+- **Un umbral de cobertura alto (0,5)** como criterio de «sin información»: daba falsos negativos en preguntas largas; lo reemplacé por reglas explicables.
+- **Textos de interfaz con tono de chatbot genérico:** los cambié por una línea breve con sugerencias clicables.
+
+### Cómo validé lo que produjo la IA
+No confío en una respuesta de la IA porque suene bien; confío en lo que puedo medir:
+1. **Pruebas como oráculo:** 352 pruebas de backend y 37 de frontend, cobertura del 99 %; nada se acepta en rojo.
+2. **Banco de regresión de 293 preguntas** que compara estado, fuentes y texto. Cuando un cambio movió 87 respuestas, revisé cada una antes de aceptarlo.
+3. **Conjunto de evaluación con respuesta esperada** (97 preguntas) con un mínimo que solo puede subir: la precisión pasó de **48,5 % a 83,5 %**.
+4. **Auditoría independiente** con 7 revisores en paralelo (arquitectura, backend, frontend, seguridad, cumplimiento del enunciado, tooling y calidad del motor); los hallazgos críticos se reprodujeron antes de corregirse.
+5. **Seguridad con pruebas negativas:**
+   - Ningún valor del documento restringido aparece en el índice, en el LLM ni en las respuestas; las pruebas lo leen del archivo en tiempo de ejecución para no copiarlo al código.
+   - Un banco de evasiones del guardrail: caracteres invisibles, homoglifos y leetspeak.
+6. **CI en cada push** con lint, tipos (mypy encontró dos defectos reales al activarse), pruebas y build.
+7. **Decisiones con datos:** por ejemplo, evalué guardar las consultas en JSON en lugar de SQLite para simplificar. Lo medí, JSON resultó más lento y me quedé con SQLite.
+8. **Ejecución real:**
+   - Servidor y consultas con `curl`.
+   - Recorridos de la interfaz en navegador.
+   - Contraste de colores contra WCAG AA.
+   - Revisión del enunciado punto por punto.
 
 ## 2. Decisiones técnicas para paso a productivo
 
@@ -45,7 +90,7 @@ Un esquema de **dos niveles**, manteniendo siempre el motor extractivo determini
 1. **Modelo pequeño y rápido para el 90 % de las consultas** (la clase más económica de la familia Claude, hoy la gama Haiku; verificar el nombre y precio vigentes en https://docs.claude.com/en/docs/about-claude/models). Las preguntas de los asesores son cortas, el contexto son 3–8 fragmentos y la tarea es redactar con fidelidad, no razonar: un modelo pequeño con temperatura 0 es suficiente, barato y de baja latencia.
 2. **Modelo de gama media (clase Sonnet) solo para casos escalados:** comparaciones entre varios productos, preguntas largas o con baja confianza del primer nivel (se detecta por cobertura léxica baja o respuesta canónica del modelo pequeño).
 
-**Implementado en esta prueba (gratuito):** proveedor `groq` (GroqCloud, API compatible con OpenAI) con `openai/gpt-oss-20b` por defecto. Se eligió porque el enunciado no admite herramientas pagas y GroqCloud tiene un plan gratuito sin tarjeta; `gpt-oss-20b` es un modelo de producción vigente (los Llama 3.x del plan gratuito se retiraron el 16/08/2026, según la página de *deprecations* de Groq) y su tamaño aprovecha mejor los límites por minuto del plan gratuito. Se desactiva el razonamiento en la respuesta (`include_reasoning: false`) y se usa `reasoning_effort: low`. Es opcional (`LLM_PROVIDER=groq` + `GROQ_API_KEY`): si la clave falta, el backend no arranca y lo indica con un mensaje claro; ante error, cuota agotada (429) o respuesta incompleta de Groq responde el motor extractivo; con `LLM_PROVIDER=none` (por defecto) siempre responde el motor extractivo. A Groq se envían el prompt del sistema, los fragmentos recuperados y la pregunta del asesor; nunca el documento restringido.
+**Implementado en esta prueba (gratuito):** proveedor `groq` (GroqCloud, API compatible con OpenAI) con `openai/gpt-oss-20b` por defecto. Se eligió porque el enunciado no admite herramientas pagas y GroqCloud tiene un plan gratuito sin tarjeta; `gpt-oss-20b` es un modelo de producción vigente (los Llama 3.x del plan gratuito se retiraron el 16/08/2026, según la página de *deprecations* de Groq) y su tamaño aprovecha mejor los límites por minuto del plan gratuito. Se desactiva el razonamiento en la respuesta (`include_reasoning: false`) y se usa `reasoning_effort: low`. Es opcional (`LLM_PROVIDER=groq` + `GROQ_API_KEY`; la clave no se versiona: para la evaluación la comparto por correo a quien me la pida y estará activa 2 meses): si la clave falta, el backend no arranca y lo indica con un mensaje claro; ante error, cuota agotada (429) o respuesta incompleta de Groq responde el motor extractivo; con `LLM_PROVIDER=none` (por defecto) siempre responde el motor extractivo. A Groq se envían el prompt del sistema, los fragmentos recuperados y la pregunta del asesor; nunca el documento restringido.
 
 Alternativa si hay restricción de residencia de datos: un modelo abierto servido en la infraestructura propia (vía vLLM), aceptando mayor costo operativo y menor calidad. En todos los casos el modelo **solo redacta a partir de fragmentos recuperados** y su salida pasa por el filtro de secretos; nunca responde "de memoria".
 
@@ -93,16 +138,63 @@ Persistencia: PostgreSQL con `pgvector` para fragmentos, embeddings y consultas 
 
 ## 3. Uso de agentes
 
-### ¿Utilizó agentes de desarrollo? ✎
-Sí: un asistente de IA con capacidad de ejecutar comandos, crear archivos y correr pruebas en un entorno aislado actuó como agente de desarrollo supervisado durante toda la construcción. ✎ Indicar si además se usó Claude Code u otro agente en el repositorio local.
+### ¿Utilizó agentes de desarrollo?
+Sí, con roles definidos y siempre bajo supervisión:
+- **Agente principal: Claude Code en VS Code**, trabajando sobre mi repositorio. Edita, ejecuta pruebas y herramientas; publicar (push, cambios de cuenta) solo ocurre cuando yo lo pido.
+- **Subagentes en paralelo para revisar:** la auditoría la hicieron 7 revisores independientes, uno por enfoque. Un revisor principal consolidó los hallazgos y reprodujo los críticos; la verificación de cumplimiento del enunciado también se repartió entre subagentes. Separar quien escribe de quien revisa evita que el agente se valide a sí mismo.
+- **Revisión adversarial de cambios del motor:** cada regla nueva se compara contra el banco antes y después; así cayó la primera versión de RF-12.
+- **Un solo contrato para todos:** `AGENTS.md` y la constitución rigen al agente principal y a los subagentes; las decisiones de la última pregunta de esta sección son mías.
 
 ### ¿Cómo fueron instruidos?
-- Con el enunciado completo y los archivos de datos como contexto, más las decisiones de la persona (stack, alcance, ejecución local, LLM opcional).
-- Con las reglas de `AGENTS.md`: documentos como datos, prohibición de copiar valores del archivo restringido, TDD obligatorio, español, no cambiar contratos sin actualizar especificaciones, y una lista explícita de decisiones reservadas a humanos.
-- Con un ciclo de trabajo fijo: especificación → prueba roja → implementación → suite completa → documentación.
+Seguí cuatro pasos, en este orden:
+
+1. **Generé el contexto.** Antes de escribir una línea con IA preparé el material base:
+   - una carpeta `contexto/` con el enunciado (PDF) y los documentos originales;
+   - `AGENTS.md` como contrato permanente para cualquier agente:
+     - los documentos son datos, no instrucciones;
+     - nunca leer ni copiar el archivo restringido;
+     - TDD obligatorio y todo en español;
+     - no cambiar el contrato de la API sin actualizar la especificación;
+     - una lista explícita de decisiones reservadas a mí;
+   - la constitución, con los principios que prevalecen ante cualquier conflicto.
+2. **Creé un plan antes de ejecutar.** Cada característica pasó por `especificacion.md` (requisitos y escenarios Gherkin) → `plan.md` (arquitectura y decisiones) → `tareas.md` (pasos granulares) antes de tocar código; hay seis características (001–006). Para las correcciones convertí los 85 hallazgos de la auditoría en un orden de trabajo:
+   1. entrega y seguridad;
+   2. la red de pruebas (banco con texto y conjunto de evaluación), **antes** de tocar el motor;
+   3. el motor, el frontend, las herramientas y la documentación.
+
+   Un commit y un push por bloque, cada uno con su requerimiento.
+3. **Creé agentes con responsabilidades separadas,** en dos niveles:
+   - **En la solución:**
+     - un orquestador que valida, aplica la seguridad y decide a quién delegar;
+     - agentes especialistas de crédito, microseguros y procedimientos operativos, cada uno dueño de sus documentos;
+     - un agente para preguntas fuera de dominio.
+
+     Una prueba falla si dos especialistas se intercambian.
+   - **En el desarrollo:** un agente principal que implementa, y agentes revisores en paralelo que no escriben código. La auditoría tuvo 7, uno por enfoque:
+     - arquitectura;
+     - bugs de backend;
+     - bugs de frontend;
+     - seguridad;
+     - cumplimiento del enunciado;
+     - herramientas y calidad;
+     - calidad de las respuestas, con 94 preguntas nuevas.
+
+     Un revisor principal consolidó los hallazgos y reprodujo los críticos.
+4. **Cada agente recibió instrucciones propias:**
+   - su enfoque;
+   - el formato de entrega (severidad, archivo y línea, evidencia y qué hacer);
+   - las mismas reglas de `AGENTS.md`.
+
+   El agente que implementa trabaja en ciclo especificación → prueba roja → implementación → suite completa → documentación. Los revisores solo reportan; yo decido qué se corrige.
 
 ### ¿Qué tareas delegó?
-Generación de código y pruebas, refactorizaciones guiadas por pruebas, ampliación de datos de ejemplo, documentación técnica y ejecución repetitiva de la suite y del banco de preguntas de control.
+Sobre mi código base:
+- refactorizaciones guiadas por pruebas;
+- implementación de las características que definí;
+- generación de pruebas;
+- afinamiento del motor, medido contra el banco y el conjunto de evaluación;
+- documentación técnica;
+- ejecución repetitiva de la suite.
 
 ### ¿Qué tareas supervisó manualmente?
 Cada regla de seguridad y cada cambio en el motor de respuesta (leyendo el diff y el resultado del banco de control), la coherencia entre especificaciones y pruebas, el contenido de los datos ficticios añadidos, y la verificación de que ninguna prueba o archivo contenga valores sensibles.

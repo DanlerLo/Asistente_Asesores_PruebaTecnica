@@ -38,21 +38,20 @@ Cada consulta se guarda con pregunta, fecha y hora, respuesta, fuentes y estado.
 - **Guardrails:** validación → bloqueo por intención (credenciales, accesos admin, configuración interna, información restringida, inyección de prompt, datos de terceros) → filtro de salida. Las líneas con apariencia de instrucción dentro de documentos se descartan en la ingesta.
 - **Persistencia y observabilidad:** SQLite (`storage/consultas.db`), logs JSON con `request_id`, endpoints de historial, estadísticas y salud.
 
-Más detalle: `sdd/especificaciones/*/plan.md`.
+Más detalle: `especificaciones/*/plan.md`.
 
 ## Estructura del repositorio
 
 ```
 .
-├── sdd/
-│   ├── constitucion/constitucion.md
-│   └── especificaciones/
-│       ├── 001-consulta-documental/{especificacion,plan,tareas}.md
-│       ├── 002-guardrails-seguridad/{especificacion,plan,tareas}.md
-│       ├── 003-interfaz-asesor/{especificacion,plan,tareas}.md
-│       ├── 004-orquestador-agentes/{especificacion,plan,tareas}.md
-│       ├── 005-cuota-y-modo-llm/{especificacion,plan,tareas}.md
-│       └── 006-contexto-y-recuperacion/{especificacion,plan,tareas}.md
+├── constitucion/constitucion.md
+├── especificaciones/
+│   ├── 001-consulta-documental/{especificacion,plan,tareas}.md
+│   ├── 002-guardrails-seguridad/{especificacion,plan,tareas}.md
+│   ├── 003-interfaz-asesor/{especificacion,plan,tareas}.md
+│   ├── 004-orquestador-agentes/{especificacion,plan,tareas}.md
+│   ├── 005-cuota-y-modo-llm/{especificacion,plan,tareas}.md
+│   └── 006-contexto-y-recuperacion/{especificacion,plan,tareas}.md
 ├── src/
 │   ├── backend/asistente/
 │   │   ├── main.py             (punto de entrada: uvicorn asistente.main:app)
@@ -78,7 +77,6 @@ Más detalle: `sdd/especificaciones/*/plan.md`.
 ├── .env.example
 ```
 
-> En el árbol del enunciado, `constitucion/` y `especificaciones/` cuelgan de una carpeta cuyo nombre no es legible en el PDF; aquí se llama `sdd/`.
 
 ## Tecnologías
 
@@ -96,7 +94,7 @@ Más detalle: `sdd/especificaciones/*/plan.md`.
 Requisitos: **Python 3.12 o 3.13** (las versiones fijadas, como `pydantic==2.11.4`, no publican paquetes para 3.14) y Node.js 20+ (probado con 22). Sin claves ni servicios externos.
 
 ```bash
-git clone https://github.com/DanlerLo/asistente-asesores.git && cd asistente-asesores
+git clone https://github.com/DanlerLo/Asistente-Asesores-BancoW.git && cd Asistente-Asesores-BancoW
 
 # Backend: entorno virtual con Python 3.12 o 3.13
 python3.12 -m venv .venv && source .venv/bin/activate
@@ -194,7 +192,14 @@ GROQ_API_KEY=<tu clave de https://console.groq.com/keys>
 # LLM_MODEL=openai/gpt-oss-120b   # opcional; por defecto openai/gpt-oss-20b
 ```
 La clave es personal y gratuita (sin tarjeta): nunca se versiona. Sin ella, el asistente funciona completo en modo sin conexión.
-El modelo recibe la pregunta y solo los fragmentos recuperados (nunca el documento restringido), con temperatura 0 e instrucción de responder la frase canónica si no hay información; su salida pasa por el mismo filtro de secretos.
+
+#### Clave de Groq para la evaluación
+No incluí ninguna clave en el repositorio: publicarla expondría mi cuenta y va en contra de la política de secretos del proyecto (`AGENTS.md`, regla 6). Para probar el modo con LLM:
+
+1. **Pídanme la clave de evaluación a mi correo, loaizad65@gmail.com.** La comparto por ese medio, es solo para esta prueba y la dejaré activa durante **2 meses**; después la revoco.
+2. **O usen una clave propia gratuita** creada en [console.groq.com/keys](https://console.groq.com/keys).
+
+En ambos casos: `cp .env.example .env`, completar `LLM_PROVIDER=groq` y `GROQ_API_KEY`, y reiniciar el backend. Todo lo que pide el enunciado se puede evaluar sin clave.
 
 ## Pruebas
 

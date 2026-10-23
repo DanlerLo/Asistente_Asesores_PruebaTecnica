@@ -1,6 +1,6 @@
 # Especificación 005 — Cuota de la API gratuita y modo sin conexión
 
-Estado: implementada · Constitución: 1.1 (vigente: 1.3) · Principios aplicados: 4 (Uso responsable de IA), 6 (Costos), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.1 (vigente: 1.4) · Principios aplicados: 4 (Uso responsable de IA), 6 (Costos), 7 (Observabilidad).
 
 ## Contexto
 Con `LLM_PROVIDER=groq` (RF-11) el asistente usa el plan gratuito de GroqCloud, limitado por solicitudes por minuto y por día. Hoy el asesor no sabe cuántas llamadas quedan ni puede dejar de usar el LLM sin editar `.env` y reiniciar el backend. Groq informa la cuota en cabeceras de **cada** respuesta (`x-ratelimit-limit-requests`, `x-ratelimit-remaining-requests`, `x-ratelimit-reset-requests` para el día; `*-tokens` para tokens por minuto) y no ofrece un endpoint para consultarla sin hacer una solicitud.
@@ -29,7 +29,7 @@ Mostrar en la interfaz cuántas llamadas quedan en la API gratuita y permitir de
 |----|---------------|
 | RNF-L1 | Cero llamadas extra a Groq para conocer la cuota: solo se leen cabeceras de las llamadas que ya ocurren. |
 | RNF-L2 | La clave `GROQ_API_KEY` nunca aparece en `GET /api/llm`, logs ni errores. |
-| RNF-L3 | Las pruebas no usan red (`httpx.post` y `fetch` simulados). |
+| RNF-L3 | Las pruebas no usan red (`ClienteHttpLLM.post` y `fetch` simulados). |
 
 ## Riesgos
 | Riesgo | Impacto | Mitigación |
@@ -43,33 +43,39 @@ Mostrar en la interfaz cuántas llamadas quedan en la API gratuita y permitir de
 ```gherkin
 Característica: Cuota de la API gratuita y modo sin conexión
 
+  @RF-L1 @RF-L3
   Escenario: Cuota leída de las cabeceras de Groq
     Dado LLM_PROVIDER=groq
     Cuando Groq responde con x-ratelimit-limit-requests 1000 y x-ratelimit-remaining-requests 997
     Entonces GET /api/llm devuelve cuota.solicitudes_restantes 997 y cuota.solicitudes_limite 1000
     Y llamadas aumenta en 1
 
+  @RF-L1
   Escenario: Cuota agotada
     Cuando Groq responde 429 con x-ratelimit-remaining-requests 0
     Entonces la consulta se responde en modo extractivo
     Y GET /api/llm devuelve cuota.solicitudes_restantes 0
 
+  @RF-L4
   Escenario: Desactivar la API gratuita
     Cuando envío PUT /api/llm con {"activo": false}
     Entonces GET /api/llm devuelve activo false y modo "extractivo"
     Y una consulta válida se responde sin llamar al LLM
 
+  @RF-L4
   Escenario: Reactivar la API gratuita
     Dado que la API gratuita está desactivada
     Cuando envío PUT /api/llm con {"activo": true}
     Entonces las consultas vuelven a usar Groq
 
+  @RF-L5
   Escenario: Sin proveedor configurado
     Dado LLM_PROVIDER=none
     Cuando envío PUT /api/llm con {"activo": true}
     Entonces el código HTTP es 400 con codigo "LLM_NO_CONFIGURADO"
     Y el panel muestra "Modo sin conexión" sin botón
 
+  @RF-L6 @RF-U10
   Escenario: Selector de modo en la interfaz
     Dado que quedan 997 de 1000 llamadas
     Cuando abro la aplicación
@@ -77,4 +83,22 @@ Característica: Cuota de la API gratuita y modo sin conexión
     Cuando pulso "Modo sin conexión"
     Entonces ese botón queda activo
     Y aparece un pop-up que explica el modo sin conexión, que se cierra con "Entendido"
+
+  @RF-L2
+  Escenario: Contador de llamadas
+    Dado que Groq está configurado
+    Cuando se atienden dos consultas con el LLM y una de ellas falla
+    Entonces GET /api/llm informa llamadas 2
+
+  @RF-L5
+  Escenario: Modo con un valor no booleano
+    Cuando envío PUT /api/llm con {"activo": "no"}
+    Entonces el código HTTP es 400 con codigo "SOLICITUD_INVALIDA"
+    Y el mensaje menciona el campo "activo"
+
+  @RF-L7
+  Escenario: El contrato no cambia con el LLM activo
+    Dado que el modo conexión (Groq) está activo
+    Cuando envío una pregunta
+    Entonces la respuesta tiene exactamente los campos de RF-01
 ```

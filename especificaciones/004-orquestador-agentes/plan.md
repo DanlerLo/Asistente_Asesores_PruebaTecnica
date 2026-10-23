@@ -24,21 +24,21 @@ POST /api/consultar ──►  │ Orquestador.consultar()                      
 Dependencias permitidas (de arriba hacia abajo): `api → orquestador → agentes → generacion → herramientas`; `seguridad`, `infraestructura`, `dominio` y `config` son transversales y no dependen de capas superiores.
 
 ## Componentes
-| Paquete / módulo | Responsabilidad | Antes |
-|------------------|-----------------|-------|
-| `main.py` | Punto de entrada `asistente.main:app` (sin cambios para uvicorn) | `main.py` |
-| `api/app.py` | FastAPI: rutas, CORS, manejo de errores, `x-request-id` | `main.py` |
-| `orquestador/orquestador.py` | Flujo completo de una consulta (RF-O1) | `servicio.py` |
-| `orquestador/enrutador.py` | Elección determinista del agente (RF-O2, RF-O3) | — |
-| `agentes/base.py` | Protocolo `Agente` y `AgenteDocumental` (extractivo o LLM con *fallback*) | parte de `servicio.py` |
-| `agentes/credito.py`, `microseguros.py`, `operativo.py` | Agentes de dominio: nombre y documentos que atienden | — |
-| `agentes/fuera_de_dominio.py` | Frase canónica sin LLM (RF-O4) | — |
-| `herramientas/texto.py`, `corpus.py`, `markdown.py`, `recuperacion.py` | Normalización, carga, fragmentación y búsqueda BM25 | raíz del paquete |
-| `generacion/extractivo.py`, `llm.py`, `plantillas.py`, `prompts/` | Redacción de la respuesta | `motor.py`, `llm.py`, `plantillas.py` |
-| `seguridad/guardrails.py`, `ingesta.py` | Validación, bloqueo por intención, filtro de salida; política de ingesta (restringidos, instrucciones embebidas) | `guardrails.py`, `corpus.py` |
-| `infraestructura/persistencia.py`, `observabilidad.py` | SQLite y logs JSON | raíz del paquete |
-| `dominio.py` | Estados, frase canónica, `Fuente`, `RespuestaGenerada` (modelos compartidos) | `motor.py` |
-| `config.py` | Configuración desde el entorno | `config.py` |
+| Paquete / módulo | Responsabilidad |
+|------------------|-----------------|
+| `main.py` | Punto de entrada `asistente.main:app` |
+| `api/app.py`, `rutas.py`, `esquemas.py` | FastAPI: composición, rutas, modelos, CORS, manejo de errores, `x-request-id` |
+| `orquestador/orquestador.py` | Flujo completo de una consulta (RF-O1) |
+| `orquestador/enrutador.py` | Elección determinista del agente (RF-O2, RF-O3) |
+| `agentes/base.py` | Protocolo `Agente` y `AgenteDocumental` (extractivo o LLM con *fallback*) |
+| `agentes/credito.py`, `microseguros.py`, `operativo.py` | Agentes de dominio: nombre, documentos que atienden y catálogo por producto (`agentes/catalogo.py`, RF-O9) |
+| `agentes/fuera_de_dominio.py` | Frase canónica sin LLM (RF-O4) |
+| `herramientas/texto.py`, `corpus.py`, `markdown.py`, `recuperacion.py` | Normalización, carga, fragmentación y búsqueda BM25 |
+| `generacion/extractivo.py`, `llm.py`, `plantillas.py`, `prompts/` | Redacción de la respuesta |
+| `seguridad/guardrails.py`, `ingesta.py` | Validación, bloqueo por intención, filtro de salida; política de ingesta (restringidos, instrucciones embebidas) |
+| `infraestructura/persistencia.py`, `observabilidad.py` | SQLite y logs JSON |
+| `dominio.py` | Estados, frase canónica, `Fuente`, `RespuestaGenerada` (modelos compartidos) |
+| `config.py` | Configuración desde el entorno |
 
 ## Decisiones de arquitectura
 - **ADR-7 Agentes deterministas, no autónomos.** "Agente" aquí es un componente con una responsabilidad de dominio y una interfaz común (`nombre`, `responder`). El enrutamiento es por reglas porque la prueba exige determinismo, ejecución local sin red y trazabilidad; un LLM decidiendo la ruta añadiría costo, latencia, no determinismo y superficie de *prompt injection*. Un enrutador con LLM puede añadirse después como opción, igual que la redacción (RF-11).
@@ -65,3 +65,6 @@ Dependencias permitidas (de arriba hacia abajo): `api → orquestador → agente
 | RF-O7 | `test_agentes.py::test_log_incluye_agente_y_motivo`, `test_salud_lista_agentes` |
 | RNF-O1 | `test_agentes.py::test_enrutamiento_es_determinista` |
 | RNF-O3 | `test_arquitectura.py` (incluye `dominio.py` y `config.py`) |
+| RF-O9 | `test_agentes.py::test_agente_de_credito_lista_el_atributo_por_producto`, `test_agente_de_microseguros_prefiere_maximos_con_mas_alta`, `test_con_producto_nombrado_no_lista`, `test_los_agentes_no_son_intercambiables` |
+| RNF-O2 | `test_agentes.py::test_fuera_de_dominio_responde_frase_canonica_sin_llm`; el enrutador no recibe proveedor LLM |
+| RNF-O4 | `agentes/credito.py` y los demás son módulos de pocas líneas registrados en `orquestador/enrutador.py::ESPECIALISTAS` |

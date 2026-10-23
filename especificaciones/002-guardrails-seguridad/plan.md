@@ -38,8 +38,9 @@ Cuatro barreras independientes: aunque una falle, las demás evitan la fuga. La 
 ## Estrategia de pruebas
 | Archivo | Cubre |
 |---------|-------|
-| `tests/backend/test_corpus.py` | exclusión por nombre y por marca, extracción de secretos, líneas de instrucción descartadas |
-| `tests/backend/test_guardrails.py` | validación de forma; 14 preguntas peligrosas por categoría; 5 preguntas legítimas; filtro de salida positivo y negativo |
+| `tests/backend/test_corpus.py` | detección de restringidos (nombre, marca, credenciales sin marcar), extracción de secretos, instrucciones y encabezados maliciosos, advertencias sin contenido, pruebas negativas con contenido legítimo |
+| `tests/backend/test_guardrails.py` | validación de forma; preguntas peligrosas por categoría; evasiones tipográficas; bloqueo por intención con sus pruebas negativas; filtro de salida positivo y negativo |
+| `tests/backend/test_enmascarado.py` | datos personales ocultos antes de persistir; montos, plazos y productos intactos |
 | `tests/backend/test_orquestador.py` | bloqueo extremo a extremo sin fuga, inyección embebida, fuga desde documento público, LLM que revela un secreto |
 | `tests/backend/test_api.py` | bloqueo por HTTP sin fuga en el cuerpo, error interno genérico |
 
@@ -57,3 +58,12 @@ Criterio de salida: ningún archivo versionado fuera de `Data/` contiene literal
 | RF-S7 | `test_error_interno_no_expone_detalles` |
 | RF-S8 | `test_orquestador.py::test_secreto_en_el_extracto_de_una_fuente_se_bloquea` |
 | RF-S9 | `test_guardrails.py::test_evasion_tipografica_se_bloquea`, `test_la_normalizacion_no_bloquea_preguntas_legitimas`, `test_la_pregunta_validada_no_conserva_caracteres_invisibles` |
+| RF-S10 | `test_corpus.py::test_advertencia_de_linea_descartada_no_reproduce_su_texto`, `test_directorio_inexistente_no_expone_la_ruta_absoluta`, `test_salud_no_expone_texto_de_lineas_descartadas` |
+| RF-S11 | `test_corpus.py::test_instrucciones_embebidas_parafraseadas_se_detectan`, `test_lineas_normales_no_se_toman_por_instrucciones`, `test_encabezado_malicioso_no_viaja_en_la_seccion` |
+| RF-S12 | `test_corpus.py::test_marca_de_clasificacion_en_cualquier_linea_excluye`, `test_contenido_con_forma_de_credencial_excluye_aunque_no_este_marcado`, `test_cada_exclusion_queda_avisada_con_su_motivo`, `test_menciones_normales_de_claves_no_excluyen_un_documento_publico`, `test_los_documentos_publicos_reales_no_se_excluyen`, `test_enlace_simbolico_fuera_de_data_se_ignora` |
+| RF-S13 | `test_enmascarado.py` (4 pruebas, incluida la negativa `test_no_altera_preguntas_normales`) |
+| RF-S14 | `test_guardrails.py::test_preguntas_sobre_procedimientos_y_politicas_no_se_bloquean`, `test_pedir_datos_de_terceros_o_restringidos_sigue_bloqueado`, `test_mencionar_otro_cliente_sin_pedir_sus_datos_no_bloquea`; `test_orquestador.py::test_preguntas_de_politica_ya_no_bloqueadas_no_filtran_secretos` |
+| RNF-S1 | las reglas son expresiones regulares locales: toda la suite de guardrails corre en milisegundos y sin red |
+| RNF-S2 | cada categoría de `REGLAS_ENTRADA` tiene casos en `test_preguntas_peligrosas_se_bloquean` y casos legítimos en `test_preguntas_legitimas_no_se_bloquean` |
+| RNF-S3 | `test_pedir_datos_de_terceros_o_restringidos_sigue_bloqueado` (relajar reglas no abre fugas) |
+| RNF-S4 | `test_arquitectura.py::test_ningun_archivo_contiene_valores_restringidos`, `test_banco.py::test_el_banco_no_contiene_valores_restringidos` |

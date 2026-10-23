@@ -44,6 +44,9 @@ src/frontend/
 |---------|-------|
 | `tests/frontend/api.test.ts` | solicitud JSON, mapeo de errores HTTP y de red, historial |
 | `tests/frontend/App.test.tsx` | formulario, validación sin llamada, estado de procesamiento, respuesta + badge + fuentes, sin información, error del backend, error de conexión, historial y repetición |
+| `tests/frontend/Robustez.test.tsx` | respuesta inválida, error de pintado, historial bloqueado mientras se procesa, foco |
+| `tests/frontend/SelectorModo.test.tsx` | selector de modo, cuota, pop-up de modo sin conexión, fallos de `/api/llm` |
+| `tests/frontend/Conversacion.test.tsx` | contexto enviado al backend, «Nueva conversación» |
 
 Ejecución: `npm test` en la raíz (Vitest + jsdom, sin backend). Verificación de tipos y build: `npm run build`.
 
@@ -60,3 +63,8 @@ Ejecución: `npm test` en la raíz (Vitest + jsdom, sin backend). Verificación 
 | RF-U10 | `SelectorModo.test.tsx` (9 pruebas: modo activo y cuota, aviso < 10 %, pop-up sin conexión, sin proveedor, fallo de `/api/llm`, respuestas viejas) |
 | RF-U11 | `App.test.tsx`: `muestra el intercambio como chat…`, `Shift+Enter agrega un salto de línea sin enviar`; `Conversacion.test.tsx` (memoria de conversación, especificación 006) |
 | RF-U12 | `api.test.ts` (`api: robustez`), `Robustez.test.tsx` (respuesta inválida, límite de errores, historial deshabilitado, foco) |
+| RF-U13 | `App.test.tsx`: `usa el límite de longitud que informa el backend (RF-U13)`; `test_api.py::test_salud` |
+| RNF-U1 | `package.json` del frontend: solo React y React DOM como dependencias de ejecución |
+| RNF-U2 | pruebas que localizan por `label` y `role` (`status`, `alert`, `log`); foco verificado en `Robustez.test.tsx` |
+| RNF-U3 | todas las pruebas de `tests/frontend/` simulan `fetch`; no levantan backend |
+| RNF-U4 | `App.test.tsx`: `muestra caracteres especiales como texto literal, sin interpretarlos como HTML` |

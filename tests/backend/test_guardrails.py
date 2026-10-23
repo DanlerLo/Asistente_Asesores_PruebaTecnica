@@ -184,7 +184,7 @@ def test_pedir_datos_de_terceros_o_restringidos_sigue_bloqueado(pregunta: str, c
     assert not evaluacion.permitido and evaluacion.categoria == categoria, pregunta
 
 
-def test_dirección_de_una_oficina_no_es_un_dato_de_terceros():
+def test_direccion_de_una_oficina_no_es_un_dato_de_terceros():
     assert evaluar_entrada("Dame la dirección de la oficina principal").permitido
 
 
