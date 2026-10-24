@@ -206,7 +206,7 @@ Las demás están en `.env.example`, agrupadas por tema.
 
 **Embeddings.** Vienen activados. El `pip install` instala la librería, no el modelo: el modelo (~0,22 GB) se descarga la primera vez que arranca el backend y tarda unos 30 s, mientras tanto el backend no responde. Después funciona sin internet y arranca en menos de 2 s. Si esa primera vez no hay internet, el backend arranca igual, solo con BM25, y lo advierte en el log.
 
-**Clave de Groq.** No está en el repositorio. Para probar el modo con LLM, pídanmela a **loaizad65@gmail.com**: es solo para esta prueba y estará activa 2 meses. También sirve una clave propia gratuita de [console.groq.com/keys](https://console.groq.com/keys). Todo lo que pide el enunciado se puede evaluar sin clave.
+**Clave de Groq.** No está en el repositorio. `.env.example` ya trae `LLM_PROVIDER=groq` y el modelo: basta pegar la clave en `GROQ_API_KEY` del `.env` y reiniciar el backend. Para probar el modo con LLM, pídanmela a **loaizad65@gmail.com**: es solo para esta prueba y estará activa 2 meses. También sirve una clave propia gratuita de [console.groq.com/keys](https://console.groq.com/keys). Todo lo que pide el enunciado se puede evaluar sin clave.
 
 ## Ejecución
 
