@@ -17,6 +17,7 @@
 - **Leí el negocio antes que el código:** identifiqué la trampa de `Información restringida.md` y las reglas implícitas de las políticas (citar la fuente, frase exacta cuando no hay información, escalamiento) y las convertí en requisitos.
 - **Hice las pruebas:** escribí la prueba de cada cambio antes de implementarlo (TDD), probé la aplicación a mano en la interfaz y con `curl`, y verifiqué cada función generada por la IA leyendo el código y comprobando su comportamiento antes de aceptarla.
 - **Tomé las decisiones de seguridad:** que la detección de documentos restringidos fuera determinista y no quedara en manos de un agente, y guardar el historial enmascarado porque, sin autenticación, es compartido.
+- **Sobre el historial de git:** el primer commit es mi versión base (el monolito). Creé el repositorio cuando el trabajo ya estaba avanzado, así que la refactorización a agentes y las primeras características entran agrupadas por bloque. Desde ahí, en cada característica y corrección el commit de pruebas va antes que el de implementación, y esas pruebas fallan contra el código anterior (se puede comprobar con `git checkout` en el commit de pruebas).
 
 ### Qué delegué a la IA
 - Las refactorizaciones (de monolito a agentes, prompts a Jinja2, capas), que hicimos en conjunto: yo definí el diseño y revisé cada paso.

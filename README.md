@@ -2,9 +2,13 @@
 
 Prueba técnica — Desarrollador de IA · Laboratorio Digital, Vicepresidencia de Innovación y Mercadeo.
 
+> [!IMPORTANT]
+> **El primer arranque del backend tarda unos 30 segundos.**
+> Para no pagar un servicio de embeddings, uso un modelo gratuito que corre en la máquina (0,22 GB). No viene con el `pip install`: se descarga la primera vez que arranca el backend. Después queda guardado y arranca en menos de 2 segundos, sin internet.
+
 ## Descripción
 
-Responde preguntas de los asesores sobre **productos de crédito, microseguros, procedimientos y políticas** usando solo los documentos de `Data/`, cita la fuente y guarda cada consulta con su estado. Es un **RAG**: recupera fragmentos con búsqueda híbrida (BM25 + embeddings locales) y responde solo con ellos. Corre en local y sin servicios pagos; solo la primera vez descarga el modelo de embeddings (0,22 GB). El LLM (Groq) es opcional.
+Responde preguntas de los asesores sobre **productos de crédito, microseguros, procedimientos y políticas** usando solo los documentos de `Data/`, cita la fuente y guarda cada consulta con su estado. Es un **RAG**: recupera fragmentos con búsqueda híbrida (BM25 + embeddings locales) y responde solo con ellos. Corre en local y sin servicios pagos. El LLM (Groq) es opcional.
 
 | Pregunta | Resultado |
 |----------|-----------|
