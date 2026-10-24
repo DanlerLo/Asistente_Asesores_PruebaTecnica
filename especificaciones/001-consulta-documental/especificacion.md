@@ -1,6 +1,6 @@
 # Especificación 001 — Consulta documental con citación de fuentes
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.4) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
+Estado: implementada · Constitución: 1.0 (vigente: 1.5) · Principios aplicados: 2 (Calidad), 3 (TDD), 5, 6, 7.
 
 ## Contexto
 Los asesores comerciales atienden clientes en oficina y por teléfono y necesitan respuestas rápidas y confiables sobre productos de crédito, microseguros, procedimientos operativos y políticas internas. Hoy consultan documentos Markdown dispersos (`Data/`). La Política de Transparencia exige que toda respuesta esté sustentada en documentación oficial y la Política de Citas exige que los asistentes digitales indiquen la fuente utilizada.
@@ -43,7 +43,7 @@ Exponer un servicio `POST /api/consultar` que reciba una pregunta en lenguaje na
 ## Requerimientos no funcionales
 | ID | Requerimiento |
 |----|---------------|
-| RNF-01 | Ejecución 100 % local sin servicios pagos; cero dependencias de red en el modo por defecto. |
+| RNF-01 | Ejecución local sin servicios pagos. En el modo por defecto, la única conexión es la descarga del modelo de embeddings la primera vez que arranca (sin red, se usa solo BM25). |
 | RNF-02 | Latencia p95 < 100 ms en modo extractivo con el corpus de ejemplo (≈ 50 fragmentos). |
 | RNF-03 | Determinismo: misma pregunta y mismo corpus ⇒ misma respuesta (modo extractivo). |
 | RNF-04 | Suite de pruebas ejecutable sin red en < 5 s. |

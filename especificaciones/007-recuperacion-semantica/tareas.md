@@ -21,7 +21,7 @@ Orden de ejecución; cada implementación va precedida por su prueba (TDD). `[x]
 
 ## Fase D — Calibración y cierre
 - [x] T-612 Implementar y medir un respaldo semántico del extractivo (umbral y margen) con banco, evaluación y las 40 preguntas nuevas.
-- [x] T-613 Retirar ese respaldo: aumentaba las respuestas equivocadas (ADR-25); la prueba `test_el_modo_extractivo_no_responde_por_similitud` lo fija.
+- [x] T-613 Retirar ese respaldo: aumentaba las respuestas equivocadas (ADR-25). Lo fijaba `test_el_modo_extractivo_no_responde_por_similitud`, que T-618 reemplazó al pasar a la lectura por sección (ADR-27).
 - [x] T-614 Medir la generalización con Groq: contexto de antes frente a contexto ampliado con embeddings; registrar resultados en el plan.
 - [x] T-615 Documentar la recuperación híbrida como parte central de la arquitectura: README, plan 001 (ADR-1), `AGENTS.md`, `.env.example`, `requirements.txt` y Cuestionario.
 

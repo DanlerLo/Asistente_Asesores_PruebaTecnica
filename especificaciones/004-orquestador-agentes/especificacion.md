@@ -1,6 +1,6 @@
 # Especificación 004 — Orquestador y agentes especializados
 
-Estado: implementada · Constitución: 1.1 (vigente: 1.4) · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 5 (Mantenibilidad), 6 (Costos), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.1 (vigente: 1.5) · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 5 (Mantenibilidad), 6 (Costos), 7 (Observabilidad).
 
 ## Contexto
 El backend (características 001 y 002) resuelve cada consulta con un único servicio que valida, aplica guardrails, recupera, responde, filtra y persiste. Funciona, pero todos los módulos viven en una sola carpeta y no existe una noción explícita de **dominio**: una pregunta de crédito, de microseguros o ajena al negocio ("¿quién ganó el partido?") recorre exactamente el mismo camino. El caso de negocio define cuatro temas (productos de crédito, microseguros, procedimientos operativos y políticas internas) y la Política de Escalamiento exige detener y registrar ante incertidumbre.

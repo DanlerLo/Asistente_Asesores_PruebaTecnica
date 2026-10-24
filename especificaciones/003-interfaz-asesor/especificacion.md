@@ -1,6 +1,6 @@
 # Especificación 003 — Interfaz web para el asesor
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.4) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.5) · Principios aplicados: 2 (Calidad), 3 (TDD), 5 (Mantenibilidad).
 
 ## Contexto
 El asesor necesita una forma sencilla de hacer preguntas y ver, de un vistazo, la respuesta, su estado y las fuentes que la respaldan, para poder citarlas al cliente. La prueba no evalúa diseño visual, pero sí que la solución se ejecute completamente en local y muestre respuesta, fuentes, errores y estado de procesamiento.

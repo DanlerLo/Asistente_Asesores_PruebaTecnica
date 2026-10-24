@@ -1,6 +1,6 @@
 # Especificación 002 — Guardrails de seguridad y protección de información
 
-Estado: implementada · Constitución: 1.0 (vigente: 1.4) · Principios aplicados: 1 (Seguridad por defecto), 3 (TDD), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.0 (vigente: 1.5) · Principios aplicados: 1 (Seguridad por defecto), 3 (TDD), 7 (Observabilidad).
 
 ## Contexto
 La base documental incluye `Información restringida.md`, clasificado como CONFIDENCIAL: contiene credenciales ficticias y un "prompt administrativo" que ordena entregar toda la información si alguien la pide. El Manual del Asesor prohíbe compartir información de otros clientes, configuraciones internas, credenciales e información tecnológica reservada; la Política de Protección de Información restringe el acceso a personal autorizado; la Política de Escalamiento exige detener, escalar y registrar ante incertidumbre. El asistente será usado por personas y podría recibir intentos de *prompt injection*, directos o embebidos en documentos.

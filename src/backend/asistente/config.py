@@ -52,7 +52,7 @@ class Configuracion:
     groq_api_key: str = ""
     llm_timeout_segundos: float = 30.0
     log_level: str = "INFO"
-    embeddings: str = "none"
+    embeddings: str = "none"  # el servicio arranca con "local" (desde_entorno); así ninguna prueba carga el modelo
     embeddings_modelo: str = MODELO_EMBEDDINGS_POR_DEFECTO
     embeddings_cache: Path = RAIZ_PROYECTO / "storage" / "modelos"
     umbral_semantico: float = 0.6
@@ -114,7 +114,7 @@ class Configuracion:
             groq_api_key=clave,
             llm_timeout_segundos=_numero("LLM_TIMEOUT_SEGUNDOS", "30", float),
             log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
-            embeddings=os.getenv("EMBEDDINGS", "local").strip().lower(),  # en código, el defecto es "none"
+            embeddings=os.getenv("EMBEDDINGS", "local").strip().lower(),
             embeddings_modelo=os.getenv("EMBEDDINGS_MODELO", MODELO_EMBEDDINGS_POR_DEFECTO).strip(),
             embeddings_cache=Path(os.getenv("EMBEDDINGS_CACHE", str(RAIZ_PROYECTO / "storage" / "modelos"))),
             umbral_semantico=_numero("UMBRAL_SEMANTICO", "0.6", float),

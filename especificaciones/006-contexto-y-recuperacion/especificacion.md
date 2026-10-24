@@ -1,6 +1,6 @@
 # Especificación 006 — Contexto de conversación y recuperación de consultas por ID
 
-Estado: implementada · Constitución: 1.1 (vigente: 1.4) · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 7 (Observabilidad).
+Estado: implementada · Constitución: 1.1 (vigente: 1.5) · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 7 (Observabilidad).
 
 ## Contexto
 Cada pregunta se responde de forma independiente. Un asesor pregunta naturalmente en cadena: «¿Cuál es el monto máximo del Crédito Productivo Impulso?» y luego «¿Y el más bajo?» o «¿Y el plazo?». Hoy la segunda pregunta recibe *Sin información suficiente* o, peor, una respuesta de un producto elegido al azar por la recuperación («¿Y el plazo?» respondía siempre con el Crédito Productivo Impulso). Además, el repositorio ya permite leer una consulta por su ID, pero la API no lo expone.

@@ -60,7 +60,7 @@ class AgenteDocumental:
             generada = responder_con_llm(pregunta, contexto, proveedor_llm)
             if generada is not None:
                 return generada
-        # El modo extractivo no responde por similitud (ADR-25): medido, aumentaba las respuestas equivocadas.
+        # Nunca una línea elegida por similitud (ADR-25); la lectura por sección la decide el orquestador (ADR-27).
         return responder_extractivo(pregunta, resultados, umbral_cobertura)
 
     def _contexto_llm(

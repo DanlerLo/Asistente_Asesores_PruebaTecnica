@@ -1,6 +1,6 @@
 # Especificación 007 — Recuperación semántica local y más contexto para el LLM
 
-Estado: implementada · Constitución: 1.4 · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 6 (Optimización de costos).
+Estado: implementada · Constitución: 1.5 · Principios aplicados: 1 (Seguridad por defecto), 2 (Calidad), 3 (TDD), 6 (Optimización de costos).
 
 ## Contexto
 La recuperación es léxica (BM25 con sinónimos y frases del asesor). Responde bien las 97 preguntas de evaluación, pero esas reglas se ajustaron mirando esos casos. Con 40 preguntas nuevas, escritas antes de esta característica y que no se usan para ajustar nada (`tests/backend/generalizacion.json`), acierta 19 (48 %) y da 4 respuestas equivocadas: cuando la pregunta usa palabras que no están en los documentos ni en los sinónimos («¿qué riesgos cubre el seguro para negocios?»), no encuentra el fragmento. Con Groq activo pasa lo mismo: el LLM entiende la paráfrasis, pero solo ve lo que la recuperación le entregó.

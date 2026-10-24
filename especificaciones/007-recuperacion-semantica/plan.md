@@ -23,7 +23,7 @@ La recuperación es la R del RAG y tiene dos vías: BM25 encuentra lo que usa la
 ## Decisiones de arquitectura
 - **ADR-23 `fastembed` con un modelo multilingüe pequeño.** Corre en CPU con ONNX (sin PyTorch, ~150 MB de dependencias), descarga el modelo una sola vez (0,22 GB) y queda offline. `sentence-transformers` exige PyTorch (varios GB); un servicio de embeddings exige red y costo. `paraphrase-multilingual-MiniLM-L12-v2` entiende español y embebe las 108 líneas del corpus en menos de 1 s.
 - **ADR-24 Embeber líneas, no fragmentos.** Las respuestas del modo extractivo son líneas; comparar la pregunta con cada línea permite responder la línea exacta y citar su sección.
-- **ADR-25 La similitud trae evidencia; no elige la respuesta en modo sin conexión.** Se implementó y midió un respaldo que, cuando las reglas léxicas no respondían, devolvía la línea más parecida con umbral y margen. Con las 40 preguntas nuevas:
+- **ADR-25 La similitud trae evidencia; no elige la línea de la respuesta en modo sin conexión** (la lectura de secciones completas vino después, ADR-27). Se implementó y midió un respaldo que, cuando las reglas léxicas no respondían, devolvía la línea más parecida con umbral y margen. Con las 40 preguntas nuevas:
 
   | Umbral / margen | Aciertos | Respuestas equivocadas | Evaluación (97) |
   |---|---|---|---|
@@ -43,14 +43,14 @@ La recuperación es la R del RAG y tiene dos vías: BM25 encuentra lo que usa la
   | Además, vetar respuestas léxicas que discrepan del embedding | +7 a +8 | +3 a +8 |
 
   Se adoptó la tercera fila; el veto se descartó porque rompía la evaluación. Los atributos de ficha son las etiquetas «X:» de los documentos («Edad máxima», «Periodicidad de pago»): salen de la estructura, no de las preguntas. Conclusión honesta: con este modelo pequeño la ganancia es modesta; responder bien paráfrasis sin aumentar errores sigue necesitando un LLM (con Groq, 38/40).
-- **ADR-28 Embeddings activados por defecto.** `Configuracion.desde_entorno()` usa `EMBEDDINGS=local`; `Configuracion()` en código sigue en `none` y un fixture automático fija `EMBEDDINGS=none` en la suite, así ninguna prueba descarga el modelo. Sin internet en el primer arranque se degrada a BM25 (RF-E7).
+- **ADR-28 Embeddings activados por defecto (excepción al principio 6 de la constitución, registrada en su versión 1.5).** `Configuracion.desde_entorno()` usa `EMBEDDINGS=local`; `Configuracion()` en código sigue en `none` y un fixture automático fija `EMBEDDINGS=none` en la suite, así ninguna prueba descarga el modelo. Sin internet en el primer arranque se degrada a BM25 (RF-E7).
 - **ADR-26 Más contexto para Groq, con tope.** El corpus es pequeño: los fragmentos del documento del agente caben en el prompt. El tope evita agotar la cuota de tokens del plan gratuito.
 
 ## Estrategia de pruebas
 | Nivel | Archivo | Cubre |
 |-------|---------|-------|
 | Unitarias | `tests/backend/test_semantica.py` | índice por líneas sin restringidos, embebedor de prueba determinista, configuración |
-| Orquestador | `tests/backend/test_semantica.py` | el extractivo no responde por similitud; nunca rescata bloqueos, inexistentes ni seguimientos; enrutamiento cuando BM25 no encuentra nada; degradación si el modelo falla; contexto ampliado para el LLM |
+| Orquestador | `tests/backend/test_semantica.py` | el extractivo nunca responde con una línea elegida por similitud y lee una sección completa solo con umbral y margen (ADR-27); nunca rescata bloqueos, inexistentes ni seguimientos; enrutamiento cuando BM25 no encuentra nada; degradación si el modelo falla; contexto ampliado para el LLM |
 | Generalización | `tests/backend/generalizacion.json` | 40 preguntas nuevas, escritas antes de la característica y nunca usadas para ajustar; se miden a mano con el modelo real y con Groq (resultados abajo) |
 | Regresión | `test_banco.py`, `test_evaluacion.py` | ninguna respuesta empeora; la evaluación sigue en 97/97 |
 
